@@ -1,0 +1,19 @@
+object frmCWKeys: TfrmCWKeys
+  Left = 392
+  Height = 67
+  Top = 566
+  Width = 682
+  Caption = 'CW keys'
+  ClientHeight = 67
+  ClientWidth = 682
+  KeyPreview = True
+  OnClose = FormClose
+  OnKeyUp = FormKeyUp
+  OnShow = FormShow
+  LCLVersion = '0.9.30.2'
+  inline fraCWKeys: TfraCWKeys
+    Height = 67
+    Align = alClient
+    ClientHeight = 67
+  end
+end
