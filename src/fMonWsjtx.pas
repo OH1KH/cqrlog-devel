@@ -357,11 +357,18 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
                AddColorStr('  '+msgMode+' ',clOlive) //mode
             else
                AddColorStr('  '+msgMode+' ',clPurple);
+
            if isMyCall then AddColorStr('=',clGreen) else AddColorStr(' ',clGreen);  //answer to me
-           if frmWorkedGrids.WkdCall(msgCall,band,mode) then
-                   AddColorStr(PadRight(LowerCase(msgCall),9)+' ',clRed)
-               else
-                   AddColorStr(PadRight(UpperCase(msgCall),9)+' ',clGreen);
+
+           i:= frmWorkedGrids.WkdCall(msgCall,band,mode);
+                  case i of
+                   1  :  AddColorStr(PadRight(LowerCase(msgCall),9)+' ',clRed);
+                   2  :  AddColorStr(PadRight(UpperCase(msgCall),9)+' ',clFuchsia);
+                   3  :  AddColorStr(PadRight(UpperCase(msgCall),9)+' ',clMaroon);
+                   else
+                     AddColorStr(PadRight(UpperCase(msgCall),9)+' ',clGreen);
+                  end;
+
            if msgLoc='----' then
                   AddColorStr(msgLoc,clDefault) //no loc
               else
