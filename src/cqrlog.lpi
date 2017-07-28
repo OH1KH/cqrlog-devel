@@ -88,7 +88,7 @@
         <MinVersion Major="1" Minor="2" Release="1" Valid="True"/>
       </Item11>
     </RequiredPackages>
-    <Units Count="101">
+    <Units Count="102">
       <Unit0>
         <Filename Value="cqrlog.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -756,6 +756,14 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit100>
+      <Unit101>
+        <Filename Value="fdxchat.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmDXChat"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fDXChat"/>
+      </Unit101>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

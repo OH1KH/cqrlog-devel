@@ -249,3 +249,13 @@
        Maroon upcase = worked on any other band and mode
        Green upcase  = never worked before on any band       
                                                                               (2.0.5.(040))
+28.07.2017
+
+     - Added DXChat form. Shows up automaticly when connected to DXCluster (telnet) and received a line
+       that starts "MYCall de " and line does not end to ">".
+       Then line contains (hopefully) a chat line from someone and it is printed to DXChat form preventing
+       it to disappear into flood of dx spots.
+       "MYCall de " is stripped out so line contains just senders call and the message.
+       Form shows up (and focuses) at first chat line but if it is left open it does not take focus when
+       next chat lines are received. If form is closed (X) it will show up again on next chat line rcvd.
+                                                                             (2.0.5(041))

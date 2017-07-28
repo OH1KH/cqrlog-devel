@@ -22,7 +22,7 @@ uses
   fNewCallAlert, fConfigStorage, fRbnFilter, fRbnMonitor, fRbnServer,
   fRadioMemories, fAddRadioMemory, fException, fDbError, fCommentToCall,
   fNewCommentToCall, fFindCommentToCall, frExportPref, fExportPref,
-  fWorkedGrids, fPropDK0WCY, fRemind, fContest, fMonWsjtx, fXfldigi;
+  fWorkedGrids, fPropDK0WCY, fRemind, fContest, fMonWsjtx, fXfldigi, fDXChat;
 var
   Splash : TfrmSplash;
 
@@ -54,6 +54,7 @@ begin
   Application.CreateForm(TfrmCallbook, frmCallbook);
   Application.CreateForm(TfrmTRXControl, frmTRXControl);
   Application.CreateForm(TfrmDXCluster, frmDXCluster);
+  Application.CreateForm(TfrmDXChat, frmDXChat);
   Application.CreateForm(TfrmQSODetails, frmQSODetails);
   Application.CreateForm(TfrmBandMap, frmBandMap);
   Application.CreateForm(TfrmPropagation, frmPropagation);
