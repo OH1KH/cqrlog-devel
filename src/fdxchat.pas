@@ -28,7 +28,7 @@ type
 
 var
   frmDXChat: TfrmDXChat;
-  MaxLines : integer = 10;
+  MaxLines : integer = 100;
   TelChat: Tjakomemo;
 
 implementation
