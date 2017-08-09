@@ -1,0 +1,35 @@
+object frmDXChat: TfrmDXChat
+  Left = 178
+  Height = 135
+  Top = 42
+  Width = 492
+  HorzScrollBar.Page = 170
+  VertScrollBar.Page = 83
+  AutoScroll = True
+  Caption = 'DXChat'
+  ClientHeight = 135
+  ClientWidth = 492
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnHide = FormHide
+  OnShow = FormShow
+  LCLVersion = '1.6.4.0'
+  object DXChatMemo: TMemo
+    Left = 10
+    Height = 115
+    Top = 10
+    Width = 472
+    Align = alClient
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 10
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 10
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 100
+    MaxLength = 200
+    OnChange = MemoChange
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+  end
+end
