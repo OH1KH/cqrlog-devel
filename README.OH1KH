@@ -275,4 +275,7 @@
       It will not take focus again until closed and reopen.
       Given up of font size adjust for now. It needs more study. (I would like to use jakoizmemo like DXCluster
       window does, but can not understand a single word of it;( )
-                                                                      (2.1.0(102))            
+                                                                      (2.1.0(102))  
+
+    - Propagation DK0WCY and DXChat now follows common settings of preferences/fonts
+                                                                     (2.1.0(103))            

@@ -67,6 +67,7 @@ procedure TfrmDXChat.FormShow(Sender: TObject);
 begin
     MaxLines := 50;
     dmUtils.LoadWindowPos(frmDXChat);
+    dmUtils.LoadFontSettings(frmDXChat);
 end;
 
 procedure TfrmDXChat.CleanDXChatMemo;
