@@ -1,14 +1,15 @@
 object frmDXChat: TfrmDXChat
   Left = 178
-  Height = 135
+  Height = 129
   Top = 42
-  Width = 492
+  Width = 483
   HorzScrollBar.Page = 170
-  VertScrollBar.Page = 83
-  AutoScroll = True
+  HorzScrollBar.Range = 170
+  VertScrollBar.Page = 113
+  VertScrollBar.Range = 113
   Caption = 'DXChat'
-  ClientHeight = 135
-  ClientWidth = 492
+  ClientHeight = 129
+  ClientWidth = 483
   OnClose = FormClose
   OnCreate = FormCreate
   OnHide = FormHide
@@ -16,20 +17,47 @@ object frmDXChat: TfrmDXChat
   LCLVersion = '1.6.4.0'
   object DXChatMemo: TMemo
     Left = 10
-    Height = 115
-    Top = 10
-    Width = 472
+    Height = 79
+    Top = 40
+    Width = 463
     Align = alClient
     BorderSpacing.Left = 10
-    BorderSpacing.Top = 10
+    BorderSpacing.Top = 40
     BorderSpacing.Right = 10
     BorderSpacing.Bottom = 10
     Constraints.MinHeight = 25
     Constraints.MinWidth = 100
-    MaxLength = 200
     OnChange = MemoChange
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 0
+  end
+  object btClear: TButton
+    AnchorSideLeft.Control = DXChatMemo
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = DXChatMemo
+    AnchorSideBottom.Side = asrBottom
+    Left = 10
+    Height = 25
+    Top = 7
+    Width = 75
+    BorderSpacing.Top = 7
+    Caption = 'Clear'
+    OnClick = btClearClick
+    TabOrder = 1
+  end
+  object btClose: TButton
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = DXChatMemo
+    AnchorSideRight.Side = asrBottom
+    Left = 405
+    Height = 25
+    Top = 7
+    Width = 68
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 7
+    Caption = 'Close'
+    OnClick = FormHide
+    TabOrder = 2
   end
 end

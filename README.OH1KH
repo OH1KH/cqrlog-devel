@@ -267,4 +267,12 @@
       New version released, so my testing version subnumber starts from 101.    
       Added default frequency 5.351MHz to newQSO dropdown selection list (was missing).
                                                                                          (2.1.0(101))
- 
+10.08.2017
+
+    - DXChat bugfix. Should work now forever(!?). Limit was 200chr by mistake. Scroll should happen @50 lines.
+      Added Clear and Close buttons. Did not add "keep hide" chekbox as there is then no way to restore it.
+      If it bothers you after 1st time it shows up drag it behind some other window and leave open.
+      It will not take focus again until closed and reopen.
+      Given up of font size adjust for now. It needs more study. (I would like to use jakoizmemo like DXCluster
+      window does, but can not understand a single word of it;( )
+                                                                      (2.1.0(102))            
