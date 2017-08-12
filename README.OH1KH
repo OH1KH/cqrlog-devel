@@ -279,3 +279,7 @@
 
     - Propagation DK0WCY and DXChat now follows common settings of preferences/fonts
                                                                      (2.1.0(103))            
+12.08.2017
+
+    - WSJTX CQ monitor: Now green text is also bold
+								(2.1.0(104))

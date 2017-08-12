@@ -100,7 +100,16 @@ begin
          SelStart  := Length(Text);
          SelText   := s;
          SelLength := Length(s);
-         SetRangeColor(SelStart, SelLength, col);
+         if col = clGreen then
+            SetRangeParams (SelStart, SelLength,
+               [tmm_Styles, tmm_Color], // changing Color and Styles only
+               '',  // this is font name - it's not used, thus we can leave it empty
+                0,  // this is font size - it's font size, we can leave it empty
+                col, // making all the text in the selected region green color
+               [fsBold],  // adding Bold Style
+               [] )
+          else
+            SetRangeColor(SelStart, SelLength, col);
          // deselect inserted string and position cursor at the end of the text
          SelStart  := Length(Text);
          SelText   := '';
