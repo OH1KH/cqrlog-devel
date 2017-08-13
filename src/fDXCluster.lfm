@@ -361,6 +361,10 @@ object frmDXCluster: TfrmDXCluster
     object MenuItem1: TMenuItem
       Action = acCallAlert
     end
+    object MenuItem6: TMenuItem
+      Caption = 'Show chat'
+      OnClick = MenuItem6Click
+    end
     object MenuItem2: TMenuItem
       Caption = '-'
     end

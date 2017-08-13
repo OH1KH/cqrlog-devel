@@ -15,8 +15,12 @@ type
   TfrmDXChat = class(TForm)
     btClear: TButton;
     btClose: TButton;
+    chHide: TCheckBox;
+    chOnTop: TCheckBox;
     DXChatMemo: TMemo;
     procedure btClearClick(Sender: TObject);
+    procedure chHideChange(Sender: TObject);
+    procedure chOnTopChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
@@ -51,6 +55,24 @@ begin
     CleanDXChatMemo;
 end;
 
+procedure TfrmDXChat.chHideChange(Sender: TObject);
+begin
+       if chHide.Checked then
+        Begin
+         FormStyle:=fsNormal;
+         if chOnTop.Checked then chOnTop.Checked := false;
+         frmDXChat.hide;
+        end;
+end;
+
+procedure TfrmDXChat.chOnTopChange(Sender: TObject);
+begin
+  if chOnTop.Checked then
+    FormStyle:=fsSystemStayOnTop
+  else
+    FormStyle:=fsNormal;
+end;
+
 procedure TfrmDXChat.FormCreate(Sender: TObject);
 begin
    dmUtils.LoadWindowPos(frmDXChat);
@@ -59,6 +81,8 @@ end;
 procedure TfrmDXChat.FormHide(Sender: TObject);
 begin
    dmUtils.SaveWindowPos(frmDXChat);
+   FormStyle:=fsNormal;
+   chOnTop.Checked := false;
    frmDXChat.hide;
 end;
 
@@ -104,7 +128,8 @@ var
 begin
  if ChLine[length(ChLine)] <> '>' then    //if not dxcluster prompt
   Begin
-  if not frmDXChat.Visible then frmDXChat.Show;
+  if(( not frmDXChat.Visible ) and (chHide.Checked = false ))then frmDXChat.Show;
+  if(frmDXChat.Visible  and (chHide.Checked = true )) then frmDXChat.hide; //should not happen here
   //remove "mycall de"
   l := length(cqrini.ReadString('Station', 'Call', ''))+4; //4 = ' DE '
   ChLine := FormatDateTime('hh:nn',Now)+'_'+copy(Chline,l+1,length(Chline)-l);

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, maskedit, RichMemo, strutils,  process;
+  StdCtrls, maskedit, ColorBox, Menus, RichMemo, strutils,  process;
 
 type
 
@@ -17,16 +17,30 @@ type
     chkHistory: TCheckBox;
     chkmyAlert: TCheckBox;
     chkLocAlert: TCheckBox;
+    cmCancel: TMenuItem;
+    popCBox: TColorBox;
     EditAlert: TEdit;
     lblAlert1: TLabel;
     lblAlert2: TLabel;
     lblBand: TLabel;
     lblMode: TLabel;
+    cmHead: TMenuItem;
+    cmNever: TMenuItem;
+    cmBand: TMenuItem;
+    cmAny: TMenuItem;
+    cmHere: TMenuItem;
+    popColors: TPopupMenu;
     WsjtxMemo: TRichMemo;
+    procedure cmAnyClick(Sender: TObject);
+    procedure cmBandClick(Sender: TObject);
+    procedure cmCancelClick(Sender: TObject);
+    procedure cmHereClick(Sender: TObject);
+    procedure cmNeverClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure popCBoxSelect(Sender: TObject);
     procedure WsjtxMemoChange(Sender: TObject);
     procedure WsjtxMemoDblClick(Sender: TObject);
   private
@@ -54,6 +68,12 @@ var
                                                 //       'text'= text given is found from new monitor line
   timeToAlert        : string;                  //only once per event per minute
   MonitorLine        : string;                  // complete line as printed to monitor
+
+  wkdhere            : Tcolor;
+  wkdband            : Tcolor;
+  wkdany             : Tcolor;
+  wkdnever           : Tcolor;
+  wkdToChange        : Integer;  // shows what color to change 1 .. 4
 
 implementation
 {$R *.lfm}
@@ -100,7 +120,7 @@ begin
          SelStart  := Length(Text);
          SelText   := s;
          SelLength := Length(s);
-         if col = clGreen then
+         if col = wkdnever then
             SetRangeParams (SelStart, SelLength,
                [tmm_Styles, tmm_Color], // changing Color and Styles only
                '',  // this is font name - it's not used, thus we can leave it empty
@@ -177,15 +197,65 @@ begin
    cqrini.WriteBool('MonWsjtx','MyAll',chkmyAll.Checked);
    cqrini.WriteBool('MonWsjtx','LocAlert',chkLocAlert.Checked);
    cqrini.WriteString('MonWsjtx','TextAlert',EditAlert.Text);
+   cqrini.WriteString('MonWsjtx','wkdhere',ColorToString(wkdhere));
+   cqrini.WriteString('MonWsjtx','wkdband',ColorToString(wkdband));
+   cqrini.WriteString('MonWsjtx','wkdany',ColorToString(wkdany));
+   cqrini.WriteString('MonWsjtx','wkdnever',ColorToString(wkdnever));
    dmUtils.SaveWindowPos(frmMonWsjtx);
    frmNewQSO.DisableRemoteMode;
+end;
+
+procedure TfrmMonWsjtx.cmNeverClick(Sender: TObject);
+begin
+       popCBox.Visible := true;
+       wkdToChange := 1;
+       popCBox.Selected:=wkdNever;
+end;
+
+procedure TfrmMonWsjtx.cmBandClick(Sender: TObject);
+begin
+       popCBox.Visible := true;
+       wkdToChange := 2;
+       popCBox.Selected:=wkdBand;
+end;
+
+
+procedure TfrmMonWsjtx.cmAnyClick(Sender: TObject);
+begin
+       popCBox.Visible := true;
+       wkdToChange := 3;
+       popCBox.Selected:=wkdAny;
+end;
+procedure TfrmMonWsjtx.cmHereClick(Sender: TObject);
+begin
+        popCBox.Visible := true;
+        wkdToChange := 4;
+        popCBox.Selected:=wkdHere;
+end;
+
+procedure TfrmMonWsjtx.cmCancelClick(Sender: TObject);
+begin
+       popCBox.Visible := false;
+       wkdToChange := 0;
+end;
+procedure TfrmMonWsjtx.popCBoxSelect(Sender: TObject);
+  begin
+    case wkdToChange of
+         1:  wkdNever := popCBox.Selected;
+         2:  wkdBand := popCBox.Selected;
+         3:  wkdAny := popCBox.Selected;
+         4:  wkdHere := popCBox.Selected;
+      end;
+    wkdToChange := 0;
+    popCBox.Visible := false;
 end;
 
 procedure TfrmMonWsjtx.FormCreate(Sender: TObject);
 begin
   EditAlert.Text := '';
   LastWsjtLineTime:='';
-  dmUtils.LoadWindowPos(frmMonWsjtx);
+
+  wkdToChange        := 0;
 end;
 
 procedure TfrmMonWsjtx.FormHide(Sender: TObject);
@@ -202,8 +272,13 @@ begin
    chkLocAlert.Checked:= cqrini.ReadBool('MonWsjtx','LocAlert',False);
    EditAlert.Text := cqrini.ReadString('MonWsjtx','TextAlert','');
    dmUtils.LoadWindowPos(frmMonWsjtx);
+   wkdhere := StringToColor(cqrini.ReadString('MonWsjtx','wkdhere','clRed'));
+   wkdband := StringToColor(cqrini.ReadString('MonWsjtx','wkdband','clFuchsia'));
+   wkdany := StringToColor(cqrini.ReadString('MonWsjtx','wkdany','clMaroon'));
+   wkdnever := StringToColor(cqrini.ReadString('MonWsjtx','wkdnever','clGreen'));
    CleanWsjtxMemo;
 end;
+
 
 procedure TfrmMonWsjtx.NewBandMode(Band,Mode:string);
 
@@ -367,15 +442,15 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
             else
                AddColorStr('  '+msgMode+' ',clPurple);
 
-           if isMyCall then AddColorStr('=',clGreen) else AddColorStr(' ',clGreen);  //answer to me
+           if isMyCall then AddColorStr('=',wkdnever) else AddColorStr(' ',wkdnever);  //answer to me
 
            i:= frmWorkedGrids.WkdCall(msgCall,band,mode);
                   case i of
-                   1  :  AddColorStr(PadRight(LowerCase(msgCall),9)+' ',clRed);
-                   2  :  AddColorStr(PadRight(UpperCase(msgCall),9)+' ',clFuchsia);
-                   3  :  AddColorStr(PadRight(UpperCase(msgCall),9)+' ',clMaroon);
+                   1  :  AddColorStr(PadRight(LowerCase(msgCall),9)+' ',wkdhere);
+                   2  :  AddColorStr(PadRight(UpperCase(msgCall),9)+' ',wkdband);
+                   3  :  AddColorStr(PadRight(UpperCase(msgCall),9)+' ',wkdany);
                    else
-                     AddColorStr(PadRight(UpperCase(msgCall),9)+' ',clGreen);
+                     AddColorStr(PadRight(UpperCase(msgCall),9)+' ',wkdnever);
                   end;
 
            if msgLoc='----' then
@@ -385,22 +460,22 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
                   i:= frmWorkedGrids.WkdGrid(msgLoc,band,mode);
                   case i of
                    0  : Begin
-                             AddColorStr(UpperCase(msgLoc),clGreen); //not wkd
+                             AddColorStr(UpperCase(msgLoc),wkdnever); //not wkd
                              if chkLocAlert.Checked and (timeToAlert<>msgTime) then myAlert := 'loc';    //locator alert
 
                         end;
                    1  : Begin
-                         AddColorStr(lowerCase(copy(msgLoc,1,2)),clRed); //maingrid wkd
-                         AddColorStr(lowerCase(copy(msgLoc,3,2)),clGreen);
+                         AddColorStr(lowerCase(copy(msgLoc,1,2)),wkdhere); //maingrid wkd
+                         AddColorStr(lowerCase(copy(msgLoc,3,2)),wkdnever);
                         end;
-                   2  : AddColorStr(lowerCase(msgLoc),clRed); //grid wkd
+                   2  : AddColorStr(lowerCase(msgLoc),wkdhere); //grid wkd
                    end;
                end;
 
 
            msgRes := dmDXCC.id_country(msgCall,now());    //country prefix
            if CallCqDir then
-                 AddColorStr(' '+PadRight('*'+msgRes,7)+' ',clFuchsia)    //to warn directed call
+                 AddColorStr(' '+PadRight('*'+msgRes,7)+' ',wkdband)    //to warn directed call
              else
                  AddColorStr(' '+PadRight(msgRes,7)+' ',clBlack);
 
@@ -411,10 +486,10 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
 
            if dmData.DebugLevel>=1 then Writeln('Looking this>',msgRes[1],'< from:',msgRes);
            case msgRes[1] of
-             'U'  :  AddColorStr(msgRes,clRed);        //Unknown
-             'C'  :  AddColorStr(msgRes,clFuchsia);    //Confirmed
-             'Q'  :  AddColorStr(msgRes,clTeal);       //Qsl needed
-             'N'  :  AddColorStr(msgRes,clGreen);      //New something
+             'U'  :  AddColorStr(msgRes,wkdhere);       //Unknown
+             'C'  :  AddColorStr(msgRes,wkdAny);        //Confirmed
+             'Q'  :  AddColorStr(msgRes,clTeal);        //Qsl needed
+             'N'  :  AddColorStr(msgRes,wkdnever);      //New something
 
             else    AddColorStr(msgRes,clDefault);     //something else...can't be
            end;

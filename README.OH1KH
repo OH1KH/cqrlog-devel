@@ -283,3 +283,11 @@
 
     - WSJTX CQ monitor: Now green text is also bold
 								(2.1.0(104))
+
+    - WSJTX CQ monitor: User selectable colours. Right click on monitor form shows selection popup menu. 
+      "Cancel" at selection popup menu hides color box in case of no new selection.
+      Otherwise new selection changes color and hides color box.
+    - "Stay on top" and "Hide" checkboxes for DXChat form. Hidden DXChat can be returned from DXCluster
+      "preferences-popup menu/Show chat". Checkboxes are unchecked at program start (states not saved).
+								(2.1.0(105))
+

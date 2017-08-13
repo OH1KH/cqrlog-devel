@@ -47,6 +47,7 @@ type
     MenuItem3 : TMenuItem;
     MenuItem4 : TMenuItem;
     MenuItem5 : TMenuItem;
+    MenuItem6: TMenuItem;
     mnuCallalert : TMenuItem;
     Panel1: TPanel;
     Panel2: TPanel;
@@ -76,6 +77,7 @@ type
     procedure btnTelConnectClick(Sender: TObject);
     procedure btnWebConnectClick(Sender: TObject);
     procedure edtCommandKeyPress(Sender: TObject; var Key: char);
+    procedure MenuItem6Click(Sender: TObject);
     procedure mnuCallalertClick(Sender : TObject);
    procedure tmrAutoConnectTimer(Sender: TObject);
     procedure tmrSpotsTimer(Sender: TObject);
@@ -611,6 +613,12 @@ begin
    SendCommand(edtCommand.Text);
    edtCommand.Clear
   end;
+end;
+
+procedure TfrmDXCluster.MenuItem6Click(Sender: TObject);
+begin
+  frmDXChat.chHide.Checked := false;
+  frmDXChat.Show;
 end;
 
 procedure TfrmDXCluster.mnuCallalertClick(Sender : TObject);
