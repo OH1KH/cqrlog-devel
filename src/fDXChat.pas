@@ -15,39 +15,42 @@ type
   TfrmDXChat = class(TForm)
     btClear: TButton;
     btClose: TButton;
-    chHide: TCheckBox;
     chOnTop: TCheckBox;
     DXChatMemo: TMemo;
     procedure btClearClick(Sender: TObject);
-    procedure chHideChange(Sender: TObject);
+    procedure btCloseClick(Sender: TObject);
     procedure chOnTopChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure MemoChange(Sender: TObject);
     procedure FocusLastLine;
   private
     { private declarations }
   public
+    chHide   : boolean;
     procedure CleanDXChatMemo;
     procedure AddDXChatMemo(ChLine:String);
-    { public declarations }
+    procedure SetFont(Sender: TObject);
+     { public declarations }
   end;
 
 var
   frmDXChat: TfrmDXChat;
   MaxLines : integer ;
 
+
 implementation
 
 { TfrmDXChat }
 
-Uses dUtils,uMyini,dData ;
+Uses dUtils,uMyini,dData,fDXCluster;
 
 procedure TfrmDXChat.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
    dmUtils.SaveWindowPos(frmDXChat);
+   //cqrini.WriteBool('DXChat', 'Top', frmDXChat.chOnTop.Checked);
+   //cqrini.WriteBool('DXChat', 'Hide', chHide);
 end;
 
 procedure TfrmDXChat.btClearClick(Sender: TObject);
@@ -55,15 +58,11 @@ begin
     CleanDXChatMemo;
 end;
 
-procedure TfrmDXChat.chHideChange(Sender: TObject);
+procedure TfrmDXChat.btCloseClick(Sender: TObject);
 begin
-       if chHide.Checked then
-        Begin
-         FormStyle:=fsNormal;
-         if chOnTop.Checked then chOnTop.Checked := false;
-         frmDXChat.hide;
-        end;
+  frmDXChat.Hide;
 end;
+
 
 procedure TfrmDXChat.chOnTopChange(Sender: TObject);
 begin
@@ -71,27 +70,38 @@ begin
     FormStyle:=fsSystemStayOnTop
   else
     FormStyle:=fsNormal;
+  cqrini.WriteBool('DXChat', 'Top', frmDXChat.chOnTop.Checked);
 end;
 
 procedure TfrmDXChat.FormCreate(Sender: TObject);
 begin
+   MaxLines := 50;
    dmUtils.LoadWindowPos(frmDXChat);
+   chOnTop.Checked := cqrini.ReadBool('DXChat', 'Top', false);
+   chHide := cqrini.ReadBool('DXChat', 'Hide', false);
 end;
-
-procedure TfrmDXChat.FormHide(Sender: TObject);
+procedure TfrmDXChat.SetFont(Sender: TObject);
+var
+  f : TFont;
 begin
-   dmUtils.SaveWindowPos(frmDXChat);
-   FormStyle:=fsNormal;
-   chOnTop.Checked := false;
-   frmDXChat.hide;
+    f := TFont.Create;
+    dmUtils.LoadWindowPos(frmDXChat);
+    dmUtils.LoadFontSettings(frmDXChat);
+  try
+    f.Name := cqrini.ReadString('DXCluster','Font','DejaVu Sans Mono');
+    f.Size := cqrini.ReadInteger('DXCluster','FontSize',12);
+    DXChatMemo.Font :=f;
+  finally
+    f.Free
+  end;
+
 end;
 
 procedure TfrmDXChat.FormShow(Sender: TObject);
-
-begin
-    MaxLines := 50;
-    dmUtils.LoadWindowPos(frmDXChat);
-    dmUtils.LoadFontSettings(frmDXChat);
+Begin
+  SetFont(nil);
+  chOnTop.Checked := cqrini.ReadBool('DXChat', 'Top', false);
+  chHide := cqrini.ReadBool('DXChat', 'Hide', false);
 end;
 
 procedure TfrmDXChat.CleanDXChatMemo;
@@ -128,8 +138,7 @@ var
 begin
  if ChLine[length(ChLine)] <> '>' then    //if not dxcluster prompt
   Begin
-  if(( not frmDXChat.Visible ) and (chHide.Checked = false ))then frmDXChat.Show;
-  if(frmDXChat.Visible  and (chHide.Checked = true )) then frmDXChat.hide; //should not happen here
+  if(( not frmDXChat.Visible ) and (chHide = false ))then frmDXChat.Show; //form closed, but not hided
   //remove "mycall de"
   l := length(cqrini.ReadString('Station', 'Call', ''))+4; //4 = ' DE '
   ChLine := FormatDateTime('hh:nn',Now)+'_'+copy(Chline,l+1,length(Chline)-l);

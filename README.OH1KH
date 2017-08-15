@@ -284,10 +284,22 @@
     - WSJTX CQ monitor: Now green text is also bold
 								(2.1.0(104))
 
-    - WSJTX CQ monitor: User selectable colours. Right click on monitor form shows selection popup menu. 
+    - WSJTX CQ monitor: User selectable colors. Right click on monitor form shows selection popup menu. 
       "Cancel" at selection popup menu hides color box in case of no new selection.
       Otherwise new selection changes color and hides color box.
     - "Stay on top" and "Hide" checkboxes for DXChat form. Hidden DXChat can be returned from DXCluster
       "preferences-popup menu/Show chat". Checkboxes are unchecked at program start (states not saved).
 								(2.1.0(105))
+15.08.2017
 
+    - Wsjtx CQ monitor: Same color "coding" now affects to locators as callsigns. You are able to see
+      "worked this band, but not current mode"(fuchsia, Upcase) and "worked on any other band/mode"
+      (maroon, Upcase) in addition with previous "worked this bamd and mode"(lowcase, red) and 
+      "not worked before"(Upcase, green).
+      Change of qso colors chages also these locator colors same way.
+    - Fixed database functions used for finding worked calls and locators.
+    - DXChat is still in progress, at the moment hiding and showing is done ONLY via DXCluster window
+      preferences/popup menu.
+      DXChat now uses same font as DXCluster.
+      OnTop and Hide are remembered (saved) over program restart.
+								(2.1.0(106))

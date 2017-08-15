@@ -359,7 +359,8 @@ begin
     cqrini.WriteString('DXCluster','Font',dlgDXfnt.Font.Name);
     cqrini.WriteInteger('DXCluster','FontSize',dlgDXfnt.Font.Size);
     WebSpots.nastav_font(dlgDXfnt.Font);
-    TelSpots.nastav_font(dlgDXfnt.Font)
+    TelSpots.nastav_font(dlgDXfnt.Font);
+    frmDXChat.SetFont(nil);
   end
 end;
 
@@ -523,7 +524,14 @@ begin
   ChangeCallAlertCaption;
 
   if cqrini.ReadBool('DXCluster', 'ConAfterRun', False) then
-    tmrAutoConnect.Enabled := True
+    tmrAutoConnect.Enabled := True ;
+
+  //set menu text based on chat form hided or visible
+  frmDXChat.chHide := cqrini.ReadBool('DXChat', 'Hide', false);
+  if frmDXChat.chHide = true then
+    MenuItem6.Caption := 'Show chat'
+  else
+    MenuItem6.Caption := 'Hide chat';
 end;
 
 procedure TfrmDXCluster.btnClearClick(Sender: TObject);
@@ -617,8 +625,19 @@ end;
 
 procedure TfrmDXCluster.MenuItem6Click(Sender: TObject);
 begin
-  frmDXChat.chHide.Checked := false;
-  frmDXChat.Show;
+  if frmDXChat.chHide = true then
+   Begin
+    frmDXChat.chHide := false;
+    frmDXChat.Show;
+    MenuItem6.Caption := 'Hide chat';
+   end
+  else
+   Begin
+    frmDXChat.chHide:= true;
+    frmDXChat.Hide;
+    MenuItem6.Caption := 'Show chat';
+   end;
+   cqrini.WriteBool('DXChat', 'Hide', frmDXChat.chHide);
 end;
 
 procedure TfrmDXCluster.mnuCallalertClick(Sender : TObject);

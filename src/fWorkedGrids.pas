@@ -51,8 +51,9 @@ type
     procedure ToRigMode(mode: string);
     procedure ToRigBand(band: string);
     function RecordCount: string;
-    function WkdGrid(loc, band, mode: string): integer;
-    //returns 0=not wkd, 1=main grid wkd, 2=wkd
+    function WkdGrid(loc, band, mode: string): integer; //returns (0=not wkd, 1=main grid wkd, 2=wkd ) this band and mode
+                                                        //        (3=main grid wkd, 4=wkd ) this band but NOT this mode
+                                                        //        (5=main grid wkd, 6=wkd ) any other band or mode
     function WkdCall(call, band, mode: string): integer;  //returns wkd this b+m=1, this b=2, any b+m=3
     function GridOK(Loc: string): boolean;
     procedure UpdateMap;
@@ -180,94 +181,136 @@ begin
 end;
 
 function TfrmWorkedGrids.WkdGrid(loc, band, mode: string): integer;
+//returns (0=not wkd, 1=main grid wkd, 2=wkd ) this band and mode
+//        (3=main grid wkd, 4=wkd ) this band but NOT this mode
+//        (5=main grid wkd, 6=wkd ) any other band or mode
 begin
   WkdGrid := 0;
   dmData.Q.Close;
-  if dmData.trQ.Active then
-    dmData.trQ.Rollback;
+  if dmData.trQ.Active then dmData.trQ.Rollback;
 
-  dmData.Q.SQL.Text := 'select loc from ' + LogTable + ' where band=' + chr(39) + band + chr(39) +
-    ' and mode=' + chr(39) + mode + chr(39) + ' and loc like ' +
-    chr(39) + loc + '%' + chr(39);
-  if dmData.DebugLevel >= 1 then
-    Writeln(dmData.Q.SQL.Text);
-  dmData.trQ.StartTransaction;
   try
-    dmData.Q.Open;
-    if dmData.Q.Fields[0].AsString <> '' then
-      WkdGrid := 2;
-    dmData.Q.Close;
+
+     //2=worked full(4) grid this band and mode
+     dmData.Q.SQL.Text := 'select loc from ' + LogTable +
+                          ' where band=' + chr(39) + band + chr(39) +
+                          ' and mode=' + chr(39) + mode + chr(39) +
+                          ' and loc like ' + chr(39) + loc + '%' + chr(39);
+     if dmData.DebugLevel >= 1 then Write('Q2: ');
+     dmData.Q.Open;
+     if dmData.Q.RecordCount > 0 then WkdGrid := 2;
+     dmData.Q.Close;
+
     if WkdGrid = 0 then
-    begin
-      dmData.Q.SQL.Text := 'select loc from ' + LogTable + ' where band=' + chr(
-        39) + band + chr(39) + ' and mode=' + chr(39) + mode +
-        chr(39) + ' and loc like ' + chr(39) + copy(loc, 1, 2) + '%' + chr(39);
-      if dmData.DebugLevel >= 1 then
-        Writeln(dmData.Q.SQL.Text);
+    Begin
+      //1=worked main grid this band and mode
+      dmData.Q.SQL.Text := 'select loc from ' + LogTable +
+                           ' where band=' + chr(39) + band + chr(39) +
+                           ' and mode=' + chr(39) + mode + chr(39) +
+                           ' and loc like ' + chr(39) + copy(loc, 1, 2) + '%' + chr(39);
+      if dmData.DebugLevel >= 1 then Write('Q1: ');
       dmData.Q.Open;
-      if dmData.Q.Fields[0].AsString <> '' then
-        WkdGrid := 1;
+      if dmData.Q.RecordCount > 0 then WkdGrid := 1;
       dmData.Q.Close;
     end;
+
+    if WkdGrid = 0 then
+    Begin
+     //4=worked full(4) grid this band but not this mode
+     dmData.Q.SQL.Text := 'select loc from ' + LogTable +
+                          ' where band=' + chr(39) + band + chr(39) +
+                          ' and loc like ' + chr(39) + loc + '%' + chr(39);
+     if dmData.DebugLevel >= 1 then Write('Q4: ');
+     dmData.Q.Open;
+     if dmData.Q.RecordCount > 0 then  WkdGrid := 4;
+     dmData.Q.Close;
+    end;
+
+    if WkdGrid = 0 then
+    Begin
+     //3=worked main grid this band but not this mode
+     dmData.Q.SQL.Text := 'select loc from ' + LogTable +
+                          ' where band=' + chr(39) + band + chr(39) +
+                          ' and loc like ' + chr(39) + copy(loc, 1, 2) + '%' + chr(39);
+     if dmData.DebugLevel >= 1 then Write('Q3: ');
+     dmData.Q.Open;
+     if dmData.Q.RecordCount > 0 then WkdGrid := 3;
+     dmData.Q.Close;
+    end;
+
+    if WkdGrid = 0 then
+    Begin
+      //6=worked full(4) grid any band, any mode
+      dmData.Q.SQL.Text := 'select loc from ' + LogTable +
+                         ' where loc like ' + chr(39) + loc + '%' + chr(39);
+      if dmData.DebugLevel >= 1 then Write('Q6: ');
+      dmData.Q.Open;
+      if dmData.Q.RecordCount > 0 then  WkdGrid := 6;
+      dmData.Q.Close;
+    end;
+
+    if WkdGrid = 0 then
+    Begin
+      //5=worked main grid any band, any mode
+      dmData.Q.SQL.Text := 'select loc from ' + LogTable +
+                          ' where loc like ' + chr(39) + copy(loc, 1, 2) + '%' + chr(39);
+      if dmData.DebugLevel >= 1 then Write('Q5: ');
+      dmData.Q.Open;
+      if dmData.Q.RecordCount > 0 then WkdGrid := 5;
+      dmData.Q.Close;
+    end;
+
   finally
     dmData.trQ.Rollback;
   end;
-  if dmData.DebugLevel >= 1 then
-    Writeln('WkdGrid is:', WkdGrid);
+  if dmData.DebugLevel >= 1 then  Writeln('WkdGrid is:', WkdGrid);
 end;
 
 function TfrmWorkedGrids.WkdCall(call, band, mode: string): integer;
 begin
+
   WkdCall := 0;
   dmData.Q.Close;
-  if dmData.trQ.Active then
-    dmData.trQ.Rollback;
+  if dmData.trQ.Active then dmData.trQ.Rollback;
 
-
-  dmData.Q.SQL.Text := 'select callsign from ' + LogTable + ' where band=' +
-    chr(39) + band + chr(39) + ' and mode=' + chr(39) +
-    mode + chr(39) + ' and callsign=' + chr(39) + call + chr(39);
-  if dmData.DebugLevel >= 1 then
-    Writeln('Wkd test 1:',dmData.Q.SQL.Text);
   try
-    dmData.Q.Open;
-    if dmData.Q.Fields[0].AsString <> '' then
-      WkdCall := 1; //worked in this band and mode
-    dmData.Q.Close;
-  finally
-    dmData.trQ.Rollback;
-  end;
 
-if  WkdCall = 0 then
- begin
-   dmData.Q.SQL.Text := 'select callsign from ' + LogTable + ' where band=' +
-    chr(39) + band + chr(39) + ' and callsign=' + chr(39) + call + chr(39);
-  if dmData.DebugLevel >= 1 then
-    Writeln('Wkd test 2:',dmData.Q.SQL.Text);
-  try
+    //1=worked in this band and mode
+    dmData.Q.SQL.Text := 'select callsign from ' + LogTable +
+                          ' where band=' + chr(39) + band + chr(39) +
+                          ' and mode=' + chr(39) + mode + chr(39) +
+                          ' and callsign=' + chr(39) + call + chr(39);
+    if dmData.DebugLevel >= 1 then  Write('Wkd 1:');
     dmData.Q.Open;
-    if dmData.Q.Fields[0].AsString <> '' then
-      WkdCall := 2; //worked in this band but not this mode
+    if dmData.Q.RecordCount > 0 then WkdCall := 1;
     dmData.Q.Close;
-  finally
-    dmData.trQ.Rollback;
-  end;
- end;
 
-if  WkdCall = 0 then
- begin
-   dmData.Q.SQL.Text := 'select callsign from ' + LogTable + ' where callsign=' + chr(39) + call + chr(39);
-  if dmData.DebugLevel >= 1 then
-    Writeln('Wkd test 3:',dmData.Q.SQL.Text);
-  try
-    dmData.Q.Open;
-    if dmData.Q.Fields[0].AsString <> '' then
-      WkdCall := 3; //worked in any band and mode
-    dmData.Q.Close;
-  finally
-    dmData.trQ.Rollback;
-  end;
-end;
+    //2=worked in this band but not this mode
+    if  WkdCall = 0 then
+    begin
+      dmData.Q.SQL.Text := 'select callsign from ' + LogTable +
+                           ' where band=' + chr(39) + band + chr(39) +
+                           ' and callsign=' + chr(39) + call + chr(39);
+      if dmData.DebugLevel >= 1 then  Write('Wkd 2:');
+      dmData.Q.Open;
+      if dmData.Q.RecordCount > 0 then  WkdCall := 2;
+      dmData.Q.Close;
+    end;
+
+    //worked in any band and mode
+    if  WkdCall = 0 then
+    begin
+      dmData.Q.SQL.Text := 'select callsign from ' + LogTable +
+                           ' where callsign=' + chr(39) + call + chr(39);
+      if dmData.DebugLevel >= 1 then Write('Wkd 3:');
+      dmData.Q.Open;
+      if dmData.Q.RecordCount > 0 then  WkdCall := 3;
+      dmData.Q.Close;
+     end;
+
+    finally
+      dmData.trQ.Rollback;
+    end;
 
   if dmData.DebugLevel >= 1 then
     Writeln('WkdCall is:', WkdCall);

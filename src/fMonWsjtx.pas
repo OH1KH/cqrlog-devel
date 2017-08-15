@@ -458,6 +458,9 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
               else
                Begin
                   i:= frmWorkedGrids.WkdGrid(msgLoc,band,mode);
+                  //returns (0=not wkd, 1=main grid wkd, 2=wkd ) this band and mode
+                  //        (3=main grid wkd, 4=wkd ) this band but NOT this mode
+                  //        (5=main grid wkd, 6=wkd ) any other band or mode
                   case i of
                    0  : Begin
                              AddColorStr(UpperCase(msgLoc),wkdnever); //not wkd
@@ -466,16 +469,27 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
                         end;
                    1  : Begin
                          AddColorStr(lowerCase(copy(msgLoc,1,2)),wkdhere); //maingrid wkd
-                         AddColorStr(lowerCase(copy(msgLoc,3,2)),wkdnever);
+                         AddColorStr(copy(msgLoc,3,2),wkdnever);
                         end;
                    2  : AddColorStr(lowerCase(msgLoc),wkdhere); //grid wkd
+                   3  : Begin
+                         AddColorStr(UpperCase(copy(msgLoc,1,2)),wkdband); //maingrid wkd band
+                         AddColorStr(copy(msgLoc,3,2),wkdnever);
+                        end;
+                   4  : AddColorStr(UpperCase(msgLoc),wkdband); //grid wkd band
+                   5  : Begin
+                         AddColorStr(UpperCase(copy(msgLoc,1,2)),wkdany); //maingrid wkd any
+                         AddColorStr(copy(msgLoc,3,2),wkdnever);
+                        end;
+                   6  : AddColorStr(UpperCase(msgLoc),wkdany); //grid wkd any
+
                    end;
                end;
 
 
            msgRes := dmDXCC.id_country(msgCall,now());    //country prefix
            if CallCqDir then
-                 AddColorStr(' '+PadRight('*'+msgRes,7)+' ',wkdband)    //to warn directed call
+                 AddColorStr(' '+PadRight('*'+msgRes,7)+' ',clFuchsia)    //to warn directed call
              else
                  AddColorStr(' '+PadRight(msgRes,7)+' ',clBlack);
 

@@ -12,7 +12,6 @@ object frmDXChat: TfrmDXChat
   ClientWidth = 483
   OnClose = FormClose
   OnCreate = FormCreate
-  OnHide = FormHide
   OnShow = FormShow
   LCLVersion = '1.6.4.0'
   object DXChatMemo: TMemo
@@ -57,36 +56,21 @@ object frmDXChat: TfrmDXChat
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 7
     Caption = 'Close'
-    OnClick = FormHide
+    OnClick = btCloseClick
     TabOrder = 2
   end
   object chOnTop: TCheckBox
-    AnchorSideLeft.Control = btClear
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideLeft.Control = DXChatMemo
+    AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 105
+    Left = 208
     Height = 23
     Top = 7
     Width = 66
-    BorderSpacing.Left = 20
     BorderSpacing.Top = 7
     Caption = 'OnTop'
     OnChange = chOnTopChange
     TabOrder = 3
-  end
-  object chHide: TCheckBox
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = btClose
-    Left = 329
-    Height = 23
-    Top = 7
-    Width = 56
-    Anchors = [akTop, akRight]
-    BorderSpacing.Top = 7
-    BorderSpacing.Right = 20
-    Caption = 'Hide'
-    OnChange = chHideChange
-    TabOrder = 4
   end
 end
