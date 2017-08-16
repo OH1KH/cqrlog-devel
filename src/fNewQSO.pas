@@ -679,7 +679,7 @@ uses dUtils, fChangeLocator, dDXCC, dDXCluster, dData, fMain, fSelectDXCC, fGray
      fLongNote, fRefCall, fKeyTexts, fCWType, fExportProgress, fPropagation, fCallAttachment,
      fQSLViewer, fCWKeys, uMyIni, fDBConnect, fAbout, uVersion, fChangelog,
      fBigSquareStat, fSCP, fRotControl, fLogUploadStatus, fRbnMonitor, fException, fCommentToCall,
-     fRemind, fContest,fXfldigi,fDXChat;
+     fRemind, fContest,fXfldigi;
 
 procedure TQSLTabThread.Execute;
 var
@@ -4084,8 +4084,6 @@ begin
         dmUtils.LoadFontSettings(frmRbnMonitor);
       if frmPropDK0WCY.Showing then
         dmUtils.LoadFontSettings(frmPropDK0WCY);
-      if frmDXChat.Showing then
-        dmUtils.LoadFontSettings(frmDXChat);
 
       dmData.LoadQSODateColorSettings;
     end;

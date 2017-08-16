@@ -17,8 +17,8 @@ type
     chkHistory: TCheckBox;
     chkmyAlert: TCheckBox;
     chkLocAlert: TCheckBox;
-    cmCancel: TMenuItem;
-    popCBox: TColorBox;
+    cmCqDx: TMenuItem;
+    popColorDlg: TColorDialog;
     EditAlert: TEdit;
     lblAlert1: TLabel;
     lblAlert2: TLabel;
@@ -33,14 +33,13 @@ type
     WsjtxMemo: TRichMemo;
     procedure cmAnyClick(Sender: TObject);
     procedure cmBandClick(Sender: TObject);
-    procedure cmCancelClick(Sender: TObject);
+    procedure cmCqDxClick(Sender: TObject);
     procedure cmHereClick(Sender: TObject);
     procedure cmNeverClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure popCBoxSelect(Sender: TObject);
     procedure WsjtxMemoChange(Sender: TObject);
     procedure WsjtxMemoDblClick(Sender: TObject);
   private
@@ -58,6 +57,7 @@ type
 Const
  MaxLines :integer = 16;        //Max monitor lines
 
+
 var
   frmMonWsjtx: TfrmMonWsjtx;
   RepArr     : array [0 .. 16] of string[255];  //static array for reply strings: set max same as MaxLines
@@ -69,11 +69,11 @@ var
   timeToAlert        : string;                  //only once per event per minute
   MonitorLine        : string;                  // complete line as printed to monitor
 
+  extCqCall          : Tcolor =  $000055FF ;    // extended cq (cq dx, cq na etc.) color
   wkdhere            : Tcolor;
   wkdband            : Tcolor;
   wkdany             : Tcolor;
   wkdnever           : Tcolor;
-  wkdToChange        : Integer;  // shows what color to change 1 .. 4
 
 implementation
 {$R *.lfm}
@@ -117,6 +117,7 @@ begin
 
        if s <> '' then
        begin
+
          SelStart  := Length(Text);
          SelText   := s;
          SelLength := Length(s);
@@ -201,61 +202,53 @@ begin
    cqrini.WriteString('MonWsjtx','wkdband',ColorToString(wkdband));
    cqrini.WriteString('MonWsjtx','wkdany',ColorToString(wkdany));
    cqrini.WriteString('MonWsjtx','wkdnever',ColorToString(wkdnever));
+   cqrini.WriteString('MonWsjtx','extCqCall',ColorToString(extCqCall));
    dmUtils.SaveWindowPos(frmMonWsjtx);
    frmNewQSO.DisableRemoteMode;
 end;
 
 procedure TfrmMonWsjtx.cmNeverClick(Sender: TObject);
 begin
-       popCBox.Visible := true;
-       wkdToChange := 1;
-       popCBox.Selected:=wkdNever;
+       popColorDlg.Color:=wkdNever;
+       popColorDlg.Title := 'Qso never before - color';
+       if  popColorDlg.Execute then
+           wkdNever := ( popColorDlg.Color );
 end;
 
 procedure TfrmMonWsjtx.cmBandClick(Sender: TObject);
 begin
-       popCBox.Visible := true;
-       wkdToChange := 2;
-       popCBox.Selected:=wkdBand;
+       popColorDlg.Color:=wkdBand;
+       popColorDlg.Title := 'Qso on this band, but not this mode - color';
+       if  popColorDlg.Execute then
+           wkdBand := ( popColorDlg.Color );
 end;
-
-
 procedure TfrmMonWsjtx.cmAnyClick(Sender: TObject);
 begin
-       popCBox.Visible := true;
-       wkdToChange := 3;
-       popCBox.Selected:=wkdAny;
+       popColorDlg.Color:=wkdAny;
+       popColorDlg.Title := 'Qso on some other band/mode - color';
+       if  popColorDlg.Execute then
+           wkdAny := ( popColorDlg.Color );
 end;
 procedure TfrmMonWsjtx.cmHereClick(Sender: TObject);
 begin
-        popCBox.Visible := true;
-        wkdToChange := 4;
-        popCBox.Selected:=wkdHere;
+       popColorDlg.Color:=wkdHere;
+       popColorDlg.Title := 'Qso on this band and mode - color';
+       if  popColorDlg.Execute then
+           wkdHere := ( popColorDlg.Color );
 end;
 
-procedure TfrmMonWsjtx.cmCancelClick(Sender: TObject);
+procedure TfrmMonWsjtx.cmCqDxClick(Sender: TObject);
 begin
-       popCBox.Visible := false;
-       wkdToChange := 0;
-end;
-procedure TfrmMonWsjtx.popCBoxSelect(Sender: TObject);
-  begin
-    case wkdToChange of
-         1:  wkdNever := popCBox.Selected;
-         2:  wkdBand := popCBox.Selected;
-         3:  wkdAny := popCBox.Selected;
-         4:  wkdHere := popCBox.Selected;
-      end;
-    wkdToChange := 0;
-    popCBox.Visible := false;
+       popColorDlg.Color:=extCqCall;
+       popColorDlg.Title := 'Extended CQ (DX, NA, SA ...) - color';
+       if  popColorDlg.Execute then
+           extCqCall := ( popColorDlg.Color );
 end;
 
 procedure TfrmMonWsjtx.FormCreate(Sender: TObject);
 begin
   EditAlert.Text := '';
   LastWsjtLineTime:='';
-
-  wkdToChange        := 0;
 end;
 
 procedure TfrmMonWsjtx.FormHide(Sender: TObject);
@@ -276,6 +269,7 @@ begin
    wkdband := StringToColor(cqrini.ReadString('MonWsjtx','wkdband','clFuchsia'));
    wkdany := StringToColor(cqrini.ReadString('MonWsjtx','wkdany','clMaroon'));
    wkdnever := StringToColor(cqrini.ReadString('MonWsjtx','wkdnever','clGreen'));
+   extCqCall := StringToColor(cqrini.ReadString('MonWsjtx','extCqCall','$000055FF'));
    CleanWsjtxMemo;
 end;
 
@@ -432,6 +426,7 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
 
          if not ( (msgLoc='----') and isMyCall ) then //if mycall: line must have locator to print(I.E. Answer to my CQ)
          Begin                                        //and other combinations (CQs) will print, too
+
            if chkHistory.Checked and (msgTime <> LastWsjtLineTime) then CleanWsjtxMemo;
            LastWsjtLineTime := msgTime;
            RepArr[WsjtxMemo.lines.count] := Reply;  //corresponding reply string to array
@@ -489,7 +484,7 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
 
            msgRes := dmDXCC.id_country(msgCall,now());    //country prefix
            if CallCqDir then
-                 AddColorStr(' '+PadRight('*'+msgRes,7)+' ',clFuchsia)    //to warn directed call
+                 AddColorStr(' '+PadRight('*'+msgRes,7)+' ',extCqCall)    //to warn directed call
              else
                  AddColorStr(' '+PadRight(msgRes,7)+' ',clBlack);
 
@@ -515,6 +510,7 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
 
            if (myAlert <>'') and (timeToAlert<>msgTime) then
               Begin
+
                 timeToAlert := msgTime;
                 RunVA(myAlert); //play bash script
               end;

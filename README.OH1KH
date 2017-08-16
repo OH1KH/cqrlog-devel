@@ -303,3 +303,11 @@
       DXChat now uses same font as DXCluster.
       OnTop and Hide are remembered (saved) over program restart.
 								(2.1.0(106))
+18.08.2017
+
+    - Wsjtx CQ monitor: New color selections (more colors). Now also directed CQ (CQ DX, CQ NA ...) color
+      can be selected.
+    - DXChat: Completely new design. No buttons and settings. It is always there on top of DXspot list.
+      I think I like this! Maybe scaling relative to DXspot memo would be nice...
+      Done by "blind copy" of DXSpot memo (the way to use Tjakomeno without understanding a word of CZ :)
+								(2.1.0(107))

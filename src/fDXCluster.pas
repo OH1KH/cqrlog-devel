@@ -47,10 +47,10 @@ type
     MenuItem3 : TMenuItem;
     MenuItem4 : TMenuItem;
     MenuItem5 : TMenuItem;
-    MenuItem6: TMenuItem;
     mnuCallalert : TMenuItem;
     Panel1: TPanel;
     Panel2: TPanel;
+    pnlChat: TPanel;
     Panel4: TPanel;
     pgDXCluster: TPageControl;
     pnlTelnet: TPanel;
@@ -77,7 +77,6 @@ type
     procedure btnTelConnectClick(Sender: TObject);
     procedure btnWebConnectClick(Sender: TObject);
     procedure edtCommandKeyPress(Sender: TObject; var Key: char);
-    procedure MenuItem6Click(Sender: TObject);
     procedure mnuCallalertClick(Sender : TObject);
    procedure tmrAutoConnectTimer(Sender: TObject);
     procedure tmrSpotsTimer(Sender: TObject);
@@ -136,6 +135,7 @@ type
     procedure ConnectToTelnet;
     procedure SynWeb;
     procedure SynTelnet;
+    procedure SynChat;
     procedure lConnect(aSocket: TLSocket);
     procedure lDisconnect(aSocket: TLSocket);
     procedure lReceive(aSocket: TLSocket);
@@ -173,13 +173,17 @@ type
 var
   frmDXCluster : TfrmDXCluster;
   Spots        : TStringList;
+  Chats        : TStringList;
   WebSpots     : Tjakomemo;
   TelSpots     : Tjakomemo;
+  ChatSpots    : Tjakomemo;
   mindex       : Integer;
   ThInfo       : String;
   ThSpot       : String;
   ThColor      : Integer;
   ThBckColor   : Integer;
+  ThChat       : String;
+  ChBckColor   : Integer;
   TelThread    : TTelThread;
 
 implementation
@@ -187,7 +191,7 @@ implementation
 { TfrmDXCluster }
 
 uses dUtils, fDXClusterList, dData, dDXCluster, fMain, fTRXControl, fNewQSO, fBandMap,
-     uMyIni, fPreferences, fDXChat;
+     uMyIni, fPreferences;
 
 procedure TfrmDXCluster.ConnectToWeb;
 var
@@ -360,7 +364,7 @@ begin
     cqrini.WriteInteger('DXCluster','FontSize',dlgDXfnt.Font.Size);
     WebSpots.nastav_font(dlgDXfnt.Font);
     TelSpots.nastav_font(dlgDXfnt.Font);
-    frmDXChat.SetFont(nil);
+    ChatSpots.nastav_font(dlgDXfnt.Font)
   end
 end;
 
@@ -398,8 +402,20 @@ begin
   TelSpots.Align       := alClient;
   TelSpots.nastav_jazyk(1);
 
+  ChBckColor  := $00D3F3F8;
+  pnlChat.Color := ChBckColor;
+  ChatSpots             := Tjakomemo.Create(pnlChat);
+  ChatSpots.parent      := pnlChat;
+  ChatSpots.autoscroll  := True;
+  //ChatSpots.oncdblclick := @ChatDbClick;
+  ChatSpots.Align       := alClient;
+  ChatSpots.nastav_jazyk(1);
+
   Spots := TStringList.Create;
   Spots.Clear;
+  Chats := TStringList.Create;
+  Chats.Clear;
+
   Running := False;
   mindex  := 1;
 
@@ -505,7 +521,8 @@ begin
     f.Name    := cqrini.ReadString('DXCluster','Font','DejaVu Sans Mono');
     f.Size    := cqrini.ReadInteger('DXCluster','FontSize',12);
     WebSpots.nastav_font(f);
-    TelSpots.nastav_font(f)
+    TelSpots.nastav_font(f) ;
+    ChatSpots.nastav_font(f)
   finally
     f.Free
   end;
@@ -524,14 +541,7 @@ begin
   ChangeCallAlertCaption;
 
   if cqrini.ReadBool('DXCluster', 'ConAfterRun', False) then
-    tmrAutoConnect.Enabled := True ;
-
-  //set menu text based on chat form hided or visible
-  frmDXChat.chHide := cqrini.ReadBool('DXChat', 'Hide', false);
-  if frmDXChat.chHide = true then
-    MenuItem6.Caption := 'Show chat'
-  else
-    MenuItem6.Caption := 'Hide chat';
+    tmrAutoConnect.Enabled := True
 end;
 
 procedure TfrmDXCluster.btnClearClick(Sender: TObject);
@@ -623,23 +633,6 @@ begin
   end;
 end;
 
-procedure TfrmDXCluster.MenuItem6Click(Sender: TObject);
-begin
-  if frmDXChat.chHide = true then
-   Begin
-    frmDXChat.chHide := false;
-    frmDXChat.Show;
-    MenuItem6.Caption := 'Hide chat';
-   end
-  else
-   Begin
-    frmDXChat.chHide:= true;
-    frmDXChat.Hide;
-    MenuItem6.Caption := 'Show chat';
-   end;
-   cqrini.WriteBool('DXChat', 'Hide', frmDXChat.chHide);
-end;
-
 procedure TfrmDXCluster.mnuCallalertClick(Sender : TObject);
 begin
   mnuCallalert.Checked := not mnuCallalert.Checked;
@@ -680,7 +673,7 @@ const
   LF = #10;
 var
   sStart, sStop: Integer;
-  tmp : String;
+  tmp, Chline: String;
   itmp : Integer;
   buffer : String;
   f : Double;
@@ -696,16 +689,40 @@ begin
     tmp  := Copy(Buffer, sStart, sStop - sStart);
     tmp  := trim(tmp);
     if dmData.DebugLevel >=1 then Writeln(tmp);
-     if Pos(UpperCase(cqrini.ReadString('Station', 'Call', '')) + ' DE',
-      UpperCase(tmp)) > 0 then
-      frmDXChat.AddDXChatMemo(tmp);
+
+    if Pos(UpperCase(cqrini.ReadString('Station', 'Call', '')) + ' DE', UpperCase(tmp)) > 0 then
+      Begin
+        ChLine := tmp;
+        if dmData.DebugLevel>=1 then Writeln('pos: ', pos('>',Chline) ,' len:', length(Chline));
+        if pos('>',Chline) < length(Chline) then //if not dxcluster prompt
+         Begin //remove "mycall de" add local timestamp from PC
+           itmp := length(cqrini.ReadString('Station', 'Call', ''))+4; //4 = ' DE '
+           ChLine := FormatDateTime('hh:nn',Now)+'_'+copy(Chline,itmp+1,length(Chline)-itmp);
+           if dmData.DebugLevel>=1 then Writeln('Chat :',ChLine);
+           EnterCriticalsection(frmDXCluster.csTelnet);
+           if dmData.DebugLevel>=1 then Writeln('Enter critical section On Receive Chat');
+           try
+            Chats.Add(Chline);
+           finally
+            LeaveCriticalsection(csTelnet);
+            if dmData.DebugLevel>=1 then Writeln('Leave critical section On Receive Chat')
+           end
+         end
+        else
+        Begin
+          Chline := '';
+          if dmData.DebugLevel>=1 then Writeln('Chat : line is cluster prompt!');
+        end;
+      end;
+
     itmp := Pos('DX DE',UpperCase(tmp));
     if (itmp > 0) or TryStrToFloat(copy(tmp,1,Pos(' ',tmp)-1),f)  then
     begin
       EnterCriticalsection(frmDXCluster.csTelnet);
       if dmData.DebugLevel>=1 then Writeln('Enter critical section On Receive');
       try
-        Spots.Add(tmp)
+        Spots.Add(tmp);
+        if Chline <> '' then Chats.Add(Chline);
       finally
         LeaveCriticalsection(csTelnet);
         if dmData.DebugLevel>=1 then Writeln('Leave critical section On Receive')
@@ -1232,6 +1249,24 @@ begin
         if dmData.DebugLevel>=1 then Writeln('TelThread.Execute - after Synchronize(@frmDXCluster.SynTelnet)')
       end
     end;
+
+    while Chats.Count > 0 do
+    begin
+      if dmData.DebugLevel>=2 then Writeln('TelThread.Execute - enter critical section Chat ');
+      EnterCriticalsection(frmDXCluster.csTelnet);
+      try
+        ThChat := Trim(Chats.Strings[0]);
+        Chats.Delete(0)
+      finally
+        LeaveCriticalsection(frmDXCluster.csTelnet);
+        if dmData.DebugLevel>=2 then Writeln('TelThread.Execute - leave critical section Chat ');
+      end;
+      if dmData.DebugLevel >= 2 then Writeln('Chat: ',ThChat);
+      if dmData.DebugLevel>=1 then Writeln('TelThread.Execute - before Synchronize(@frmDXCluster.SynChat)');
+      Synchronize(@frmDXCluster.SynChat);
+      if dmData.DebugLevel>=1 then Writeln('TelThread.Execute - after Synchronize(@frmDXCluster.SynChat)')
+    end;
+
     sleep(500)
   end
 end;
@@ -1428,6 +1463,19 @@ begin
   //if dmData.DebugLevel>=1 then Writeln('TfrmDXCluster.SynTelnet - before PridejVetu ');
   //if dmData.DebugLevel>=1 then Writeln('TfrmDXCluster.SynTelnet - after zakaz_kresleni');
   //Sleep(200)
+end;
+procedure TfrmDXCluster.SynChat;
+begin
+
+  if ThChat = '' then
+    exit;
+
+  if ConTelnet then
+  begin
+    ChatSpots.zakaz_kresleni(true);
+    ChatSpots.pridej_vetu(ThChat,clBlack,ChBckColor,0);
+    ChatSpots.zakaz_kresleni(false)
+  end;
 end;
 
 procedure TfrmDXCluster.ReloadSettings;
