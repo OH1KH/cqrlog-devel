@@ -303,7 +303,7 @@
       DXChat now uses same font as DXCluster.
       OnTop and Hide are remembered (saved) over program restart.
 								(2.1.0(106))
-18.08.2017
+16.08.2017
 
     - Wsjtx CQ monitor: New color selections (more colors). Now also directed CQ (CQ DX, CQ NA ...) color
       can be selected.
@@ -311,3 +311,10 @@
       I think I like this! Maybe scaling relative to DXspot memo would be nice...
       Done by "blind copy" of DXSpot memo (the way to use Tjakomeno without understanding a word of CZ :)
 								(2.1.0(107))
+17.08.2017
+    - UDP wsjtxtimer: Idle polling LoSpeed is now 1500ms all other modes except FT8 and MSK144 where 
+      it is 500ms. When UDP packet is received turns to HiSpeed polling 20ms on all modes.
+      When no more pakets returns back to LoSpeed.
+      CQ-Monitor: Rewritten SQL routines. Dropped 7 queries from 9 ! Added CriticalSection.
+      Now critical section is used every time richmemo is accessed.
+								(2.1.0(108))

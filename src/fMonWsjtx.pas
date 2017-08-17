@@ -43,6 +43,7 @@ type
     procedure WsjtxMemoChange(Sender: TObject);
     procedure WsjtxMemoDblClick(Sender: TObject);
   private
+    csMONI           : TRTLCriticalSection;
     procedure FocusLastLine;
     procedure AddColorStr(s: string; const col: TColor = clBlack);
     procedure RunVA(Afile: String);
@@ -114,10 +115,9 @@ begin
      with WsjtxMemo do
      begin
        //if dmData.DebugLevel>=1 then Writeln('LineCount-start:',Lines.Count,' String:',s);
-
        if s <> '' then
        begin
-
+         EnterCriticalsection(csMONI);
          SelStart  := Length(Text);
          SelText   := s;
          SelLength := Length(s);
@@ -134,6 +134,7 @@ begin
          // deselect inserted string and position cursor at the end of the text
          SelStart  := Length(Text);
          SelText   := '';
+         LeaveCriticalsection(csMONI);
        end;
 
        FocusLastLine;
@@ -145,18 +146,22 @@ procedure TfrmMonWsjtx.CleanWsjtxMemo;
 
 var l : integer;
 Begin
+     EnterCriticalsection(csMONI);
      WsjtxMemo.lines.Clear;
      for l:=0 to Maxlines do RepArr[l]:='';
+     LeaveCriticalsection(csMONI);
 end;
 
 procedure TfrmMonWsjtx.FocusLastLine;
 begin
    with WsjtxMemo do
      begin
+      EnterCriticalsection(csMONI);
       SelStart := GetTextLen;
       SelLength := 0;
       ScrollBy(0, Lines.Count);
       Refresh;
+      LeaveCriticalsection(csMONI);
      end;
 end;
 
@@ -167,10 +172,12 @@ begin
   if WsjtxMemo.lines.count >= MaxLines then
          Begin
           repeat
+            EnterCriticalsection(csMONI);
             WsjtxMemo.lines.delete(0);
             for i:=0 to MaxLines-2 do
                 RepArr[i] := RepArr[i+1];
           until WsjtxMemo.lines.count <= Maxlines;
+          LeaveCriticalsection(csMONI);
           FocusLastLine;
          end;
 end;
@@ -432,15 +439,11 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
            RepArr[WsjtxMemo.lines.count] := Reply;  //corresponding reply string to array
            //start printing
            AddColorStr(msgTime,clDefault); //time
-           if mode='JT65' then
-               AddColorStr('  '+msgMode+' ',clOlive) //mode
-            else
-               AddColorStr('  '+msgMode+' ',clPurple);
+           AddColorStr('  '+msgMode+' ',clDefault); //mode
 
            if isMyCall then AddColorStr('=',wkdnever) else AddColorStr(' ',wkdnever);  //answer to me
 
-           i:= frmWorkedGrids.WkdCall(msgCall,band,mode);
-                  case i of
+                  case frmWorkedGrids.WkdCall(msgCall,band,mode) of
                    1  :  AddColorStr(PadRight(LowerCase(msgCall),9)+' ',wkdhere);
                    2  :  AddColorStr(PadRight(UpperCase(msgCall),9)+' ',wkdband);
                    3  :  AddColorStr(PadRight(UpperCase(msgCall),9)+' ',wkdany);
@@ -452,15 +455,13 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
                   AddColorStr(msgLoc,clDefault) //no loc
               else
                Begin
-                  i:= frmWorkedGrids.WkdGrid(msgLoc,band,mode);
                   //returns (0=not wkd, 1=main grid wkd, 2=wkd ) this band and mode
                   //        (3=main grid wkd, 4=wkd ) this band but NOT this mode
                   //        (5=main grid wkd, 6=wkd ) any other band or mode
-                  case i of
+                  case  frmWorkedGrids.WkdGrid(msgLoc,band,mode) of
                    0  : Begin
-                             AddColorStr(UpperCase(msgLoc),wkdnever); //not wkd
-                             if chkLocAlert.Checked and (timeToAlert<>msgTime) then myAlert := 'loc';    //locator alert
-
+                         AddColorStr(UpperCase(msgLoc),wkdnever); //not wkd
+                         if chkLocAlert.Checked and (timeToAlert<>msgTime) then myAlert := 'loc';    //locator alert
                         end;
                    1  : Begin
                          AddColorStr(lowerCase(copy(msgLoc,1,2)),wkdhere); //maingrid wkd
@@ -477,7 +478,6 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
                          AddColorStr(copy(msgLoc,3,2),wkdnever);
                         end;
                    6  : AddColorStr(UpperCase(msgLoc),wkdany); //grid wkd any
-
                    end;
                end;
 
@@ -510,7 +510,6 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
 
            if (myAlert <>'') and (timeToAlert<>msgTime) then
               Begin
-
                 timeToAlert := msgTime;
                 RunVA(myAlert); //play bash script
               end;

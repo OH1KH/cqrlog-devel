@@ -25,8 +25,6 @@ uses
 const
   cRefCall = 'Ref. call (to change press CTRL+R)   ';
   cMyLoc   = 'My grid (to change press CTRL+L) ';
-  wHiSpeed = 50;       // udp polling speeds (tmrWsjtx)
-  wLoSpeed = 1000;
 
 type
   TRemoteModeType = (rmtFldigi, rmtWsjt);
@@ -588,6 +586,8 @@ type
     WsjtxSock             : TUDPBlockSocket;
     WsjtxMode             : String;          //Moved from private
     WsjtxBand             : String;
+    wHiSpeed              : integer;      // when packets received :udp polling speeds (tmrWsjtx)
+    wLoSpeed              : integer;     // when running idle
 
     old_call              : String;               //Moved from private
 
@@ -2148,9 +2148,11 @@ begin
           if ParStr<>WsjtxMode then
           begin
             new :=true;
-            WsjtxMode := ParStr
+            WsjtxMode := ParStr;
+            if (WsjtxMode = 'FT8') or (WsjtxMode = 'MSK144') then
+                wLoSpeed  := 500  else  wLoSpeed  := 1500;
           end;
-          if dmData.DebugLevel>=1 then Writeln('Mode:', WsjtxMode);
+          if dmData.DebugLevel>=1 then Writeln('Mode:', WsjtxMode, '  wLoSpeed:',wLoSpeed );
            //----------------------------------------------------
           call := trim(StFBuf(index)); //to be sure...
           if dmData.DebugLevel>=1 then Writeln('Call :', call);
@@ -6130,6 +6132,8 @@ begin
 
                   WsjtxMode := '';    //will be set by type1 'status'-message
                   WsjtxBand := '';
+                  wHiSpeed  := 20;    //mS
+                  wLoSpeed  := 1500;  //will be shorter when FT8 or MSK144 mode change in decode/status
 
                   //Timer fetches only 1 UDP packet at time.
                   tmrWsjtx.Interval := wLoSpeed;      //  timer has now dynamic value. Most of time there is nothing to do
