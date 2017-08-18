@@ -1,38 +1,39 @@
 object frmMonWsjtx: TfrmMonWsjtx
-  Left = 561
-  Height = 327
-  Top = 26
-  Width = 454
+  Left = 419
+  Height = 354
+  Top = 77
+  Width = 523
   Caption = 'Wsjt-x CQ-monitor'
-  ClientHeight = 327
-  ClientWidth = 454
+  ClientHeight = 354
+  ClientWidth = 523
   OnClose = FormClose
   OnCreate = FormCreate
   OnHide = FormHide
   OnShow = FormShow
   LCLVersion = '1.6.4.0'
   object lblBand: TLabel
-    AnchorSideLeft.Control = WsjtxMemo
-    AnchorSideBottom.Control = WsjtxMemo
-    Left = 61
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 50
     Height = 15
-    Top = 18
+    Top = 10
     Width = 33
-    Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 50
+    BorderSpacing.Top = 10
     BorderSpacing.Bottom = 5
     Caption = 'Band'
     ParentColor = False
   end
   object lblMode: TLabel
-    AnchorSideRight.Control = WsjtxMemo
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = WsjtxMemo
-    Left = 358
+    Left = 438
     Height = 15
-    Top = 18
+    Top = 10
     Width = 35
-    Anchors = [akRight, akBottom]
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 10
     BorderSpacing.Right = 50
     BorderSpacing.Bottom = 5
     Caption = 'Mode'
@@ -40,19 +41,19 @@ object frmMonWsjtx: TfrmMonWsjtx
   end
   object WsjtxMemo: TRichMemo
     AnchorSideLeft.Control = Owner
-    AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
-    AnchorSideTop.Side = asrCenter
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 11
-    Height = 250
-    Top = 38
-    Width = 432
+    Left = 2
+    Height = 284
+    Top = 30
+    Width = 519
+    Align = alClient
+    BorderSpacing.Left = 2
+    BorderSpacing.Top = 30
+    BorderSpacing.Right = 2
+    BorderSpacing.Bottom = 40
     Font.Height = -13
     Font.Name = 'Monospace'
     HideSelection = False
-    OnChange = WsjtxMemoChange
     OnDblClick = WsjtxMemoDblClick
     ParentFont = False
     PopupMenu = popColors
@@ -62,91 +63,103 @@ object frmMonWsjtx: TfrmMonWsjtx
     ZoomFactor = 1
   end
   object chkHistory: TCheckBox
-    AnchorSideLeft.Control = WsjtxMemo
+    AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = WsjtxMemo
-    Left = 182
+    Left = 216
     Height = 23
-    Top = 14
+    Top = 6
     Width = 91
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Bottom = 1
+    BorderSpacing.Top = 6
     Caption = 'no history'
     TabOrder = 1
   end
   object chkmyAlert: TCheckBox
-    AnchorSideLeft.Control = WsjtxMemo
-    AnchorSideTop.Control = WsjtxMemo
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Side = asrBottom
-    Left = 11
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 5
     Height = 23
-    Top = 292
+    Top = 320
     Width = 76
-    BorderSpacing.Top = 4
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 5
+    BorderSpacing.Bottom = 11
     Caption = 'MyAlert'
     TabOrder = 2
   end
   object chkLocAlert: TCheckBox
     AnchorSideTop.Control = WsjtxMemo
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = WsjtxMemo
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 364
+    AnchorSideBottom.Control = chkmyAlert
+    AnchorSideBottom.Side = asrBottom
+    Left = 439
     Height = 23
-    Top = 292
+    Top = 320
     Width = 79
-    Anchors = [akTop, akRight]
+    Anchors = [akRight, akBottom]
     BorderSpacing.Top = 4
+    BorderSpacing.Right = 5
     Caption = 'LocAlert'
     TabOrder = 3
   end
   object lblAlert1: TLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = WsjtxMemo
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = EditAlert
-    Left = 160
+    AnchorSideBottom.Control = EditAlert
+    AnchorSideBottom.Side = asrCenter
+    Left = 191
     Height = 15
-    Top = 296
+    Top = 323
     Width = 27
-    Anchors = [akTop, akRight]
+    Anchors = [akRight, akBottom]
     BorderSpacing.Top = 8
+    BorderSpacing.Right = 3
     Caption = 'Text'
     ParentColor = False
   end
   object lblAlert2: TLabel
     AnchorSideLeft.Control = EditAlert
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = WsjtxMemo
     AnchorSideTop.Side = asrBottom
-    Left = 267
+    AnchorSideBottom.Control = EditAlert
+    AnchorSideBottom.Side = asrCenter
+    Left = 304
     Height = 15
-    Top = 296
+    Top = 323
     Width = 31
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 3
     BorderSpacing.Top = 8
     Caption = 'Alert'
     ParentColor = False
   end
   object EditAlert: TEdit
-    AnchorSideLeft.Control = WsjtxMemo
+    AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
-    AnchorSideTop.Control = WsjtxMemo
     AnchorSideTop.Side = asrBottom
-    Left = 187
+    AnchorSideBottom.Control = chkmyAlert
+    AnchorSideBottom.Side = asrCenter
+    Left = 221
     Height = 32
-    Top = 290
+    Top = 315
     Width = 80
-    BorderSpacing.Top = 2
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 6
     TabOrder = 4
   end
   object chkmyAll: TCheckBox
     AnchorSideLeft.Control = chkmyAlert
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = chkmyAlert
-    Left = 87
+    Left = 81
     Height = 23
-    Top = 292
+    Top = 320
     Width = 43
     Caption = 'All'
     TabOrder = 5
@@ -176,6 +189,10 @@ object frmMonWsjtx: TfrmMonWsjtx
         Caption = 'CQ ext'
         OnClick = cmCqDxClick
       end
+    end
+    object cmFont: TMenuItem
+      Caption = 'Set Font'
+      OnClick = cmFontClick
     end
   end
   object popColorDlg: TColorDialog
@@ -207,5 +224,12 @@ object frmMonWsjtx: TfrmMonWsjtx
     )
     left = 296
     top = 133
+  end
+  object popFontDlg: TFontDialog
+    Title = 'Choose (fixed) font'
+    MinFontSize = 0
+    MaxFontSize = 0
+    left = 387
+    top = 106
   end
 end

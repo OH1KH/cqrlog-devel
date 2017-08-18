@@ -181,142 +181,104 @@ begin
 end;
 
 function TfrmWorkedGrids.WkdGrid(loc, band, mode: String): integer;
-//returns (0=not wkd, 1=main grid wkd, 2=wkd ) this band and mode
-//        (3=main grid wkd, 4=wkd ) this band but NOT this mode
-//        (5=main grid wkd, 6=wkd ) any other band or mode
+
+//returns 0=not wkd
+//        1=full grid this band and mode
+//        2=full grid this band but NOT this mode
+//        3=full grid any other band/mode
+//        4=main grid this band and mode
+//        5=main grid this band but NOT this mode
+//        6=main grid any other band/mode
+
 var
-   fullany,
-   fullband,
-   fullhere,
-   mainany,
-   mainband,
-   mainhere : boolean;
+  i : integer;
 
 begin
+  if dmData.DebugLevel >= 1 then Writeln('Start WkdGrid');
   WkdGrid := 0;
   dmData.Q.Close;
   if dmData.trQ.Active then dmData.trQ.Rollback;
 
   try
-     //worked main grid any band, any mode
-      dmData.Q.SQL.Text := 'select loc,band,mode from ' + LogTable +
-                          ' where loc like ' + chr(39) + copy(loc, 1, 2) + '%' + chr(39);
-      if dmData.DebugLevel >= 1 then Write('loc query: ');
-      dmData.Q.Open;
-      if dmData.Q.RecordCount = 0 then
-          // fast out
-          dmData.Q.Close
-       else
-         Begin
-           //what band  and mode?
-           fullany := false;
-           fullband  := false;
-           fullhere := false;
-           mainany := false;
-           mainband := false;
-           mainhere := false;
-           while not dmData.Q.Eof do
+    dmData.Q.SQL.Text := 'select count(loc) as '+chr(39)+'sum'+chr(39)+' from '+LogTable+
+                          ' where loc like '+chr(39)+copy(loc, 1, 4)+ '%'+chr(39)+
+                          ' and band='+chr(39)+band+chr(39)+' and mode='+chr(39)+mode+chr(39)+
+                          'union all '+
+                          'select count(loc) from '+LogTable+
+                          ' where loc like '+chr(39)+copy(loc, 1, 4)+ '%'+chr(39)+
+                          ' and band='+chr(39)+band+chr(39)+
+                          'union all '+
+                          'select count(loc) from '+LogTable+
+                          ' where loc like '+chr(39)+copy(loc, 1, 4)+ '%'+chr(39)+
+                          'union all '+
+                          'select count(loc) from '+LogTable+
+                          ' where loc like '+chr(39)+copy(loc, 1, 2)+ '%'+chr(39)+
+                          ' and band='+chr(39)+band+chr(39)+' and mode='+chr(39)+mode+chr(39)+
+                          'union all '+
+                          'select count(loc) from '+LogTable+
+                          ' where loc like '+chr(39)+copy(loc, 1, 2)+ '%'+chr(39)+
+                          ' and band='+chr(39)+band+chr(39)+
+                          'union all '+
+                          'select count(loc) from '+LogTable+
+                          ' where loc like '+chr(39)+copy(loc, 1, 2)+ '%'+chr(39);
+
+    if dmData.DebugLevel >= 1 then Write('loc query: ');
+    dmData.Q.Open;
+    i := 1;
+    while not dmData.Q.Eof do
               begin
-               if dmData.DebugLevel >= 1 then writeln(dmData.Q.FieldByName('loc').AsString+' '+
-                                                 dmData.Q.FieldByName('band').AsString+' '+
-                                                 dmData.Q.FieldByName('mode').AsString);
-               //full locator here or other band
-               if copy(dmData.Q.FieldByName('loc').AsString,1,4) = loc then  fullany := true;
-
-               if (copy(dmData.Q.FieldByName('loc').AsString,1,4) = loc )
-                and ( dmData.Q.FieldByName('band').AsString = band ) then fullband  := true;
-
-               if (copy(dmData.Q.FieldByName('loc').AsString,1,4) = loc)
-                and (dmData.Q.FieldByName('band').AsString = band)
-                and (dmData.Q.FieldByName('mode').AsString = mode) then fullhere := true;
-
-               //main locator here or other band
-               if copy(dmData.Q.FieldByName('loc').AsString,1,2) = copy(loc, 1, 2) then  mainany := true;
-
-               if (copy(dmData.Q.FieldByName('loc').AsString,1,2) = copy(loc, 1, 2))
-                and (dmData.Q.FieldByName('band').AsString = band ) then mainband  := true;
-
-               if (copy(dmData.Q.FieldByName('loc').AsString,1,2) = copy(loc, 1, 2))
-                and (dmData.Q.FieldByName('band').AsString = band)
-                and (dmData.Q.FieldByName('mode').AsString = mode) then mainhere := true;
-
+               if dmData.DebugLevel >= 1 then writeln(dmData.Q.FieldByName('sum').AsInteger);
+               if (dmData.Q.FieldByName('sum').AsInteger > 0 ) and (WkdGrid = 0) then WkdGrid := i;
+               inc(i);
                dmData.Q.Next;
               end;
-           dmData.Q.Close;
-          //returns (0=not wkd, 1=main grid wkd, 2=wkd ) this band and mode
-          //        (3=main grid wkd, 4=wkd ) this band but NOT this mode
-          //        (5=main grid wkd, 6=wkd ) any other band or mode
-
-          if fullhere then WkdGrid := 2
-            else if fullband then WkdGrid := 4
-             else if fullany then WkdGrid := 6
-              else if mainhere then WkdGrid := 1
-                else if mainband then WkdGrid := 3
-                 else if mainany then WkdGrid := 5;
-         end;
+     dmData.Q.Close;
   finally
     dmData.trQ.Rollback;
   end;
-  if dmData.DebugLevel >= 1 then  Writeln('WkdGrid is:', WkdGrid);
+   if dmData.DebugLevel >= 1 then  Writeln('WkdGrid is:', WkdGrid);
 end;
 
 function TfrmWorkedGrids.WkdCall(call, band, mode: string): integer;
-var
-   wany,
-   wband,
-   where : boolean;
-begin
+//returns 0=not wkd
+//        1= this band and mode
+//        2=this band but NOT this mode
+//        3=any other band or mode
 
+var
+  i : integer;
+begin
+  if dmData.DebugLevel >= 1 then Writeln('Start WkdCall');
   WkdCall := 0;
   dmData.Q.Close;
   if dmData.trQ.Active then dmData.trQ.Rollback;
-
   try
-     dmData.Q.SQL.Text := 'select callsign,band,mode from ' + LogTable +
-                           ' where callsign=' + chr(39) + call + chr(39);
-      if dmData.DebugLevel >= 1 then Write('call query: ');
-      dmData.Q.Open;
-      if dmData.Q.RecordCount = 0 then
-          // fast out
-          dmData.Q.Close
-       else
-         Begin
-           //what band  and mode?
-           wany := false;
-           wband  := false;
-           where := false;
-           while not dmData.Q.Eof do
+     dmData.Q.SQL.Text := 'select count(callsign) as '+chr(39)+'sum'+chr(39)+' from '+LogTable+
+                          ' where callsign='+chr(39)+call+chr(39)+
+                          ' and band='+chr(39)+band+chr(39)+' and mode='+chr(39)+mode+chr(39)+
+                          'union all '+
+                          'select count(callsign) from '+LogTable+
+                          ' where callsign='+chr(39)+call+chr(39)+
+                          ' and band='+chr(39)+band+chr(39)+
+                          'union all '+
+                          'select count(callsign) from '+LogTable+
+                          ' where callsign='+chr(39)+call+chr(39);
+
+    if dmData.DebugLevel >= 1 then Write('call query: ');
+    dmData.Q.Open;
+    i := 1;
+    while not dmData.Q.Eof do
               begin
-               if dmData.DebugLevel >= 1 then writeln(dmData.Q.FieldByName('callsign').AsString+' '+
-                                                 dmData.Q.FieldByName('band').AsString+' '+
-                                                 dmData.Q.FieldByName('mode').AsString);
-
-               // here or other band
-               if dmData.Q.FieldByName('callsign').AsString = call then  wany := true;
-
-               if (dmData.Q.FieldByName('callsign').AsString = call)
-                and (dmData.Q.FieldByName('band').AsString = band ) then wband  := true;
-
-               if (dmData.Q.FieldByName('callsign').AsString = call)
-                and (dmData.Q.FieldByName('band').AsString = band)
-                and (dmData.Q.FieldByName('mode').AsString = mode) then where := true;
-
+               if dmData.DebugLevel >= 1 then writeln(dmData.Q.FieldByName('sum').AsInteger);
+               if (dmData.Q.FieldByName('sum').AsInteger > 0 ) and (WkdCall = 0) then WkdCall := i;
+               inc(i);
                dmData.Q.Next;
               end;
-           dmData.Q.Close;
-          //returns 0=not wkd, 1= this band and mode
-          //        2=this band but NOT this mode
-          //        3=any other band or mode
-              if where then WkdCall := 1
-                else if wband then WkdCall := 2
-                 else if wany then WkdCall := 3;
-         end;
+    dmData.Q.Close;
     finally
       dmData.trQ.Rollback;
     end;
-
-  if dmData.DebugLevel >= 1 then
-    Writeln('WkdCall is:', WkdCall);
+  if dmData.DebugLevel >= 1 then  Writeln('WkdCall is:', WkdCall);
 end;
 
 procedure TfrmWorkedGrids.MarkGrid(LocGrid: string; Cfmd: boolean; MCanvas: TCanvas;

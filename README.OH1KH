@@ -318,3 +318,15 @@
       CQ-Monitor: Rewritten SQL routines. Dropped 7 queries from 9 ! Added CriticalSection.
       Now critical section is used every time richmemo is accessed.
 								(2.1.0(108))
+18.08.2017
+   - crash: When "no history" unchecked anf Cq-monitor get full scrolling and focusing last line kills
+     program if they have enter/leave critical sections used in code. Without works ok.
+     Left them away as useless anyway and changed scrolling so that it is checked after every newline added.
+     Before it was "on memo change" action that , I think, triggered too often (every single item addition).
+   - NewQSO wsjxdecode: Added "Wsjtxsock.WaitingData" before RcvPacket to buffer. Should now go to
+     RcvPacket only if there is new datagram. Increased buffer size from 100 to 1000 (just in case).
+   - Cq-monitor: can now streched to needed shape and size. Font (name and size, NOT style) can be changed
+     from same popup menu as call/loc colors (right click monitor).
+   - Again new SQL routines for Cq-monitor. Moved more work for SQLengine :)
+								(2.1.0(109))
+

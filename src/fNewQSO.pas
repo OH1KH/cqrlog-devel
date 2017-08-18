@@ -2070,7 +2070,9 @@ var
 
 
 begin
-  Buf := Wsjtxsock.RecvPacket(100);
+  if Wsjtxsock.WaitingData > 0 then
+  Begin
+  Buf := Wsjtxsock.RecvPacket(1000);
   if WsjtxSock.lasterror=0 then
   begin
      if ( tmrWsjtx.Interval = wLoSpeed ) then
@@ -2424,6 +2426,7 @@ begin
                    tmrWsjtx.Enabled  := True;  // causes exception if wsjt-x is closed but cqrlog still running.
                                                // Now end of decode and wsjt-x still running: Allow timer run again.
   end  //if WsjtxSock.lasterror=0 then
+  end //waiting data
   else
    Begin
       if ( tmrWsjtx.Interval = wHiSpeed ) then  //we did not have UDP packets. Is HiSpeed still on?
