@@ -226,7 +226,7 @@ object frmMonWsjtx: TfrmMonWsjtx
     top = 133
   end
   object popFontDlg: TFontDialog
-    Title = 'Choose (fixed) font'
+    Title = 'Choose font'
     MinFontSize = 0
     MaxFontSize = 0
     left = 387

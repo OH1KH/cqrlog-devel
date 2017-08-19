@@ -115,20 +115,13 @@ begin
 
      with WsjtxMemo do
      begin
-       //if dmData.DebugLevel>=1 then Writeln('LineCount-start:',Lines.Count,' String:',s);
        if s <> '' then
        begin
          SelStart  := Length(Text);
          SelText   := s;
          SelLength := Length(s);
          if col = wkdnever then
-            SetRangeParams (SelStart, SelLength,
-               [tmm_Styles, tmm_Color], // changing Color and Styles only
-               '',  // this is font name - it's not used, thus we can leave it empty
-                0,  // this is font size - it's font size, we can leave it empty
-                col, // making all the text in the selected region green color
-               [fsBold],  // adding Bold Style
-               [] )
+            SetRangeParams (SelStart, SelLength, [tmm_Styles, tmm_Color], '', 0,  col, [fsBold],[] )
           else
             SetRangeColor(SelStart, SelLength, col);
          // deselect inserted string and position cursor at the end of the text
@@ -137,7 +130,6 @@ begin
        end;
 
        FocusLastLine;
-       //if dmData.DebugLevel>=1 then Writeln('LineCount-end :',Lines.Count,' String:',s);
 
      end;
    end;
@@ -160,7 +152,7 @@ begin
      end;
 end;
 
-procedure TfrmMonWsjtx.WsjtxMemoScroll;    //this should done after CRLF inserted not by change of meno.FIX
+procedure TfrmMonWsjtx.WsjtxMemoScroll;
 var i: integer;
 begin
   //scroll buffer if needed
@@ -249,7 +241,7 @@ procedure TfrmMonWsjtx.cmFontClick(Sender: TObject);
 begin
     popFontDlg.Font.Name    := cqrini.ReadString('MonWsjtx','Font','Monospace');
     popFontDlg.Font.Size    := cqrini.ReadInteger('MonWsjtx','FontSize',10);
-
+    popFontDlg.Title := 'Use monospace fonts, style is ignored';
     if popFontDlg.Execute then
     begin
       cqrini.WriteString('MonWsjtx','Font',popFontDlg.Font.Name);

@@ -4089,6 +4089,8 @@ begin
         dmUtils.LoadFontSettings(frmRbnMonitor);
       if frmPropDK0WCY.Showing then
         dmUtils.LoadFontSettings(frmPropDK0WCY);
+      if frmMonWsjtx.Showing then
+        dmUtils.LoadFontSettings(frmMonWsjtx);
 
       dmData.LoadQSODateColorSettings;
     end;

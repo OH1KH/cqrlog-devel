@@ -329,4 +329,9 @@
      from same popup menu as call/loc colors (right click monitor).
    - Again new SQL routines for Cq-monitor. Moved more work for SQLengine :)
 								(2.1.0(109))
+19.08.2017
+   - DXCluster chat: now sizeable. Click DXCluster/preferences-button and select "Chat size" from
+     popUp menu. Bottom of DXCluster "command:" is changed to slider that sizes chat window.
+     Move slider with mouse-left. Lifing up mouse left button saves current value and restores "Command:".
+								(2.1.0(110))
 

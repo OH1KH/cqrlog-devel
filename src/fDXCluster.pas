@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, inifiles,
   ExtCtrls, ComCtrls, StdCtrls, Buttons, httpsend, jakozememo,
-  db, lcltype, Menus, ActnList, dynlibs, lNetComponents, lnet;
+  db, lcltype, Menus, ActnList, Spin, dynlibs, lNetComponents, lnet;
 
 type
   { TfrmDXCluster }
@@ -28,6 +28,7 @@ type
     acFont : TAction;
     acCallAlert : TAction;
     acProgPref : TAction;
+    acChatSize: TAction;
     btnClear: TButton;
     btnFont: TButton;
     btnHelp: TButton;
@@ -47,6 +48,7 @@ type
     MenuItem3 : TMenuItem;
     MenuItem4 : TMenuItem;
     MenuItem5 : TMenuItem;
+    MenuItem6: TMenuItem;
     mnuCallalert : TMenuItem;
     Panel1: TPanel;
     Panel2: TPanel;
@@ -60,7 +62,9 @@ type
     tabWeb: TTabSheet;
     tmrAutoConnect: TTimer;
     tmrSpots: TTimer;
+    trChatSize: TTrackBar;
     procedure acCallAlertExecute(Sender : TObject);
+    procedure acChatSizeExecute(Sender: TObject);
     procedure acFontExecute(Sender : TObject);
     procedure acProgPrefExecute(Sender : TObject);
     procedure Button2Click(Sender: TObject);
@@ -80,6 +84,8 @@ type
     procedure mnuCallalertClick(Sender : TObject);
    procedure tmrAutoConnectTimer(Sender: TObject);
     procedure tmrSpotsTimer(Sender: TObject);
+    procedure trChatSizeChange(Sender: TObject);
+    procedure trChatSizeClick(Sender: TObject);
   private
     telDesc    : String;
     telAddr    : String;
@@ -373,6 +379,16 @@ begin
   frmPreferences.btnAlertCallsignsClick(nil)
 end;
 
+procedure TfrmDXCluster.acChatSizeExecute(Sender: TObject);
+begin
+       trChatSize.Max :=   pnlTelnet.Height -20;
+       trChatSize.Position := pnlChat.Height;
+       trChatSize.Visible :=true;
+       edtCommand.Visible := false;
+       label1.Caption := 'ChatSize';
+       if dmData.DebugLevel >=1 then Writeln('Chat sizing AC');
+end;
+
 procedure TfrmDXCluster.FormCreate(Sender: TObject);
 begin
   InitCriticalSection(csTelnet);
@@ -407,7 +423,6 @@ begin
   ChatSpots             := Tjakomemo.Create(pnlChat);
   ChatSpots.parent      := pnlChat;
   ChatSpots.autoscroll  := True;
-  //ChatSpots.oncdblclick := @ChatDbClick;
   ChatSpots.Align       := alClient;
   ChatSpots.nastav_jazyk(1);
 
@@ -429,6 +444,7 @@ begin
           HistCmd[HistPtr]:=''
         end;
   until HistPtr =0;
+
 end;
 
 procedure TfrmDXCluster.FormKeyUp(Sender: TObject; var Key: Word;
@@ -541,7 +557,9 @@ begin
   ChangeCallAlertCaption;
 
   if cqrini.ReadBool('DXCluster', 'ConAfterRun', False) then
-    tmrAutoConnect.Enabled := True
+    tmrAutoConnect.Enabled := True;
+
+  pnlChat.Height := cqrini.ReadInteger('DXCluster','ChatSize',pnlTelnet.Height div 5);  //default 1/5 of Telnet
 end;
 
 procedure TfrmDXCluster.btnClearClick(Sender: TObject);
@@ -762,6 +780,21 @@ procedure TfrmDXCluster.tmrSpotsTimer(Sender: TObject);
 begin
   if pgDXCluster.ActivePageIndex = 0 then
     ConnectToWeb;
+end;
+
+procedure TfrmDXCluster.trChatSizeChange(Sender: TObject);
+begin
+     pnlChat.Height := trChatSize.Position;
+end;
+
+procedure TfrmDXCluster.trChatSizeClick(Sender: TObject);
+begin
+      trChatSize.Visible := false;
+      edtCommand.Visible := true;
+      label1.Caption := 'Command:';
+      cqrini.WriteInteger('DXCluster','ChatSize',trChatSize.Position);
+      pnlChat.Height := trChatSize.Position;
+      if dmData.DebugLevel >=1 then Writeln('Chat sizing Click');
 end;
 
 function TfrmDXCluster.GetFreq(spot : String) : String;

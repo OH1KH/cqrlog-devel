@@ -1,13 +1,13 @@
 object frmDXCluster: TfrmDXCluster
   Left = 129
-  Height = 430
+  Height = 445
   Top = 116
   Width = 709
   HelpType = htKeyword
   HelpKeyword = 'help/h21.html#ah19'
   ActiveControl = pgDXCluster
   Caption = 'DXCluster'
-  ClientHeight = 430
+  ClientHeight = 445
   ClientWidth = 709
   Icon.Data = {
     BE0C00000000010001002020000001001800A80C000016000000280000002000
@@ -124,7 +124,7 @@ object frmDXCluster: TfrmDXCluster
   LCLVersion = '1.6.4.0'
   object pgDXCluster: TPageControl
     Left = 0
-    Height = 430
+    Height = 445
     Top = 0
     Width = 709
     ActivePage = tabTelnet
@@ -133,7 +133,7 @@ object frmDXCluster: TfrmDXCluster
     TabOrder = 0
     object tabWeb: TTabSheet
       Caption = 'Web'
-      ClientHeight = 401
+      ClientHeight = 416
       ClientWidth = 699
       object Panel4: TPanel
         Left = 0
@@ -154,7 +154,7 @@ object frmDXCluster: TfrmDXCluster
         object btnWebConnect: TButton
           Left = 610
           Height = 25
-          Top = 6
+          Top = 8
           Width = 84
           Anchors = [akTop, akRight]
           BorderSpacing.InnerBorder = 4
@@ -215,12 +215,12 @@ object frmDXCluster: TfrmDXCluster
     end
     object tabTelnet: TTabSheet
       Caption = 'Telnet'
-      ClientHeight = 401
+      ClientHeight = 416
       ClientWidth = 699
       object Panel1: TPanel
         Left = 0
         Height = 34
-        Top = 367
+        Top = 382
         Width = 699
         Align = alBottom
         BevelOuter = bvNone
@@ -259,13 +259,32 @@ object frmDXCluster: TfrmDXCluster
           TabOrder = 1
         end
         object Button2: TButton
-          Left = 328
+          Left = 528
           Height = 25
           Top = -8
           Width = 75
           Caption = 'Button2'
           OnClick = Button2Click
           TabOrder = 2
+          Visible = False
+        end
+        object trChatSize: TTrackBar
+          AnchorSideLeft.Control = edtCommand
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
+          AnchorSideBottom.Side = asrBottom
+          Cursor = crSizeWE
+          Left = 79
+          Height = 52
+          Top = -9
+          Width = 263
+          Max = 100
+          Min = 20
+          OnChange = trChatSizeChange
+          Position = 20
+          ScalePos = trLeft
+          OnClick = trChatSizeClick
+          TabOrder = 3
           Visible = False
         end
       end
@@ -318,12 +337,12 @@ object frmDXCluster: TfrmDXCluster
       end
       object pnlTelnet: TPanel
         Left = 0
-        Height = 337
+        Height = 352
         Top = 30
         Width = 699
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 337
+        ClientHeight = 352
         ClientWidth = 699
         Color = clWhite
         ParentColor = False
@@ -335,7 +354,6 @@ object frmDXCluster: TfrmDXCluster
           Width = 699
           Align = alTop
           BevelOuter = bvNone
-          BorderWidth = 1
           Color = 13890552
           ParentColor = False
           TabOrder = 0
@@ -378,6 +396,10 @@ object frmDXCluster: TfrmDXCluster
     object MenuItem2: TMenuItem
       Caption = '-'
     end
+    object MenuItem6: TMenuItem
+      Action = acChatSize
+      Caption = 'Chat Size'
+    end
     object MenuItem3: TMenuItem
       Action = acFont
     end
@@ -402,6 +424,10 @@ object frmDXCluster: TfrmDXCluster
     object acProgPref: TAction
       Caption = 'Preferences'
       OnExecute = acProgPrefExecute
+    end
+    object acChatSize: TAction
+      Caption = 'acChatSize'
+      OnExecute = acChatSizeExecute
     end
   end
 end
