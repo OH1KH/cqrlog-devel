@@ -190,11 +190,6 @@ begin
    cqrini.WriteBool('MonWsjtx','MyAll',chkmyAll.Checked);
    cqrini.WriteBool('MonWsjtx','LocAlert',chkLocAlert.Checked);
    cqrini.WriteString('MonWsjtx','TextAlert',EditAlert.Text);
-   cqrini.WriteString('MonWsjtx','wkdhere',ColorToString(wkdhere));
-   cqrini.WriteString('MonWsjtx','wkdband',ColorToString(wkdband));
-   cqrini.WriteString('MonWsjtx','wkdany',ColorToString(wkdany));
-   cqrini.WriteString('MonWsjtx','wkdnever',ColorToString(wkdnever));
-   cqrini.WriteString('MonWsjtx','extCqCall',ColorToString(extCqCall));
    dmUtils.SaveWindowPos(frmMonWsjtx);
    frmNewQSO.DisableRemoteMode;
 end;
@@ -205,6 +200,7 @@ begin
        popColorDlg.Title := 'Qso never before - color';
        if  popColorDlg.Execute then
            wkdNever := ( popColorDlg.Color );
+       cqrini.WriteString('MonWsjtx','wkdnever',ColorToString(wkdnever));
 end;
 
 procedure TfrmMonWsjtx.cmBandClick(Sender: TObject);
@@ -213,6 +209,7 @@ begin
        popColorDlg.Title := 'Qso on this band, but not this mode - color';
        if  popColorDlg.Execute then
            wkdBand := ( popColorDlg.Color );
+       cqrini.WriteString('MonWsjtx','wkdband',ColorToString(wkdband));
 end;
 procedure TfrmMonWsjtx.cmAnyClick(Sender: TObject);
 begin
@@ -220,6 +217,7 @@ begin
        popColorDlg.Title := 'Qso on some other band/mode - color';
        if  popColorDlg.Execute then
            wkdAny := ( popColorDlg.Color );
+       cqrini.WriteString('MonWsjtx','wkdany',ColorToString(wkdany));
 end;
 procedure TfrmMonWsjtx.cmHereClick(Sender: TObject);
 begin
@@ -227,6 +225,7 @@ begin
        popColorDlg.Title := 'Qso on this band and mode - color';
        if  popColorDlg.Execute then
            wkdHere := ( popColorDlg.Color );
+       cqrini.WriteString('MonWsjtx','wkdhere',ColorToString(wkdhere));
 end;
 
 procedure TfrmMonWsjtx.cmCqDxClick(Sender: TObject);
@@ -235,6 +234,7 @@ begin
        popColorDlg.Title := 'Extended CQ (DX, NA, SA ...) - color';
        if  popColorDlg.Execute then
            extCqCall := ( popColorDlg.Color );
+       cqrini.WriteString('MonWsjtx','extCqCall',ColorToString(extCqCall));
 end;
 
 procedure TfrmMonWsjtx.cmFontClick(Sender: TObject);
