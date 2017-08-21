@@ -349,3 +349,11 @@
      mode was closed. Now closing wsjt-x program will close remote mode nicely as before.
 								(2.1.0(112))
 
+   - Manly for testing CQ-monitor slownes after long time on I added "noTxt" checkbox. It is usefull also for
+     users who do not care about monitor texts, but like still to have alerts working. Checking this
+     will skip richmemo updates, but keep other functions working.
+   - Close Cq-monitor will not stop remote-wsjtx. This has been so in past, but changed it at some state.
+     Now users who do not care CQ-monitoring and alerts can still log qsos and see qso data before logging.
+     Cq-monitor can be opened again from main menu Window/Wsjtx monitor as long as remote mode is on.
+								(2.1.0(113))
+

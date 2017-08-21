@@ -13,6 +13,7 @@ type
   { TfrmMonWsjtx }
 
   TfrmMonWsjtx = class(TForm)
+    noTxt: TCheckBox;
     chkmyAll: TCheckBox;
     chkHistory: TCheckBox;
     chkmyAlert: TCheckBox;
@@ -48,6 +49,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure noTxtChange(Sender: TObject);
     procedure WsjtxMemoDblClick(Sender: TObject);
   private
     procedure FocusLastLine;
@@ -117,7 +119,7 @@ begin
          if ((ord(s[i]) >= 32) and (ord(s[i]) <= 122)) then   //from space to z accepted
                                               MonitorLine := MonitorLine + s[i];
        end;
-
+     if not frmMonWsjtx.noTxt.Checked then
      with WsjtxMemo do
      begin
        if s <> '' then
@@ -133,10 +135,9 @@ begin
          SelStart  := Length(Text);
          SelText   := '';
        end;
-
-       FocusLastLine;
-
+       //FocusLastLine;
      end;
+
    end;
 procedure TfrmMonWsjtx.CleanWsjtxMemo;
 
@@ -189,8 +190,9 @@ end;
 
 procedure TfrmMonWsjtx.FormClose(Sender: TObject; var CloseAction: TCloseAction
   );
-begin
+begin   // these should not be needed any more
    cqrini.WriteBool('MonWsjtx','NoHistory',chkHistory.Checked);
+   cqrini.WriteBool('MonWsjtx','NoTxt',noTxt.Checked);
    cqrini.WriteBool('MonWsjtx','MyAlert',chkmyAlert.Checked);
    cqrini.WriteBool('MonWsjtx','MyAll',chkmyAll.Checked);
    cqrini.WriteBool('MonWsjtx','LocAlert',chkLocAlert.Checked);
@@ -200,7 +202,6 @@ begin
    cqrini.WriteString('MonWsjtx','wkdany',ColorToString(wkdany));
    cqrini.WriteString('MonWsjtx','wkdhere',ColorToString(wkdhere));
    dmUtils.SaveWindowPos(frmMonWsjtx);
-   frmNewQSO.DisableRemoteMode;
 end;
 
 procedure TfrmMonWsjtx.cmNeverClick(Sender: TObject);
@@ -258,6 +259,10 @@ begin
   cqrini.WriteBool('MonWsjtx','NoHistory',chkHistory.Checked);
 end;
 
+procedure TfrmMonWsjtx.noTxtChange(Sender: TObject);
+begin
+   cqrini.WriteBool('MonWsjtx','NoTxt',noTxt.Checked);
+end;
 procedure TfrmMonWsjtx.chkLocAlertChange(Sender: TObject);
 begin
      cqrini.WriteBool('MonWsjtx','LocAlert',chkLocAlert.Checked);
@@ -312,6 +317,7 @@ end;
 procedure TfrmMonWsjtx.FormShow(Sender: TObject);
 begin
    chkHistory.Checked := cqrini.ReadBool('MonWsjtx','NoHistory',False);
+   noTxt.Checked := cqrini.ReadBool('MonWsjtx','NoTxt',False);
    chkmyAlert.Checked := cqrini.ReadBool('MonWsjtx','MyAlert',False);
    chkmyAll.Checked := cqrini.ReadBool('MonWsjtx','MyAll',False);
    chkLocAlert.Checked:= cqrini.ReadBool('MonWsjtx','LocAlert',False);
@@ -327,7 +333,6 @@ begin
    extCqCall := StringToColor(cqrini.ReadString('MonWsjtx','extCqCall','$000055FF'));
    CleanWsjtxMemo;
 end;
-
 
 procedure TfrmMonWsjtx.NewBandMode(Band,Mode:string);
 

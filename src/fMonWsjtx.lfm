@@ -169,6 +169,19 @@ object frmMonWsjtx: TfrmMonWsjtx
     OnChange = chkmyAllChange
     TabOrder = 5
   end
+  object noTxt: TCheckBox
+    AnchorSideLeft.Control = chkHistory
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 307
+    Height = 23
+    Top = 6
+    Width = 63
+    BorderSpacing.Top = 6
+    Caption = 'noTxt'
+    OnChange = noTxtChange
+    TabOrder = 6
+  end
   object popColors: TPopupMenu
     left = 104
     top = 88
