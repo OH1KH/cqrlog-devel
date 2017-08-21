@@ -344,3 +344,8 @@
      This may stress slow computers, specially if wsjt-x is run at same hardware. Standard modern PCs
      should not have problems.
 								(2.1.0(111))
+21.8.2017
+   - Wsjtx-decode: Bugfix that caused program failure if wsjt-x program was closed before wsjt-x remote
+     mode was closed. Now closing wsjt-x program will close remote mode nicely as before.
+								(2.1.0(112))
+

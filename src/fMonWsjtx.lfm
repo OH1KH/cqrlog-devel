@@ -73,6 +73,7 @@ object frmMonWsjtx: TfrmMonWsjtx
     Width = 91
     BorderSpacing.Top = 6
     Caption = 'no history'
+    OnChange = chkHistoryChange
     TabOrder = 1
   end
   object chkmyAlert: TCheckBox
@@ -88,6 +89,7 @@ object frmMonWsjtx: TfrmMonWsjtx
     BorderSpacing.Left = 5
     BorderSpacing.Bottom = 11
     Caption = 'MyAlert'
+    OnChange = chkmyAlertChange
     TabOrder = 2
   end
   object chkLocAlert: TCheckBox
@@ -105,6 +107,7 @@ object frmMonWsjtx: TfrmMonWsjtx
     BorderSpacing.Top = 4
     BorderSpacing.Right = 5
     Caption = 'LocAlert'
+    OnChange = chkLocAlertChange
     TabOrder = 3
   end
   object lblAlert1: TLabel
@@ -151,6 +154,7 @@ object frmMonWsjtx: TfrmMonWsjtx
     Width = 80
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 6
+    OnExit = EditAlertExit
     TabOrder = 4
   end
   object chkmyAll: TCheckBox
@@ -162,6 +166,7 @@ object frmMonWsjtx: TfrmMonWsjtx
     Top = 320
     Width = 43
     Caption = 'All'
+    OnChange = chkmyAllChange
     TabOrder = 5
   end
   object popColors: TPopupMenu

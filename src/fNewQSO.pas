@@ -539,7 +539,6 @@ type
     UploadAll  : Boolean;
 
     RememberAutoMode : Boolean;
-
     procedure ShowDXCCInfo(ref_adif : Word = 0);
     procedure ShowFields;
     procedure ChangeReports;
@@ -1999,6 +1998,8 @@ var
   sDate : String='';
   Mask  : String='';
 
+
+
   function UiFBuf(var index:integer):uint32;
   begin
     Result := $01000000*ord(Buf[index])
@@ -2421,14 +2422,15 @@ begin
            ParStr := StFBuf(index);
            if dmData.DebugLevel>=1 then Writeln('Close Id:', ParStr);
            //wsjtx closed maybe need to disable remote mode  ?
-           DisableRemoteMode
+           DisableRemoteMode;
+           Exit;
          end //Close
     end; //case
      if mnuRemoteModeWsjt.Checked then         // must do this check. Otherwise at decode 6 ://Close  calling DisableRemoteMode
                    tmrWsjtx.Enabled  := True;  // causes exception if wsjt-x is closed but cqrlog still running.
                                                // Now end of decode and wsjt-x still running: Allow timer run again.
-  end  //if WsjtxSock.lasterror=0 then
-  end  // while datagrams in buffer
+   end;  //if WsjtxSock.lasterror=0 then
+  end;  // while datagrams in buffer
   end //waiting data
   else
    Begin
@@ -6132,7 +6134,7 @@ begin
                 end;
     rmtWsjt   : begin
                   if mnuRemoteMode.Checked then          //not both on at same time
-                     DisableRemoteMode;
+                  DisableRemoteMode;
                   mnuRemoteModeWsjt.Checked := True;
                   lblCall.Caption           := 'Wsjtx remote';
                   path                      := cqrini.ReadString('wsjt','path','');

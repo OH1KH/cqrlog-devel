@@ -33,12 +33,17 @@ type
     cmHere: TMenuItem;
     popColors: TPopupMenu;
     WsjtxMemo: TRichMemo;
+    procedure chkHistoryChange(Sender: TObject);
+    procedure chkLocAlertChange(Sender: TObject);
+    procedure chkmyAlertChange(Sender: TObject);
+    procedure chkmyAllChange(Sender: TObject);
     procedure cmAnyClick(Sender: TObject);
     procedure cmBandClick(Sender: TObject);
     procedure cmCqDxClick(Sender: TObject);
     procedure cmFontClick(Sender: TObject);
     procedure cmHereClick(Sender: TObject);
     procedure cmNeverClick(Sender: TObject);
+    procedure EditAlertExit(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
@@ -190,6 +195,10 @@ begin
    cqrini.WriteBool('MonWsjtx','MyAll',chkmyAll.Checked);
    cqrini.WriteBool('MonWsjtx','LocAlert',chkLocAlert.Checked);
    cqrini.WriteString('MonWsjtx','TextAlert',EditAlert.Text);
+   cqrini.WriteString('MonWsjtx','wkdnever',ColorToString(wkdnever));
+   cqrini.WriteString('MonWsjtx','wkdband',ColorToString(wkdband));
+   cqrini.WriteString('MonWsjtx','wkdany',ColorToString(wkdany));
+   cqrini.WriteString('MonWsjtx','wkdhere',ColorToString(wkdhere));
    dmUtils.SaveWindowPos(frmMonWsjtx);
    frmNewQSO.DisableRemoteMode;
 end;
@@ -199,8 +208,15 @@ begin
        popColorDlg.Color:=wkdNever;
        popColorDlg.Title := 'Qso never before - color';
        if  popColorDlg.Execute then
-           wkdNever := ( popColorDlg.Color );
-       cqrini.WriteString('MonWsjtx','wkdnever',ColorToString(wkdnever));
+           Begin
+             wkdNever := ( popColorDlg.Color );
+             cqrini.WriteString('MonWsjtx','wkdnever',ColorToString(wkdnever));
+           end;
+end;
+
+procedure TfrmMonWsjtx.EditAlertExit(Sender: TObject);
+begin
+      cqrini.WriteString('MonWsjtx','TextAlert',EditAlert.Text);
 end;
 
 procedure TfrmMonWsjtx.cmBandClick(Sender: TObject);
@@ -208,24 +224,53 @@ begin
        popColorDlg.Color:=wkdBand;
        popColorDlg.Title := 'Qso on this band, but not this mode - color';
        if  popColorDlg.Execute then
+          Begin
            wkdBand := ( popColorDlg.Color );
-       cqrini.WriteString('MonWsjtx','wkdband',ColorToString(wkdband));
+           cqrini.WriteString('MonWsjtx','wkdband',ColorToString(wkdband));
+          end;
+
 end;
 procedure TfrmMonWsjtx.cmAnyClick(Sender: TObject);
 begin
        popColorDlg.Color:=wkdAny;
        popColorDlg.Title := 'Qso on some other band/mode - color';
        if  popColorDlg.Execute then
+          Begin
            wkdAny := ( popColorDlg.Color );
-       cqrini.WriteString('MonWsjtx','wkdany',ColorToString(wkdany));
+           cqrini.WriteString('MonWsjtx','wkdany',ColorToString(wkdany));
+          end;
+
 end;
+
 procedure TfrmMonWsjtx.cmHereClick(Sender: TObject);
 begin
        popColorDlg.Color:=wkdHere;
        popColorDlg.Title := 'Qso on this band and mode - color';
        if  popColorDlg.Execute then
+          Begin
            wkdHere := ( popColorDlg.Color );
-       cqrini.WriteString('MonWsjtx','wkdhere',ColorToString(wkdhere));
+           cqrini.WriteString('MonWsjtx','wkdhere',ColorToString(wkdhere));
+          end;
+
+end;
+procedure TfrmMonWsjtx.chkHistoryChange(Sender: TObject);
+begin
+  cqrini.WriteBool('MonWsjtx','NoHistory',chkHistory.Checked);
+end;
+
+procedure TfrmMonWsjtx.chkLocAlertChange(Sender: TObject);
+begin
+     cqrini.WriteBool('MonWsjtx','LocAlert',chkLocAlert.Checked);
+end;
+
+procedure TfrmMonWsjtx.chkmyAlertChange(Sender: TObject);
+begin
+     cqrini.WriteBool('MonWsjtx','MyAlert',chkmyAlert.Checked);
+end;
+
+procedure TfrmMonWsjtx.chkmyAllChange(Sender: TObject);
+begin
+     cqrini.WriteBool('MonWsjtx','MyAll',chkmyAll.Checked);
 end;
 
 procedure TfrmMonWsjtx.cmCqDxClick(Sender: TObject);

@@ -2839,7 +2839,7 @@ object frmNewQSO: TfrmNewQSO
           Text = 'JO80OB'
         end
         object edtPWR: TEdit
-          Left = 327
+          Left = 328
           Height = 27
           Top = 71
           Width = 64
