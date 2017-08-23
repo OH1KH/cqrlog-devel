@@ -273,7 +273,6 @@ object frmDXCluster: TfrmDXCluster
           AnchorSideTop.Control = Panel1
           AnchorSideTop.Side = asrCenter
           AnchorSideBottom.Side = asrBottom
-          Cursor = crSizeWE
           Left = 79
           Height = 52
           Top = -9

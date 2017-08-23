@@ -357,3 +357,8 @@
      Cq-monitor can be opened again from main menu Window/Wsjtx monitor as long as remote mode is on.
 								(2.1.0(113))
 
+23.08.2017
+
+   - DXChat minium size now only 2px. Should not take any room if you do not need it.
+     Cursor on size slider is double arrow, but when hidden the default
+								(2.1.0(114))

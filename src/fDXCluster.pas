@@ -384,6 +384,7 @@ begin
        trChatSize.Max :=   pnlTelnet.Height -20;
        trChatSize.Position := pnlChat.Height;
        trChatSize.Visible :=true;
+       trChatSize.Cursor := crSizeWE;
        edtCommand.Visible := false;
        label1.Caption := 'ChatSize';
        if dmData.DebugLevel >=1 then Writeln('Chat sizing AC');
@@ -790,6 +791,7 @@ end;
 procedure TfrmDXCluster.trChatSizeClick(Sender: TObject);
 begin
       trChatSize.Visible := false;
+      trChatSize.Cursor :=  crDefault;
       edtCommand.Visible := true;
       label1.Caption := 'Command:';
       cqrini.WriteInteger('DXCluster','ChatSize',trChatSize.Position);
