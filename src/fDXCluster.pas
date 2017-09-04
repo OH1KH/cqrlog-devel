@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, inifiles,
-  ExtCtrls, ComCtrls, StdCtrls, Buttons, httpsend, jakozememo,
+  ExtCtrls, ComCtrls, StdCtrls, Buttons, httpsend, uColorMemo,
   db, lcltype, Menus, ActnList, Spin, dynlibs, lNetComponents, lnet;
 
 type
@@ -180,9 +180,9 @@ var
   frmDXCluster : TfrmDXCluster;
   Spots        : TStringList;
   Chats        : TStringList;
-  WebSpots     : Tjakomemo;
-  TelSpots     : Tjakomemo;
-  ChatSpots    : Tjakomemo;
+  WebSpots     : TColorMemo;
+  TelSpots     : TColorMemo;
+  ChatSpots    : TColorMemo;
   mindex       : Integer;
   ThInfo       : String;
   ThSpot       : String;
@@ -368,9 +368,9 @@ begin
   begin
     cqrini.WriteString('DXCluster','Font',dlgDXfnt.Font.Name);
     cqrini.WriteInteger('DXCluster','FontSize',dlgDXfnt.Font.Size);
-    WebSpots.nastav_font(dlgDXfnt.Font);
-    TelSpots.nastav_font(dlgDXfnt.Font);
-    ChatSpots.nastav_font(dlgDXfnt.Font)
+    WebSpots.SetFont(dlgDXfnt.Font);
+    TelSpots.SetFont(dlgDXfnt.Font);
+    ChatSpots.SetFont(dlgDXfnt.Font)
   end
 end;
 
@@ -404,28 +404,28 @@ begin
   lTelnet.OnDisconnect := @lDisconnect;
   lTelnet.OnReceive    := @lReceive;
 
-  WebSpots             := Tjakomemo.Create(pnlWeb);
+  WebSpots             := TColorMemo.Create(pnlWeb);
   WebSpots.parent      := pnlWeb;
-  WebSpots.autoscroll  := True;
-  WebSpots.oncdblclick := @WebDbClick;
+  WebSpots.AutoScroll  := True;
+  WebSpots.oncDblClick := @WebDbClick;
   WebSpots.Align       := alClient;
-  WebSpots.nastav_jazyk(1);
+  WebSpots.setLanguage(1);
 
 
-  TelSpots             := Tjakomemo.Create(pnlTelnet);
+  TelSpots             := TColorMemo.Create(pnlTelnet);
   TelSpots.parent      := pnlTelnet;
-  TelSpots.autoscroll  := True;
-  TelSpots.oncdblclick := @TelDbClick;
+  TelSpots.AutoScroll  := True;
+  TelSpots.oncDblClick := @TelDbClick;
   TelSpots.Align       := alClient;
-  TelSpots.nastav_jazyk(1);
+  TelSpots.setLanguage(1);
 
   ChBckColor  := $00D3F3F8;
   pnlChat.Color := ChBckColor;
-  ChatSpots             := Tjakomemo.Create(pnlChat);
+  ChatSpots             := TColorMemo.Create(pnlChat);
   ChatSpots.parent      := pnlChat;
   ChatSpots.autoscroll  := True;
   ChatSpots.Align       := alClient;
-  ChatSpots.nastav_jazyk(1);
+  ChatSpots.setLanguage(1);
 
   Spots := TStringList.Create;
   Spots.Clear;
@@ -445,7 +445,6 @@ begin
           HistCmd[HistPtr]:=''
         end;
   until HistPtr =0;
-
 end;
 
 procedure TfrmDXCluster.FormKeyUp(Sender: TObject; var Key: Word;
@@ -469,7 +468,7 @@ var
   stmp : String = '';
   i    : Integer = 0;
 begin
-  WebSpots.cti_vetu(spot,tmp,tmp,tmp,where);
+  WebSpots.ReadLine(spot,tmp,tmp,tmp,where);
   spot := copy(spot,i+6,Length(spot)-i-5);
   spot := Trim(spot);
   freq := GetFreq(spot);
@@ -501,7 +500,7 @@ var
   i    : Integer = 0;
   f    : Currency;
 begin
-  TelSpots.cti_vetu(spot,tmp,tmp,tmp,where);
+  TelSpots.ReadLine(spot,tmp,tmp,tmp,where);
   if TryStrToCurr(copy(spot,1,Pos(' ',spot)-1),f)  then
   begin
     freq := copy(spot,1,Pos(' ',spot)-1);
@@ -537,9 +536,9 @@ begin
   try
     f.Name    := cqrini.ReadString('DXCluster','Font','DejaVu Sans Mono');
     f.Size    := cqrini.ReadInteger('DXCluster','FontSize',12);
-    WebSpots.nastav_font(f);
-    TelSpots.nastav_font(f) ;
-    ChatSpots.nastav_font(f)
+    WebSpots.SetFont(f);
+    TelSpots.SetFont(f) ;
+    ChatSpots.SetFont(f)
   finally
     f.Free
   end;
@@ -559,13 +558,12 @@ begin
 
   if cqrini.ReadBool('DXCluster', 'ConAfterRun', False) then
     tmrAutoConnect.Enabled := True;
-
   pnlChat.Height := cqrini.ReadInteger('DXCluster','ChatSize',pnlTelnet.Height div 5);  //default 1/5 of Telnet
 end;
 
 procedure TfrmDXCluster.btnClearClick(Sender: TObject);
 begin
-  WebSpots.smaz_vse;
+  WebSpots.RemoveAllLines
 end;
 
 procedure TfrmDXCluster.btnSelectClick(Sender: TObject);
@@ -754,7 +752,7 @@ begin
         lTelnet.SendMessage(telUser+#13+#10);
       if (Pos('PASSWORD',UpperCase(tmp)) > 0) and (telPass <> '') then
         lTelnet.SendMessage(telPass+#13+#10);
-      TelSpots.pridej_vetu(tmp,clBlack,clWhite,0)
+      TelSpots.AddLine(tmp,clBlack,clWhite,0)
     end;
     sStart := sStop + 1;
     if sStart > Length(Buffer) then
@@ -773,7 +771,7 @@ begin
   if lTelnet.Connected then
   begin
     lTelnet.SendMessage(cmd + #13#10);
-    TelSpots.pridej_vetu(cmd,clBlack,clWhite,0)
+    TelSpots.AddLine(cmd,clBlack,clWhite,0)
   end
 end;
 
@@ -1003,7 +1001,7 @@ begin
   if tmp > 0 then
     freq[tmp] := FormatSettings.DecimalSeparator;
 
-  isLoTW := dmDXCluster.UsesLotw(call);
+  isLoTW := dmData.UsesLotw(call);
   isEQSL := dmDXCluster.UseseQSL(call);
 
   if cfgUseBackColor then
@@ -1448,22 +1446,22 @@ end;
 procedure TfrmDXCluster.SynWeb;
 begin
   lblInfo.Caption := ThInfo;
-  if WebSpots.hledej(ThSpot,0,True,True) = -1 then
+  if WebSpots.Search(ThSpot,0,True,True) = -1 then
   begin
-    WebSpots.zakaz_kresleni(true);
-    WebSpots.pridej_vetu(ThSpot,ThColor,ThBckColor,0);
-    WebSpots.zakaz_kresleni(false)
+    WebSpots.DisableAutoRepaint(true);
+    WebSpots.AddLine(ThSpot,ThColor,ThBckColor,0);
+    WebSpots.DisableAutoRepaint(false)
   end
   {
   if ThSpot = '' then
     exit;
   Writeln('******************* Hledam:',ThSpot,'********');
-  if WebSpots.hledej(ThSpot,1,True,True) = -1 then
+  if WebSpots.Search(ThSpot,1,True,True) = -1 then
   begin
     Writeln('*****************Nenasel:',ThSpot,'********');
-    WebSpots.zakaz_kresleni(true);
+    WebSpots.DisableAutoRepaint(true);
     WebSpots.vloz_vetu(ThSpot,ThColor,clWhite,0,0);
-    WebSpots.zakaz_kresleni(false);
+    WebSpots.DisableAutoRepaint(false);
     Sleep(200)
   end
   else
@@ -1481,17 +1479,17 @@ begin
   //if dmData.DebugLevel>=1 then Writeln('TfrmDXCluster.SynTelnet - Before ]'yu
   if ConTelnet then
   begin
-    TelSpots.zakaz_kresleni(true);
-    TelSpots.pridej_vetu(ThSpot,ThColor,ThBckColor,0);
-    TelSpots.zakaz_kresleni(false)
+    TelSpots.DisableAutoRepaint(true);
+    TelSpots.AddLine(ThSpot,ThColor,ThBckColor,0);
+    TelSpots.DisableAutoRepaint(false)
   end
   else begin
     {
-    if WebSpots.hledej(ThSpot,0,True,True) = -1 then
+    if WebSpots.Search(ThSpot,0,True,True) = -1 then
     begin
-      WebSpots.zakaz_kresleni(true);
+      WebSpots.DisableAutoRepaint(true);
       WebSpots.vloz_vetu(ThSpot,ThColor,ThBckColor,0,0);
-      WebSpots.zakaz_kresleni(false);
+      WebSpots.DisableAutoRepaint(false);
     end
     }
   end;
@@ -1507,9 +1505,9 @@ begin
 
   if ConTelnet then
   begin
-    ChatSpots.zakaz_kresleni(true);
-    ChatSpots.pridej_vetu(ThChat,clBlack,ChBckColor,0);
-    ChatSpots.zakaz_kresleni(false)
+    ChatSpots.DisableAutoRepaint(true);
+    ChatSpots.AddLine(ThChat,clBlack,ChBckColor,0);
+    ChatSpots.DisableAutoRepaint(false)
   end;
 end;
 

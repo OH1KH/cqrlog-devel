@@ -1,16 +1,10 @@
-unit jakozememo;
+unit uColorMemo;
+{
+(c) Martin Tichacek licence GPL 2.0
 
-
-// verze
-// 1 ... zacalo cislovani ...
-// 2 ... zjistovani vysky pisma , hledani
-// 3 ... pridan "jazyk" :-P
-// 4 ... moznost zvolit jiny jazyk za behu....
-//       moznost vlastnich polozek v popupu a reakce na ne.
-// 5 ... mazani vety a celeho seznamu...
-// 6 ... pokus o opravu refreshe (scrollbar-scroll - prekresloval pozde) pod GTK2
-//       setrnejsi clipboard...
-// 7 ... hm... oznacovani bloku bylo taky spetne - chybel refresh..
+other changes by Petr Hlozek, OK7AN
+  - public functions and constants renamed to English
+}
 
 {$mode objfpc}{$H+}
 
@@ -22,137 +16,131 @@ uses
   StdCtrls,menus,Clipbrd;
 
 
-const jazyk=1; // 0 cz , 1 en (nic vic zatim..., netreba menit tu, objekt "umi" zmenu za provozu)
+const LANG=1; // 0 Czech , 1 English
 
-const mpv=100000; // max pocet polozek... je to malo?
+const MAX_LINES=100000;
 
-const text_Vybrat_vse:string='Vybrat vse|Select all';
-const text_Zrusit_vyber:string='Zrusit vyber|Select none';
-const text_Zacatek_bloku:string='Zacatek bloku|Start of selection';
-const text_Konec_bloku:string='Konec bloku|End of selection';
-const text_Kopirovat:string='Kopirovat|Copy';
+const text_Select_All:string='Vybrat vse|Select all';
+const text_Select_None:string='Zrusit vyber|Select none';
+const text_Start_Selection:string='Zacatek bloku|Start of selection';
+const text_End_Selection:string='Konec bloku|End of selection';
+const text_Copy:string='Kopirovat|Copy';
 
 
 Type Tveta=record
-       te:string;  // kus textu
-       bpi:TColor; // barva pisma
-       bpo:Tcolor; // barva podkladu
+       te:string;  // text
+       bpi:TColor; // text color
+       bpo:Tcolor; // background color
        pom:longint;
      end;
 
   Pveta=^Tveta;
-  Tvety=array[0..mpv] of Pveta;
+  Tvety=array[0..MAX_LINES] of Pveta;
 
 type
-   Tjakomemo = class(TPanel)
+   TcolorMemo = class(TPanel)
     public
-       // vlastnosti "bezneho" panelu sem neprepsal... co s tim udedelate je vas risk :-)
+       oncClick : procedure(Where:longint;mb:TmouseButton;ms:TShiftState) of object;
+       oncDblClick : procedure(Where:longint;mb:TmouseButton;ms:TShiftState) of object;
 
-       oncclick:procedure(kam:longint;mb:TmouseButton;ms:TShiftState) of object;
-       oncdblclick:procedure(kam:longint;mb:TmouseButton;ms:TShiftState) of object;
+       onMyPopup : procedure(Where:longint;bs:boolean;b1,b2:longint;c_tag:longint) of object;
 
-       on_vlastni_popup:procedure(kam:longint;bs:boolean;b1,b2:longint;c_tag:longint) of object;
-        {obsluha vlastnich radku v popup menu}
+       BackgourndColor : Tcolor;  // default clHighlight
+       MyTextColor : Tcolor;  // default clHighlightText
 
-       barva_bloku_pod:Tcolor;  // default clHighlight
-       barva_bloku_pis:Tcolor;  // default clHighlightText
+       AutoScroll : Boolean; // default false
 
-       autoscroll:boolean; // default false
-        {pokud true, bude se automaticky scrollovat na pozici , kam bylo vlozeno}
 
        constructor Create(TheOwner: TComponent); override;
        destructor Destroy; override;
 
 
-       function  pridej_vetu(te:string;bpi,bpo:Tcolor;pom:longint):boolean;
-         { vrazi text na konec seznamu , v pripade neuspechu vraci false
-           bpi - barva pisma , bpo - barva podkladu ; pom - pomocne cifro - na libovolne pouziti }
-         
-       function  vloz_vetu(te:string;bpi,bpo:Tcolor;pom:longint;kam:longint):boolean;
-         { kam - pozice kam vlozit radek textu; zacatek je 0,
-           jinak totez co pridej_vetu
-           ... pridat na konec je posledniveta+1
-         }
+       function  AddLine(LineText:string;StringColor,BackgroundColor:Tcolor;pom:longint):boolean;
 
-       function  prepis_vetu(te:string;bpi,bpo:Tcolor;pom:longint;kam:longint;msk:longint):boolean;
-         {zmeni (prepise) EXISTUJICI vetu
-          bity v msk: 0 - te , 1 bpi , 2 bpo ....
-          kde je 0, tak zustane nezmeneno
-         }
+       function  InsertLine(LineText:string;StringColor,BackgroundColor:Tcolor;pom:longint;Position:longint):boolean;
+
+       function  ReplaceLine(LineText:string;StringColor,BackgroundColor:Tcolor;pom:longint;Position:longint;msk:longint):boolean;
+       {
+          Replaces existing line.
+          msk 0 - replace text
+          msk 1 - change text color
+          msk 2 - change backgound color
+       }
 
 
-       function smaz_vetu(kam:longint):boolean;
-         { ... ehm ... smaze vetu. He? (kam - kterou) , vraci false, pokud selze }
+       function RemoveLine(Position:longint):boolean;
+       {
+         Removes line on Position
+         returns false when failed
+       }
 
-       procedure smaz_vse;
-         { ... vsechny vety ... }
+       procedure RemoveAllLines;
 
-         
-       function  cti_vetu(var te:string;var bpi,bpo:Tcolor;var pom:longint;kam:longint):boolean;
-         {protikus k prepis_vetu}
+       function  ReadLine(var LineText:string; var StringColor,BackgroundColor:Tcolor; var pom:longint; Position:longint):boolean;
 
+       function LastLineNumber:longint;
+       {
+         number of last line
+         lines count = last line + 1
+       }
 
-       function posledniveta:longint;
-         {cislo posledni PLATNE vety. prvni je na pozici 0, pocet vet je (posledniveta+1) }
-
-       procedure zakaz_kresleni(st:boolean);
-         {st=true - zakaze kresleni, false povoli. Pouzivat pri velkych zmenach v seznamech
-          mohlo (bud tam mam nekde chybu nebo to nema vliv.(!)) by urychlit pridavani velkeho
-          mnozstvi polozek najednou tim, ze si zakazete prekreslovani polozek a povolite
-          ho az na konci.
-          uvnitr zakazu je integer, takze pokud neco 2x zakazete, musite to zase 2x povolit.
-          po povoleni kresleni je prekresleno zrovna.
-         }
-
-
-       function jevbloku(num:longint):boolean;
-         { vraci true, pokud je polozka cislo "num" ve vybranem bloku }
+       procedure DisableAutoRepaint(RepaintEnabled:boolean);
+       {
+         Enabled - True - disable auto repait
+         Enable - False - enable auto repaint
+       }
 
 
-       procedure nastav_font(f:TFont);
-         { pokusi se nastavit font... hm}
+       function LineNumberInSelBlock(LineNumber:longint):boolean;
+       {
+         Returns True when LineNumber exists in selected block
+       }
 
 
-       function hledej(co:string;odkud:longint;smer_dolu:boolean;cely_radek:boolean):longint;
-         { vrati -1, pokud nenajde, he? :-) }
-
-       procedure poskroluj(kam:longint);
-         { naskroluje na radek... priblizne }
+       procedure SetFont(f:TFont);
 
 
-       procedure nastav_jazyk(j:longint);
-         { pouzitelne i jako "reset" popupu - promaze obsah menu a pak teprve nahraje nove polozky
-           mel-li tam nekdo vlastni, musi si je nasledne zase pridat
-         }
-       
-       procedure prikrm_popup(c_text:string;c_tag:longint);
-         { prida polozku na KONEC popup menu (za standardni veci),
-           v pripade, ze je uzivatel zvoli, dostanete vedet pomoci "on_vlastni_popup"
-           tag pod 10 budu mazat, aby se nekdo necpal do standardnich...
+       function Search(What:string;From:longint;ToLastLine:boolean;WholeLine:boolean):longint;
+       {
+         Returns -1 when not found
+       }
 
-           separator je '-' (jeden znak minus) v c_text, ale kto to dnes potrebuje vedet?
-         }
+       procedure Scroll(Position:longint);
+       {
+          Scrolls to Position
+       }
+
+
+       procedure setLanguage(j:longint);
+
+
+       procedure AddToPopup(c_text:string;c_tag:longint);
+       {
+         Adds new item to Popup menu after standard items. Seprator is '-'.
+         After user click to own popum menu, onMyPopup is called
+       }
+
      private
-       sbs,sbv:Tscrollbar; {scrollbar svisly/vodorovny}
+       sbs,sbv:Tscrollbar;
        pab:Tpaintbox;
        pop:TPopupMenu;
        uzmam_pop:boolean;
        jazy_int:longint;
 
-       bl1,bl2:longint; {zacatek,konec bloku}
-       bls:boolean;     {je neco vybrane...?}
+       bl1,bl2:longint; {begining/end of the block}
+       bls:boolean;     {is something selected?}
        
-       refr_en:longint; {pokud 0, tak je kresleni povoleno, je li vetsi, tak se neprekresluje paintbox}
+       refr_en:longint; {pif 0, painting is allowed, else painting disabled}
 
-       mx,my:longint; {posledni znama pozice mysi}
-       mx1,my1:longint; { zalozni pozce mysi - pri mouse down }
+       mx,my:longint; {last mouse position}
+       mx1,my1:longint; {mouse position when mouse up}
        mb:TMouseButton;
        ms:TShiftState;
        
        
 
        vety:Tvety;
-       vetp:longint; {posledni pouzita veta}
+       vetp:longint; {Last used line}
        vyska_radku:longint;
 
        procedure jmonpaint(sender:Tobject);
@@ -160,7 +148,7 @@ type
        procedure aktualizujpozici(sender:Tobject);
        property OnResize;
 
-       procedure sbscrll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer); // scrollbarsvislyscroll....
+       procedure sbscrll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
 
        procedure mys_pohyb(Sender: TObject;Shift: TShiftState; X,Y: Integer);
        procedure mys_zmack(Sender: TObject;Button: TMouseButton;Shift: TShiftState; X,Y: Integer);
@@ -175,11 +163,9 @@ type
        procedure priselpopup(sender:Tobject);
        procedure nactiblok(var b1,b2:longint);
 
-//       procedure mys_click(sender:Tobject);
        procedure mys_dclick_in(sender:Tobject);
 
        procedure postav_obsah_popupa(p:Tpopupmenu);
-         { [je-li co, tak prvni vse smaze a znovu] nakrmi popup menu polozkama dle akt. jazyka. }
        function dt(celytext:string):string;
    end;
 
@@ -187,17 +173,17 @@ type
 implementation
 
 
-constructor Tjakomemo.Create(TheOwner: TComponent);
+constructor TcolorMemo.Create(TheOwner: TComponent);
   begin
     inherited create(theowner);
 
-    oncclick:=nil;
-    oncdblclick:=nil;
-    on_vlastni_popup:=nil;
+    oncClick:=nil;
+    oncDblClick:=nil;
+    onMyPopup:=nil;
     uzmam_pop:=false;
-    jazy_int:=jazyk;
+    jazy_int:=LANG;
 
-    autoscroll:=false;
+    AutoScroll:=false;
     refr_en:=0;
 
     DoubleBuffered:=true;
@@ -206,8 +192,8 @@ constructor Tjakomemo.Create(TheOwner: TComponent);
     pab:=Tpaintbox.Create(self);
     pab.parent:=self;
 
-    barva_bloku_pod:=clHighlight;
-    barva_bloku_pis:=clHighlightText;
+    BackgourndColor:=clHighlight;
+    MyTextColor:=clHighlightText;
 
 
 
@@ -265,7 +251,7 @@ constructor Tjakomemo.Create(TheOwner: TComponent);
 
 end;
 
-destructor Tjakomemo.Destroy;
+destructor TcolorMemo.Destroy;
 var z:longint;
   begin
     for z:=0 to vetp do
@@ -285,7 +271,7 @@ var z:longint;
 
 
 
-function Tjakomemo.dt(celytext:string):string;
+function TcolorMemo.dt(celytext:string):string;
 var aaa:string;
     ja:longint;
   begin
@@ -294,13 +280,13 @@ var aaa:string;
     aaa:=celytext;
     while ja>0 do
       begin aaa:=copy(aaa,pos('|',aaa)+1,length(aaa));ja:=ja-1;end;
-    if length(aaa)=0 then aaa:=celytext; { pokud by byl zvoleny jazyk ZA poctem prelozenych..., vratim prvni mozny}
+    if length(aaa)=0 then aaa:=celytext; { pokud by byl zvoleny LANG ZA poctem prelozenych..., vratim prvni mozny}
     if pos('|',aaa)<>0 then aaa:=copy(aaa,1,pos('|',aaa)-1);
     dt:=aaa;
   end;
 
 
-procedure Tjakomemo.prikrm_popup(c_text:string;c_tag:longint);
+procedure TcolorMemo.AddToPopup(c_text:string;c_tag:longint);
 var mi:Tmenuitem;
   begin
     if c_tag<10 then c_tag:=0;
@@ -313,7 +299,7 @@ var mi:Tmenuitem;
 
 
 
-procedure Tjakomemo.postav_obsah_popupa(p:Tpopupmenu);
+procedure TcolorMemo.postav_obsah_popupa(p:Tpopupmenu);
 var mi:Tmenuitem;
   begin
     if uzmam_pop then
@@ -321,25 +307,25 @@ var mi:Tmenuitem;
 
     uzmam_pop:=true;
     mi:=Tmenuitem.create(pop);
-    mi.Caption:=dt(text_Vybrat_vse);
+    mi.Caption:=dt(text_Select_All);
     mi.OnClick:=@priselpopup;
     mi.tag:=1;
     pop.Items.Add(mi);
 
     mi:=Tmenuitem.create(pop);
-    mi.Caption:=dt(text_Zrusit_vyber);
+    mi.Caption:=dt(text_Select_None);
     mi.OnClick:=@priselpopup;
     mi.tag:=2;
     pop.Items.Add(mi);
 
     mi:=Tmenuitem.create(pop);
-    mi.Caption:=dt(text_Zacatek_bloku);
+    mi.Caption:=dt(text_Start_Selection);
     mi.OnClick:=@priselpopup;
     mi.tag:=3;
     pop.Items.Add(mi);
 
     mi:=Tmenuitem.create(pop);
-    mi.Caption:=dt(text_Konec_bloku);
+    mi.Caption:=dt(text_End_Selection);
     mi.OnClick:=@priselpopup;
     mi.tag:=4;
     pop.Items.Add(mi);
@@ -351,7 +337,7 @@ var mi:Tmenuitem;
     pop.Items.Add(mi);
 
     mi:=Tmenuitem.create(pop);
-    mi.Caption:=dt(text_Kopirovat);
+    mi.Caption:=dt(text_Copy);
     mi.OnClick:=@priselpopup;
     mi.tag:=5;
     pop.Items.Add(mi);
@@ -360,7 +346,7 @@ var mi:Tmenuitem;
   end;
 
 
-procedure Tjakomemo.nastav_jazyk(j:longint);
+procedure TcolorMemo.setLanguage(j:longint);
   begin
     jazy_int:=j;
     postav_obsah_popupa(pop);
@@ -369,7 +355,7 @@ procedure Tjakomemo.nastav_jazyk(j:longint);
 
 
 
-procedure Tjakomemo.priselpopup(sender:Tobject);
+procedure TcolorMemo.priselpopup(sender:Tobject);
 var z,x,c,v:longint;
     ua:string;
   begin
@@ -396,32 +382,32 @@ var z,x,c,v:longint;
              end;
          end
       else
-        if (z>=10) and (on_vlastni_popup<>nil) then
-          on_vlastni_popup(my_2_index(my),bls,bl1,bl2,z);
+        if (z>=10) and (onMyPopup<>nil) then
+          onMyPopup(my_2_index(my),bls,bl1,bl2,z);
     end;
   end;
 
 
-procedure Tjakomemo.nactiblok(var b1,b2:longint);
+procedure TcolorMemo.nactiblok(var b1,b2:longint);
   begin
     if bl1>bl2 then begin b1:=bl2;b2:=bl1 end
       else begin b1:=bl1;b2:=bl2 end;
   end;
 
-function Tjakomemo.pridej_vetu(te:string;bpi,bpo:Tcolor;pom:longint):boolean;
+function TcolorMemo.AddLine(LineText:string;StringColor,BackgroundColor:Tcolor;pom:longint):boolean;
 var z:longint;
   begin
     result:=true;
-    if vetp>=mpv then begin Result:=false; exit end; {!!!}
+    if vetp>=MAX_LINES then begin Result:=false; exit end; {!!!}
     inc(vetp);
     new(vety[vetp]);
-    vety[vetp]^.te:=te;
-    vety[vetp]^.bpi:=bpi;
-    vety[vetp]^.bpo:=bpo;
+    vety[vetp]^.te:=LineText;
+    vety[vetp]^.bpi:=StringColor;
+    vety[vetp]^.bpo:=BackgroundColor;
     vety[vetp]^.pom:=pom;
 
     aktualizujpozici(self);
-    if autoscroll then
+    if AutoScroll then
       begin
         z:=sbs.Max;
         sbs.Position:=z;
@@ -430,22 +416,22 @@ var z:longint;
   end;
 
 
-function Tjakomemo.smaz_vetu(kam:longint):boolean;
+function TcolorMemo.RemoveLine(Position:longint):boolean;
 var z:longint;
    begin
     result:=true;
-    if (kam<0) or (kam>vetp) or (vety[kam]=nil) then begin Result:=false; exit end; {!!!}
-    dispose(vety[kam]);
-    for z:=kam to vetp-1 do vety[z]:=vety[z+1];
+    if (Position<0) or (Position>vetp) or (vety[Position]=nil) then begin Result:=false; exit end; {!!!}
+    dispose(vety[Position]);
+    for z:=Position to vetp-1 do vety[z]:=vety[z+1];
     vety[vetp]:=nil;
     dec(vetp);
-    if bl1>=kam then dec(bl1);if bl1<0 then bl1:=0;
-    if bl2>=kam then dec(bl2);if bl2<0 then bl2:=0;
+    if bl1>=Position then dec(bl1);if bl1<0 then bl1:=0;
+    if bl2>=Position then dec(bl2);if bl2<0 then bl2:=0;
     aktualizujpozici(self);
     if refr_en=0 then pab.Refresh;
    end;
 
-procedure Tjakomemo.smaz_vse;
+procedure TcolorMemo.RemoveAllLines;
 var z:longint;
   begin
     bls:=false;bl1:=0;bl2:=0;
@@ -455,48 +441,48 @@ var z:longint;
     if refr_en=0 then pab.Refresh;
   end;
 
-function  Tjakomemo.vloz_vetu(te:string;bpi,bpo:Tcolor;pom:longint;kam:longint):boolean;
+function  TcolorMemo.InsertLine(LineText:string;StringColor,BackgroundColor:Tcolor;pom:longint;Position:longint):boolean;
 var z:longint;
   begin
     result:=true;
-    if kam<0 then begin result:=false;exit;end;
-    if kam>vetp+1 then begin result:=false;exit;end;
-    if vetp>=mpv then begin Result:=false;exit end; {!!!}
+    if Position<0 then begin result:=false;exit;end;
+    if Position>vetp+1 then begin result:=false;exit;end;
+    if vetp>=MAX_LINES then begin Result:=false;exit end; {!!!}
     
     inc(vetp);
-    for z:=vetp downto kam+1 do vety[z]:=vety[z-1];
-    new(vety[kam]);
-    vety[kam]^.te:=te;
-    vety[kam]^.bpi:=bpi;
-    vety[kam]^.bpo:=bpo;
-    vety[kam]^.pom:=pom;
+    for z:=vetp downto Position+1 do vety[z]:=vety[z-1];
+    new(vety[Position]);
+    vety[Position]^.te:=LineText;
+    vety[Position]^.bpi:=StringColor;
+    vety[Position]^.bpo:=BackgroundColor;
+    vety[Position]^.pom:=pom;
     
     aktualizujpozici(self);
-    if autoscroll then
+    if AutoScroll then
       begin
-        poskroluj(kam);
+        Scroll(Position);
       end;
     if refr_en=0 then pab.Refresh;
   end;
 
 
-function  Tjakomemo.prepis_vetu(te:string;bpi,bpo:Tcolor;pom:longint;kam:longint;msk:longint):boolean;
+function  TcolorMemo.ReplaceLine(LineText:string;StringColor,BackgroundColor:Tcolor;pom:longint;Position:longint;msk:longint):boolean;
 var z:longint;
   begin
     result:=true;
-    if kam<0 then begin result:=false;exit;end;
-    if kam>vetp then begin result:=false;exit;end;
+    if Position<0 then begin result:=false;exit;end;
+    if Position>vetp then begin result:=false;exit;end;
 
-    if msk=0 then vety[kam]^.te:=te;
-    if msk=1 then vety[kam]^.bpi:=bpi;
-    if msk=2 then vety[kam]^.bpo:=bpo;
-    if msk=3 then vety[kam]^.pom:=pom;
+    if msk=0 then vety[Position]^.te:=LineText;
+    if msk=1 then vety[Position]^.bpi:=StringColor;
+    if msk=2 then vety[Position]^.bpo:=BackgroundColor;
+    if msk=3 then vety[Position]^.pom:=pom;
 
 //    aktualizujpozici(self);
-    if autoscroll then
+    if AutoScroll then
       begin
-        z:=kam;
-        if z>sbs.Max then z:=sbs.Max else z:=kam;
+        z:=Position;
+        if z>sbs.Max then z:=sbs.Max else z:=Position;
         sbs.Position:=z;
       end;
     if refr_en=0 then pab.Refresh;
@@ -504,27 +490,27 @@ var z:longint;
 
 
 
-function  Tjakomemo.cti_vetu(var te:string;var bpi,bpo:Tcolor;var pom:longint;kam:longint):boolean;
+function  TcolorMemo.ReadLine(var LineText:string;var StringColor,BackgroundColor:Tcolor;var pom:longint;Position:longint):boolean;
   begin
     result:=true;
-    if kam<0 then begin result:=false;exit;end;
-    if kam>vetp then begin result:=false;exit;end;
+    if Position<0 then begin result:=false;exit;end;
+    if Position>vetp then begin result:=false;exit;end;
 
-    te:=vety[kam]^.te;
-    bpi:=vety[kam]^.bpi;
-    bpo:=vety[kam]^.bpo;
-    pom:=vety[kam]^.pom;
+    LineText:=vety[Position]^.te;
+    StringColor:=vety[Position]^.bpi;
+    BackgroundColor:=vety[Position]^.bpo;
+    pom:=vety[Position]^.pom;
 end;
 
 
 
-function Tjakomemo.posledniveta:longint;
+function TcolorMemo.LastLineNumber:longint;
   begin
-    posledniveta:=vetp;
+    LastLineNumber:=vetp;
   end;
 
 
-procedure Tjakomemo.aktualizujpozici(sender:Tobject);
+procedure TcolorMemo.aktualizujpozici(sender:Tobject);
 var z:longint;
   begin
     sbs.left:=width-sbs.width-2;
@@ -550,7 +536,7 @@ var z:longint;
   end;
 
 
-procedure Tjakomemo.jmonpaint(sender:Tobject);
+procedure TcolorMemo.jmonpaint(sender:Tobject);
 var z,x:longint;
     b1,b2:TColor;
   begin
@@ -560,8 +546,8 @@ var z,x:longint;
       begin
         if x+z<=vetp then
           begin
-            if jevbloku(z+x) then
-              begin b1:=barva_bloku_pis;b2:=barva_bloku_pod;end
+            if LineNumberInSelBlock(z+x) then
+              begin b1:=MyTextColor;b2:=BackgourndColor;end
               else
               begin b2:=vety[z+x]^.bpo;b1:=vety[z+x]^.bpi;end;
             pab.Canvas.Brush.Color:=b2;
@@ -575,15 +561,15 @@ var z,x:longint;
   end;
 
 
-procedure Tjakomemo.sbscrll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
+procedure TcolorMemo.sbscrll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
   begin
 //    jmonpaint(sender);
     if refr_en=0 then pab.Invalidate;
   end;
 
-procedure Tjakomemo.zakaz_kresleni(st:boolean);
+procedure TcolorMemo.DisableAutoRepaint(RepaintEnabled:boolean);
   begin
-    if st then
+    if RepaintEnabled then
       inc(refr_en)
     else
       if refr_en>0 then
@@ -595,7 +581,7 @@ procedure Tjakomemo.zakaz_kresleni(st:boolean);
 
 
 
-procedure Tjakomemo.mys_pohyb(Sender: TObject; Shift: TShiftState; X,Y: Integer);
+procedure TcolorMemo.mys_pohyb(Sender: TObject; Shift: TShiftState; X,Y: Integer);
 var z:longint;
   begin
     mx:=x;
@@ -625,7 +611,7 @@ var z:longint;
 
   end;
   
-procedure Tjakomemo.mys_zmack(Sender: TObject;Button: TMouseButton;Shift: TShiftState; X,Y: Integer);
+procedure TcolorMemo.mys_zmack(Sender: TObject;Button: TMouseButton;Shift: TShiftState; X,Y: Integer);
   begin
     mx:=x;
     my:=y;
@@ -639,7 +625,7 @@ procedure Tjakomemo.mys_zmack(Sender: TObject;Button: TMouseButton;Shift: TShift
     
   end;
 
-procedure Tjakomemo.mys_zmack1(Sender: TObject;Button: TMouseButton;Shift: TShiftState;X,Y: Integer );
+procedure TcolorMemo.mys_zmack1(Sender: TObject;Button: TMouseButton;Shift: TShiftState;X,Y: Integer );
   begin
     mx:=x;
     my:=y;
@@ -656,15 +642,15 @@ procedure Tjakomemo.mys_zmack1(Sender: TObject;Button: TMouseButton;Shift: TShif
   end;
 
 
-procedure Tjakomemo.generuj_klik(Sender: TObject; X,Y: Integer;Button: TMouseButton;Shift: TShiftState);
+procedure TcolorMemo.generuj_klik(Sender: TObject; X,Y: Integer;Button: TMouseButton;Shift: TShiftState);
 var z:longint;
   begin
     z:=my_2_index(my);
-    if oncclick<>nil then oncclick(z,mb,ms);
+    if oncClick<>nil then oncClick(z,mb,ms);
   end;
 
 
-function Tjakomemo.my_2_index(z:longint):longint;
+function TcolorMemo.my_2_index(z:longint):longint;
   begin
     z:=(z-2) div vyska_radku+sbs.position;
 
@@ -673,26 +659,26 @@ function Tjakomemo.my_2_index(z:longint):longint;
     result:=z;
   end;
 
-function Tjakomemo.jevbloku(num:longint):boolean;
+function TcolorMemo.LineNumberInSelBlock(LineNumber:longint):boolean;
 var z,x,c:longint;
   begin
     z:=bl1;
     x:=bl2;
     if z>x then begin c:=z;z:=x;x:=c end;
-    result:=bls and (num>=0) and (num<=vetp) and (num>=z) and (num<=x);
+    result:=bls and (LineNumber>=0) and (LineNumber<=vetp) and (LineNumber>=z) and (LineNumber<=x);
   end;
 
 
 
-procedure Tjakomemo.mys_dclick_in(sender:Tobject);
+procedure TcolorMemo.mys_dclick_in(sender:Tobject);
 var z:longint;
   begin
     z:=my_2_index(my);
-    if oncdblclick<>nil then oncdblclick(z,mb,ms);
+    if oncDblClick<>nil then oncDblClick(z,mb,ms);
   end;
   
 
-procedure Tjakomemo.nastav_font(f:Tfont);
+procedure TcolorMemo.SetFont(f:Tfont);
   begin
     pab.font:=f;
     pab.canvas.Font:=f;
@@ -703,24 +689,24 @@ procedure Tjakomemo.nastav_font(f:Tfont);
     if refr_en=0 then pab.Refresh;
   end;
 
-procedure Tjakomemo.poskroluj(kam:longint);
+procedure TcolorMemo.Scroll(Position:longint);
 var z:longint;
   begin
-        if kam<0 then kam:=0;
-        if kam>vetp then kam:=vetp;
-        z:=kam;
-        if z>sbs.Max then z:=sbs.Max else z:=kam;
+        if Position<0 then Position:=0;
+        if Position>vetp then Position:=vetp;
+        z:=Position;
+        if z>sbs.Max then z:=sbs.Max else z:=Position;
         sbs.Position:=z;
         if refr_en=0 then pab.Refresh;
   end;
 
-procedure Tjakomemo.mys_WheelDown(Sender: TObject; Shift: TShiftState;
+procedure TcolorMemo.mys_WheelDown(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
    sbs.position:=sbs.position+1;
    pab.refresh;
 end;
-procedure Tjakomemo.mys_Wheelup(Sender: TObject; Shift: TShiftState;
+procedure TcolorMemo.mys_Wheelup(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
    sbs.position:=sbs.position-1;
@@ -729,25 +715,25 @@ end;
 
 
 
-function Tjakomemo.hledej(co:string;odkud:longint;smer_dolu:boolean;cely_radek:boolean):longint;
+function TcolorMemo.Search(What:string;From:longint;ToLastLine:boolean;WholeLine:boolean):longint;
 var z,v:longint;
 
     function je_to_tento(kery:longint):boolean;
       begin
         if (kery>=0) and (kery<=vetp) then
           begin
-            if cely_radek then
-                je_to_tento:=co=vety[kery]^.te
+            if WholeLine then
+                je_to_tento:=What=vety[kery]^.te
               else
-                je_to_tento:=pos(co,vety[kery]^.te)<>0;
+                je_to_tento:=pos(What,vety[kery]^.te)<>0;
           end
           else je_to_tento:=false;
       end;
   begin
-    z:=odkud;
-    if smer_dolu then v:=1 else v:=-1;
+    z:=From;
+    if ToLastLine then v:=1 else v:=-1;
     while (z>=0) and (z<=vetp) and (not je_to_tento(z)) do z:=z+v;
-    if je_to_tento(z) then hledej:=z else hledej:=-1;
+    if je_to_tento(z) then Search:=z else Search:=-1;
   end;
 
 

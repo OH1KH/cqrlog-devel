@@ -362,3 +362,10 @@
    - DXChat minium size now only 2px. Should not take any room if you do not need it.
      Cursor on size slider is double arrow, but when hidden the default
 								(2.1.0(114))
+04.09.2017
+
+   - merged from Petr's master today. Imported own version of DXCluster (has DXChat) and CQ-monitor changes that
+     has now send as pull request to master.
+     Tjakomemo is now translated by Petr as TColorMemo.  (Nice!) 
+								(2.1.0(115))
+0
