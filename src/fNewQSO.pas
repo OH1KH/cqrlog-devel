@@ -1410,9 +1410,8 @@ begin
 
    if frmMonWsjtx.Showing then
      begin
-       DisableRemoteMode;    //hides monitor
        frmMonWsjtx.Close;
-     end; //we do not open monitor at start, no need to save state
+     end;
 
     if frmCWKeys.Showing then
     begin
@@ -3258,6 +3257,7 @@ begin
     else
       CreateAutoBackup()
   end;
+  DisableRemoteMode;
   CloseAllWindows;
   SaveSettings;
   dmData.CloseDatabases
@@ -3807,7 +3807,8 @@ end;
 
 procedure TfrmNewQSO.acMonitorWsjtxExecute(Sender: TObject);
 begin
-  frmMonWsjtx.Show
+  frmMonWsjtx.Show;
+  cqrini.WriteBool('Window','MonWsjtx',true);
 end;
 
 procedure TfrmNewQSO.acBigSquareExecute(Sender: TObject);
@@ -6167,7 +6168,7 @@ begin
                   RememberAutoMode := chkAutoMode.Checked;
                   chkAutoMode.Checked   := False;
                   mnuWsjtxmonitor.Visible := True; //we show "monitor" in view-submenu when active
-                  acMonitorWsjtxExecute(nil)
+                  if cqrini.ReadBool('Window','MonWsjtx',true) then acMonitorWsjtxExecute(nil)
                 end
   end;
 
@@ -6181,15 +6182,21 @@ end;
 
 procedure TfrmNewQSO.DisableRemoteMode;
 begin
-  tmrFldigi.Enabled         := False;
-  tmrWsjtx.Enabled          := False;
-  mnuRemoteMode.Checked     := False;
-  mnuRemoteModeWsjt.Checked:= False;
+  if  mnuRemoteModeWsjt.Checked then
+  begin
+      tmrWsjtx.Enabled          := False;
+      mnuWsjtxmonitor.Visible := False;    //we do not show "monitor" in view-submenu when not active
+      if frmMonWsjtx.Showing then frmMonWsjtx.hide                    // and close monitor
+        else cqrini.WriteBool('Window','MonWsjtx',false);
+      mnuRemoteModeWsjt.Checked:= False;
+  end;
+  if mnuRemoteMode.Checked then
+  begin
+     tmrFldigi.Enabled         := False;
+     if FldigiXmlRpc then frmxfldigi.Visible := false;
+     mnuRemoteMode.Checked     := False;
+  end ;
   chkAutoMode.Checked:= RememberAutoMode;
-  mnuWsjtxmonitor.Visible := False;    //we do not show "monitor" in view-submenu when not active
-  frmMonWsjtx.Hide;                    // and close monitor
-  if FldigiXmlRpc then
-     frmxfldigi.Visible     := false;
   lblCall.Caption           := 'Call:';
   lblCall.Font.Color        := clDefault;
   edtCall.Enabled           := True;
