@@ -1408,7 +1408,7 @@ begin
     else
       cqrini.WriteBool('Window','WorkedGrids',False);
 
-   if frmMonWsjtx.Showing then
+   if (frmMonWsjtx <> nil) and frmMonWsjtx.Showing then
      begin
        frmMonWsjtx.Close;
      end;
@@ -2207,7 +2207,7 @@ begin
             old_ccall := '';
             old_cfreq := '';
             old_cmode := '';
-            frmMonWsjtx.NewBandMode(WsjtxBand,WsjtxMode)
+            if (frmMonWsjtx <> nil) and frmMonWsjtx.Showing then frmMonWsjtx.NewBandMode(WsjtxBand,WsjtxMode)
           end
         end; //Status
 
@@ -2265,7 +2265,7 @@ begin
           if dmData.DebugLevel>=1 then Writeln('Orig:',length(Buf),' Re:',length(RepBuf)); //should be 1 less
           if new and (WsjtxBand <>'')  and (WsjtxMode <>'')  and ((pos('CQ ',UpperCase(ParStr))=1)
             or (pos(UpperCase(cqrini.ReadString('Station', 'Call', '')),UpperCase(ParStr))=1))
-                and (mnuWsjtxmonitor.Visible) then
+                and ( (frmMonWsjtx <> nil) and frmMonWsjtx.Showing ) then
                    frmMonWsjtx.AddDecodedMessage(Timeline+' '+mode+' '+ParStr,WsjtxBand,Repbuf);
          //----------------------------------------------------
          end; // New decode
@@ -2274,7 +2274,7 @@ begin
     3 : begin //Clear
           ParStr := StFBuf(index);
           if dmData.DebugLevel>=1 then Writeln('Clear Id:', ParStr);
-          frmMonWsjtx.WsjtxMemo.lines.Clear
+          if (frmMonWsjtx <> nil) and frmMonWsjtx.Showing then frmMonWsjtx.WsjtxMemo.lines.Clear
         end; //Clear
 
     5 : begin  //qso logged
@@ -3807,6 +3807,7 @@ end;
 
 procedure TfrmNewQSO.acMonitorWsjtxExecute(Sender: TObject);
 begin
+  if (frmMonWsjtx = nil) then Application.CreateForm(TfrmMonWsjtx, frmMonWsjtx);
   frmMonWsjtx.Show;
   cqrini.WriteBool('Window','MonWsjtx',true);
 end;
@@ -4095,8 +4096,7 @@ begin
         dmUtils.LoadFontSettings(frmRbnMonitor);
       if frmPropDK0WCY.Showing then
         dmUtils.LoadFontSettings(frmPropDK0WCY);
-      if frmMonWsjtx.Showing then
-        dmUtils.LoadFontSettings(frmMonWsjtx);
+      if (frmMonWsjtx <> nil) and frmMonWsjtx.Showing then dmUtils.LoadFontSettings(frmMonWsjtx);
 
       dmData.LoadQSODateColorSettings;
     end;
@@ -6186,8 +6186,12 @@ begin
   begin
       tmrWsjtx.Enabled          := False;
       mnuWsjtxmonitor.Visible := False;    //we do not show "monitor" in view-submenu when not active
-      if frmMonWsjtx.Showing then frmMonWsjtx.hide                    // and close monitor
-        else cqrini.WriteBool('Window','MonWsjtx',false);
+      if (frmMonWsjtx <> nil) then
+       begin
+        if frmMonWsjtx.Showing then frmMonWsjtx.hide // and close monitor
+         else cqrini.WriteBool('Window','MonWsjtx',false);
+        FreeAndNil(frmMonWsjtx); //to release flooding richmemo
+       end;
       mnuRemoteModeWsjt.Checked:= False;
   end;
   if mnuRemoteMode.Checked then
