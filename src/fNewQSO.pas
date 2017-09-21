@@ -1996,8 +1996,8 @@ var
   date  : TDateTime;
   sDate : String='';
   Mask  : String='';
-
-
+  FirstWord: String;
+  MyCall : String;
 
   function UiFBuf(var index:integer):uint32;
   begin
@@ -2068,10 +2068,10 @@ var
     inc(index)
   end;
 
-
 begin
   if Wsjtxsock.WaitingData > 0 then
   Begin
+  MyCall := UpperCase(cqrini.ReadString('Station', 'Call', ''));
   while Wsjtxsock.WaitingData > 0 do     //test for clear all datagrams ready at one go
   begin
   Buf := Wsjtxsock.RecvPacket(1000);
@@ -2262,9 +2262,12 @@ begin
           if dmData.DebugLevel>=1 then Writeln(ParStr);
           //----------------------------------------------------
           Repbuf := Repbuf+copy(Buf,RepStart,index-RepStart);  //Reply str tail part
+          FirstWord := copy(ParStr,1,pos(' ',ParStr)-1);
           if dmData.DebugLevel>=1 then Writeln('Orig:',length(Buf),' Re:',length(RepBuf)); //should be 1 less
-          if new and (WsjtxBand <>'')  and (WsjtxMode <>'')  and ((pos('CQ ',UpperCase(ParStr))=1)
-            or (pos(UpperCase(cqrini.ReadString('Station', 'Call', '')),UpperCase(ParStr))=1))
+          //if new and (WsjtxBand <>'')  and (WsjtxMode <>'')  and ((pos('CQ ',UpperCase(ParStr))=1)
+           // or (pos(UpperCase(cqrini.ReadString('Station', 'Call', '')),UpperCase(ParStr))=1))
+           if new and (WsjtxBand <>'')  and (WsjtxMode <>'')
+             and ((FirstWord = 'CQ') or (pos (FirstWord,MyCall) > 0))
                 and ( (frmMonWsjtx <> nil) and frmMonWsjtx.Showing ) then
                    frmMonWsjtx.AddDecodedMessage(Timeline+' '+mode+' '+ParStr,WsjtxBand,Repbuf);
          //----------------------------------------------------

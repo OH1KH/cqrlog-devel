@@ -747,7 +747,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <SearchPaths>
-      <Libraries Value="$(LazarusDir)/lcl"/>
+      <Libraries Value="$(LazarusDir)/lcl;/usr/lib/gcc/x86_64-redhat-linux/7/"/>
       <OtherUnitFiles Value="lnet/lib;richmemo;richmemo/gtk2"/>
     </SearchPaths>
     <Parsing>
