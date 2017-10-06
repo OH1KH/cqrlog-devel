@@ -401,3 +401,7 @@
      preferences/station callsign. This should fit now also when you are using extended callsign XX/YOURCALL or
      YOURCALL/XX in your log as wsjt-x traffic uses always plain callsigns during qsos.
 								(2.1.0(118))
+06.10.2017
+   - Band Map: Copied setting "Show only active band" from Preferences to Band map filter settings. (As it really is 
+     a filter). It is now in both places, but is easier and faster to change via Band Map Filter dialog.
+								(2.1.0(119))
