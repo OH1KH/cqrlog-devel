@@ -408,3 +408,6 @@
 
    -Export: "Choose fields to export" now has button 'Re/Set All̈́' for fast setting/resetting all checkboxes in one touch.
 								(2.1.0(120))
+
+   -NewQso: Bugfix "mode: Auto" checkbox state was not correctly returned after program restart.
+								(2.1.0(121))
