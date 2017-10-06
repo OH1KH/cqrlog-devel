@@ -405,3 +405,6 @@
    - Band Map: Copied setting "Show only active band" from Preferences to Band map filter settings. (As it really is 
      a filter). It is now in both places, but is easier and faster to change via Band Map Filter dialog.
 								(2.1.0(119))
+
+   -Export: "Choose fields to export" now has button 'Re/Set All̈́' for fast setting/resetting all checkboxes in one touch.
+								(2.1.0(120))

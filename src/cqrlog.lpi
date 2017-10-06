@@ -701,6 +701,7 @@
         <Filename Value="fExportPref.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmExportPref"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit93>
       <Unit94>
