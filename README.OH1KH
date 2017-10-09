@@ -426,3 +426,6 @@
    - DXCluster/Chat_RX window: Defaut size is now 2 (invisible). Resize it if you need it from button "Preferences/Caht size/[use slider]"
      Value will be saved with used log, so this affects only for first use ever.
 								(2.1.0(122))
+
+   - WSJTX Monitor:More specific print out for extended cq direction to help operator decide should he answer this cq or not.
+								(2.1.0(123))

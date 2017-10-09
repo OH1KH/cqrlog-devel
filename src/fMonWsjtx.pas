@@ -573,18 +573,30 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
              if ((mycont <>'') and (cont <> '')) then //we can do some comparisons of continents
               Begin
                    if ((CqDir = 'DX') and (mycont = cont)) then
+                     begin
                        //I'm not DX for caller: color to warn directed call
-                      AddColorStr(' '+copy(PadRight('*'+msgRes,CountryLen),1,CountryLen)+' ',extCqCall)
+                       AddColorStr(' '+copy(PadRight('*'+msgRes,CountryLen),1,CountryLen),extCqCall);
+                       AddColorStr(' Calling:',clBlack);
+                       AddColorStr(CqDir+' ',extCqCall);
+                     end
                     else  //calling specified continent
                      if ((CqDir <> 'DX') and (CqDir <> mycont)) then
-                      //CQ NOT directed to my continent: color to warn directed call
-                      AddColorStr(' '+copy(PadRight('*'+msgRes,CountryLen),1,CountryLen)+' ',extCqCall)
+                      begin
+                        //CQ NOT directed to my continent: color to warn directed call
+                        AddColorStr(' '+copy(PadRight('*'+msgRes,CountryLen),1,CountryLen),extCqCall);
+                        AddColorStr(' Calling:',clBlack);
+                        AddColorStr(CqDir+' ',extCqCall);
+                      end
                       else  // should be ok to answer this directed cq
                        AddColorStr(' '+copy(PadRight(msgRes,CountryLen),1,CountryLen)+' ',clBlack)
               end
              else
-                // we can not compare continents, but it is directed cq. Best to warn with color anyway
-                AddColorStr(' '+copy(PadRight('*'+msgRes,CountryLen),1,CountryLen)+' ',extCqCall)
+                begin
+                  // we can not compare continents, but it is directed cq. Best to warn with color anyway
+                  AddColorStr(' '+copy(PadRight('*'+msgRes,CountryLen),1,CountryLen),extCqCall);
+                  AddColorStr(' Calling:',clBlack);
+                  AddColorStr(CqDir+' ',extCqCall);
+                end
            else
               // should be ok to answer this is not directed cq
               AddColorStr(' '+copy(PadRight(msgRes,CountryLen),1,CountryLen)+' ',clBlack);
