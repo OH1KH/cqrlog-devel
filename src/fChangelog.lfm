@@ -2,26 +2,26 @@ object frmChangelog: TfrmChangelog
   Left = 427
   Height = 480
   Top = 275
-  Width = 628
+  Width = 655
   BorderStyle = bsDialog
   Caption = 'Changelog'
   ClientHeight = 480
-  ClientWidth = 628
+  ClientWidth = 655
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '0.9.30'
+  LCLVersion = '1.6.4.0'
   object Panel1: TPanel
     Left = 0
     Height = 34
     Top = 446
-    Width = 628
+    Width = 655
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 34
-    ClientWidth = 628
+    ClientWidth = 655
     TabOrder = 0
     object Button1: TButton
-      Left = 545
+      Left = 572
       Height = 25
       Top = 5
       Width = 75
@@ -34,10 +34,10 @@ object frmChangelog: TfrmChangelog
   end
   object IpHtmlPanel1: TIpHtmlPanel
     Left = 0
-    Height = 446
-    Top = 0
-    Width = 628
-    Align = alClient
+    Height = 366
+    Top = 80
+    Width = 655
+    Align = alBottom
     DataProvider = IpFileDataProvider1
     FixedTypeface = 'Courier New'
     DefaultTypeFace = 'default'
@@ -47,10 +47,31 @@ object frmChangelog: TfrmChangelog
     PrintSettings.MarginTop = 0.5
     PrintSettings.MarginRight = 0.5
     PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 320
+    PrintSettings.Preview.Top = 200
+    PrintSettings.Preview.Width = 960
+    PrintSettings.Preview.Height = 600
     TabOrder = 1
+    OnClick = IpHtmlPanel1Click
+  end
+  object lblBetaVersion: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    Left = 83
+    Height = 75
+    Top = 0
+    Width = 489
+    Alignment = taCenter
+    Caption = 'THIS IS A BETA TEST BINARY. '#10'PLEASE READ THESE FILES:'#10' "README.OH1KH", "README.testing" and "CqrlogAdditions2.pdf" '#10'ZIPPED WITH THIS BINARY!'#10'Thank you!'
+    Color = 26111
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+    Transparent = False
   end
   object IpFileDataProvider1: TIpFileDataProvider
-    left = 63
-    top = 35
+    left = 88
+    top = 80
   end
 end

@@ -1,5 +1,14 @@
 10.3.2017 started  to move additions from 1.9.0
 
+
+
+--------------------------------------------------------------------------------------------------
+           YOU WILL FIND LATEST UPDATES COMMENTED AT THE END OF THIS FILE !!!!
+-------------------------------------------------------------------------------------------------- 
+
+
+
+
  -You may find some help from this file. It is for 1.9.0 version and has "too much" for this 2.0.4
   http://www.saunalahti.fi/sakny/CqrlogAdditions.pdf
 
@@ -411,3 +420,9 @@
 
    -NewQso: Bugfix "mode: Auto" checkbox state was not correctly returned after program restart.
 								(2.1.0(121))
+09.10.2017
+
+   - Changelog: Added comment message about the test binary with request to read the accompanying documents.
+   - DXCluster/Chat_RX window: Defaut size is now 2 (invisible). Resize it if you need it from button "Preferences/Caht size/[use slider]"
+     Value will be saved with used log, so this affects only for first use ever.
+								(2.1.0(122))

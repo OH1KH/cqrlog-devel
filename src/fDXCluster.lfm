@@ -348,7 +348,7 @@ object frmDXCluster: TfrmDXCluster
         TabOrder = 2
         object pnlChat: TPanel
           Left = 0
-          Height = 80
+          Height = 2
           Top = 0
           Width = 699
           Align = alTop

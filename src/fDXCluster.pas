@@ -558,7 +558,7 @@ begin
 
   if cqrini.ReadBool('DXCluster', 'ConAfterRun', False) then
     tmrAutoConnect.Enabled := True;
-  pnlChat.Height := cqrini.ReadInteger('DXCluster','ChatSize',pnlTelnet.Height div 5);  //default 1/5 of Telnet
+  pnlChat.Height := cqrini.ReadInteger('DXCluster','ChatSize',2);  //default now 2 = invisible
 end;
 
 procedure TfrmDXCluster.btnClearClick(Sender: TObject);
