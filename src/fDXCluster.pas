@@ -707,13 +707,13 @@ begin
     tmp  := trim(tmp);
     if dmData.DebugLevel >=1 then Writeln(tmp);
 
-    if Pos(UpperCase(cqrini.ReadString('Station', 'Call', '')) + ' DE', UpperCase(tmp)) > 0 then
+    if Pos(UpperCase(telUser) + ' DE', UpperCase(tmp)) > 0 then
       Begin
         ChLine := tmp;
         if dmData.DebugLevel>=1 then Writeln('pos: ', pos('>',Chline) ,' len:', length(Chline));
         if pos('>',Chline) < length(Chline) then //if not dxcluster prompt
          Begin //remove "mycall de" add local timestamp from PC
-           itmp := length(cqrini.ReadString('Station', 'Call', ''))+4; //4 = ' DE '
+           itmp := length(telUser)+4; //4 = ' DE '
            ChLine := FormatDateTime('hh:nn',Now)+'_'+copy(Chline,itmp+1,length(Chline)-itmp);
            if dmData.DebugLevel>=1 then Writeln('Chat :',ChLine);
            EnterCriticalsection(frmDXCluster.csTelnet);

@@ -429,3 +429,6 @@
 
    - WSJTX Monitor:More specific print out for extended cq direction to help operator decide should he answer this cq or not.
 								(2.1.0(123))
+   - DXCluster: Redirectiong to Chat window uses now connetion username (call) instead of log call that may be different than used to log to DXCluster.
+								(2.1.0(123))
+
