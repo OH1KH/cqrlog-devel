@@ -385,6 +385,12 @@ var
   HasNum,
   HasChr     :Boolean;
 
+procedure extcqprint;  //same used 3 times below
+begin
+ AddColorStr(' '+copy(PadRight(msgRes,CountryLen),1,CountryLen-6),extCqCall);
+ AddColorStr(' CQ:',clBlack);
+ AddColorStr(CqDir+' ',extCqCall);
+end;
 
 Begin   //TfrmMonWsjtx.AddDecodedMessage
 
@@ -575,27 +581,21 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
                    if ((CqDir = 'DX') and (mycont = cont)) then
                      begin
                        //I'm not DX for caller: color to warn directed call
-                       AddColorStr(' '+copy(PadRight('*'+msgRes,CountryLen),1,CountryLen),extCqCall);
-                       AddColorStr(' Calling:',clBlack);
-                       AddColorStr(CqDir+' ',extCqCall);
+                        extcqprint;
                      end
                     else  //calling specified continent
                      if ((CqDir <> 'DX') and (CqDir <> mycont)) then
                       begin
                         //CQ NOT directed to my continent: color to warn directed call
-                        AddColorStr(' '+copy(PadRight('*'+msgRes,CountryLen),1,CountryLen),extCqCall);
-                        AddColorStr(' Calling:',clBlack);
-                        AddColorStr(CqDir+' ',extCqCall);
-                      end
+                        extcqprint;
+                        end
                       else  // should be ok to answer this directed cq
                        AddColorStr(' '+copy(PadRight(msgRes,CountryLen),1,CountryLen)+' ',clBlack)
               end
              else
                 begin
                   // we can not compare continents, but it is directed cq. Best to warn with color anyway
-                  AddColorStr(' '+copy(PadRight('*'+msgRes,CountryLen),1,CountryLen),extCqCall);
-                  AddColorStr(' Calling:',clBlack);
-                  AddColorStr(CqDir+' ',extCqCall);
+                  extcqprint;
                 end
            else
               // should be ok to answer this is not directed cq
