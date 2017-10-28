@@ -1,7 +1,7 @@
 object frmMonWsjtx: TfrmMonWsjtx
-  Left = 419
+  Left = 641
   Height = 354
-  Top = 77
+  Top = 137
   Width = 523
   Caption = 'Wsjt-x CQ-monitor'
   ClientHeight = 354
@@ -110,38 +110,6 @@ object frmMonWsjtx: TfrmMonWsjtx
     OnChange = chkLocAlertChange
     TabOrder = 3
   end
-  object lblAlert1: TLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = EditAlert
-    AnchorSideBottom.Control = EditAlert
-    AnchorSideBottom.Side = asrCenter
-    Left = 191
-    Height = 15
-    Top = 323
-    Width = 27
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Top = 8
-    BorderSpacing.Right = 3
-    Caption = 'Text'
-    ParentColor = False
-  end
-  object lblAlert2: TLabel
-    AnchorSideLeft.Control = EditAlert
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Side = asrBottom
-    AnchorSideBottom.Control = EditAlert
-    AnchorSideBottom.Side = asrCenter
-    Left = 304
-    Height = 15
-    Top = 323
-    Width = 31
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 3
-    BorderSpacing.Top = 8
-    Caption = 'Alert'
-    ParentColor = False
-  end
   object EditAlert: TEdit
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
@@ -154,6 +122,7 @@ object frmMonWsjtx: TfrmMonWsjtx
     Width = 80
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 6
+    OnEnter = EditAlertEnter
     OnExit = EditAlertExit
     TabOrder = 4
   end
@@ -181,6 +150,39 @@ object frmMonWsjtx: TfrmMonWsjtx
     Caption = 'noTxt'
     OnChange = noTxtChange
     TabOrder = 6
+  end
+  object tbTCAlert: TToggleBox
+    AnchorSideRight.Control = EditAlert
+    AnchorSideBottom.Control = EditAlert
+    AnchorSideBottom.Side = asrCenter
+    Left = 173
+    Height = 32
+    Top = 315
+    Width = 45
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 3
+    Caption = 'Text'
+    Font.Height = -13
+    Font.Name = 'Sans'
+    OnChange = tbTCAlertChange
+    ParentFont = False
+    TabOrder = 7
+  end
+  object tbAlert: TToggleBox
+    AnchorSideLeft.Control = EditAlert
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Side = asrCenter
+    AnchorSideBottom.Control = EditAlert
+    AnchorSideBottom.Side = asrBottom
+    Left = 304
+    Height = 32
+    Top = 315
+    Width = 45
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 3
+    Caption = 'Alert'
+    OnChange = tbAlertChange
+    TabOrder = 8
   end
   object popColors: TPopupMenu
     left = 104

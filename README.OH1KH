@@ -435,3 +435,8 @@
 15.09.2017
    - WSJTX monitor: Minor change to print out for extended cq direction.
 								(2.1.0(125))
+28.10.2017
+   - WSJTX monitor: Addition to text-alert. Works as before text-in-text for complete monitor line, or looks just only callsign with text-in-text,
+     starts with (XY*) or ends with (*XY). One asterisk can be used at start or at end of search string to indicate start or end search.
+     Several comma separated search strings can be used at callsign search. OH*,*OH,A,B,C,*D
+								(2.1.0(126))
