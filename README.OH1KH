@@ -423,7 +423,7 @@
 09.10.2017
 
    - Changelog: Added comment message about the test binary with request to read the accompanying documents.
-   - DXCluster/Chat_RX window: Defaut size is now 2 (invisible). Resize it if you need it from button "Preferences/Caht size/[use slider]"
+   - DXCluster/Chat_RX window: Defaut size is now 2 (invisible). Resize it if you need it from button "Preferences/Chat size/[use slider]"
      Value will be saved with used log, so this affects only for first use ever.
 								(2.1.0(122))
 
@@ -440,3 +440,9 @@
      starts with (XY*) or ends with (*XY). One asterisk can be used at start or at end of search string to indicate start or end search.
      Several comma separated search strings can be used at callsign search. OH*,*OH,A,B,C,*D
 								(2.1.0(126))
+29.10.2017
+   - WSJTX monitor: Changed all alert check boxes to buttons. Tried to make better execption handling for "innovative" user ways to call 
+     directed CQ. (this does not fix all of them...never!)
+								(2.1.0(127))
+
+

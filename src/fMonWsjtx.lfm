@@ -76,67 +76,21 @@ object frmMonWsjtx: TfrmMonWsjtx
     OnChange = chkHistoryChange
     TabOrder = 1
   end
-  object chkmyAlert: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 5
-    Height = 23
-    Top = 320
-    Width = 76
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 5
-    BorderSpacing.Bottom = 11
-    Caption = 'MyAlert'
-    OnChange = chkmyAlertChange
-    TabOrder = 2
-  end
-  object chkLocAlert: TCheckBox
-    AnchorSideTop.Control = WsjtxMemo
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = chkmyAlert
-    AnchorSideBottom.Side = asrBottom
-    Left = 439
-    Height = 23
-    Top = 320
-    Width = 79
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Top = 4
-    BorderSpacing.Right = 5
-    Caption = 'LocAlert'
-    OnChange = chkLocAlertChange
-    TabOrder = 3
-  end
   object EditAlert: TEdit
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Side = asrBottom
-    AnchorSideBottom.Control = chkmyAlert
-    AnchorSideBottom.Side = asrCenter
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 221
     Height = 32
-    Top = 315
+    Top = 318
     Width = 80
     Anchors = [akLeft, akBottom]
-    BorderSpacing.Bottom = 6
+    BorderSpacing.Bottom = 4
     OnEnter = EditAlertEnter
     OnExit = EditAlertExit
-    TabOrder = 4
-  end
-  object chkmyAll: TCheckBox
-    AnchorSideLeft.Control = chkmyAlert
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = chkmyAlert
-    Left = 81
-    Height = 23
-    Top = 320
-    Width = 43
-    Caption = 'All'
-    OnChange = chkmyAllChange
-    TabOrder = 5
+    TabOrder = 2
   end
   object noTxt: TCheckBox
     AnchorSideLeft.Control = chkHistory
@@ -149,16 +103,16 @@ object frmMonWsjtx: TfrmMonWsjtx
     BorderSpacing.Top = 6
     Caption = 'noTxt'
     OnChange = noTxtChange
-    TabOrder = 6
+    TabOrder = 3
   end
   object tbTCAlert: TToggleBox
     AnchorSideRight.Control = EditAlert
     AnchorSideBottom.Control = EditAlert
     AnchorSideBottom.Side = asrCenter
-    Left = 173
+    Left = 168
     Height = 32
-    Top = 315
-    Width = 45
+    Top = 318
+    Width = 50
     Anchors = [akRight, akBottom]
     BorderSpacing.Right = 3
     Caption = 'Text'
@@ -166,7 +120,7 @@ object frmMonWsjtx: TfrmMonWsjtx
     Font.Name = 'Sans'
     OnChange = tbTCAlertChange
     ParentFont = False
-    TabOrder = 7
+    TabOrder = 4
   end
   object tbAlert: TToggleBox
     AnchorSideLeft.Control = EditAlert
@@ -176,12 +130,67 @@ object frmMonWsjtx: TfrmMonWsjtx
     AnchorSideBottom.Side = asrBottom
     Left = 304
     Height = 32
-    Top = 315
-    Width = 45
+    Top = 318
+    Width = 50
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 3
     Caption = 'Alert'
+    Font.Color = clRed
     OnChange = tbAlertChange
+    ParentFont = False
+    TabOrder = 5
+  end
+  object tbLocAlert: TToggleBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = WsjtxMemo
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = EditAlert
+    AnchorSideBottom.Side = asrBottom
+    Left = 473
+    Height = 32
+    Top = 318
+    Width = 45
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Left = 3
+    BorderSpacing.Right = 3
+    Caption = 'Loc'
+    Font.Color = clRed
+    OnChange = tbLocAlertChange
+    ParentFont = False
+    TabOrder = 6
+  end
+  object tbmyAlert: TToggleBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Side = asrCenter
+    AnchorSideBottom.Control = EditAlert
+    AnchorSideBottom.Side = asrBottom
+    Left = 3
+    Height = 32
+    Top = 318
+    Width = 45
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 3
+    Caption = 'My'
+    Font.Color = clRed
+    OnChange = tbmyAlertChange
+    ParentFont = False
+    TabOrder = 7
+  end
+  object tbmyAll: TToggleBox
+    AnchorSideLeft.Control = tbmyAlert
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Side = asrCenter
+    AnchorSideBottom.Control = EditAlert
+    AnchorSideBottom.Side = asrBottom
+    Left = 48
+    Height = 32
+    Top = 318
+    Width = 45
+    Anchors = [akLeft, akBottom]
+    Caption = 'All'
+    Font.Color = clRed
+    OnChange = tbmyAllChange
+    ParentFont = False
     TabOrder = 8
   end
   object popColors: TPopupMenu
