@@ -444,5 +444,15 @@
    - WSJTX monitor: Changed all alert check boxes to buttons. Tried to make better execption handling for "innovative" user ways to call 
      directed CQ. (this does not fix all of them...never!)
 								(2.1.0(127))
-
+01.11.2017
+   - WSJTX monitor: Added new feature "Follow". When "flw" is checked opens new part to bottom of window. Left editbox receives followed callsing.
+     Right side will show decoded line where that callsign is as originating (2nd) call and is NOT CQ or directed to YOUR CALL.
+     Line has: timestamp, deltafreq, message text
+     Status of checks and the call is saved over program restart. No alerts are connected to this line.
+     The purpose of this line is to make easier to follow a DX (from all other deceded lines) who does not stay on permanent frequency,
+     but jumps around answering callers.
+   - Help files are updated. You should find similar things from internal help than from the CqrlogAdditions2.pdf
+     (but only if you get folder src/help from my GitHub https://github.com/OH1KH/cqrlog-devel and overlay the help
+     folder to your exisiting install. It is not added to test_binary.zip)
+								(2.1.0(128))
 

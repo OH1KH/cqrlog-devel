@@ -1,7 +1,7 @@
 object frmDXCluster: TfrmDXCluster
-  Left = 129
+  Left = 304
   Height = 445
-  Top = 116
+  Top = 53
   Width = 709
   HelpType = htKeyword
   HelpKeyword = 'help/h21.html#ah19'

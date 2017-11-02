@@ -2264,12 +2264,22 @@ begin
           Repbuf := Repbuf+copy(Buf,RepStart,index-RepStart);  //Reply str tail part
           FirstWord := copy(ParStr,1,pos(' ',ParStr)-1);
           if dmData.DebugLevel>=1 then Writeln('Orig:',length(Buf),' Re:',length(RepBuf)); //should be 1 less
-          //if new and (WsjtxBand <>'')  and (WsjtxMode <>'')  and ((pos('CQ ',UpperCase(ParStr))=1)
-           // or (pos(UpperCase(cqrini.ReadString('Station', 'Call', '')),UpperCase(ParStr))=1))
-           if new and (WsjtxBand <>'')  and (WsjtxMode <>'')
-             and ((FirstWord = 'CQ') or (pos (FirstWord,MyCall) > 0))
-                and ( (frmMonWsjtx <> nil) and frmMonWsjtx.Showing ) then
-                   frmMonWsjtx.AddDecodedMessage(Timeline+' '+mode+' '+ParStr,WsjtxBand,Repbuf);
+           //if monitor runs ok
+           if ( new and (frmMonWsjtx <> nil) and frmMonWsjtx.Showing and (WsjtxBand <>'')  and (WsjtxMode <>'')) then
+             Begin
+               //if CQ or Mycall
+               if ((FirstWord = 'CQ') or (pos (FirstWord,MyCall) > 0)) then
+                Begin
+                    frmMonWsjtx.AddDecodedMessage(Timeline+' '+mode+' '+ParStr,WsjtxBand,Repbuf)
+                end
+               else  //if followed call
+               Begin
+                  if dmData.DebugLevel>=1 then Writeln('++++++in Follow!');
+                  if (frmMonWsjtx.tbFollow.Checked and (pos(frmMonWsjtx.edtFollowCall.Text,ParStr) > pos(' ',ParStr)) ) then  //not first word
+                     frmMonWsjtx.AddFollowedMessage(Timeline+' '+intToStr(ParNum)+' '+ParStr,Repbuf);
+               end;
+             end;
+
          //----------------------------------------------------
          end; // New decode
        end; //Decode
@@ -2277,7 +2287,11 @@ begin
     3 : begin //Clear
           ParStr := StFBuf(index);
           if dmData.DebugLevel>=1 then Writeln('Clear Id:', ParStr);
-          if (frmMonWsjtx <> nil) and frmMonWsjtx.Showing then frmMonWsjtx.WsjtxMemo.lines.Clear
+          if (frmMonWsjtx <> nil) and frmMonWsjtx.Showing then
+           Begin
+             frmMonWsjtx.WsjtxMemo.lines.Clear;
+             frmMonWsjtx.edtFollow.Text := '';
+           end;
         end; //Clear
 
     5 : begin  //qso logged

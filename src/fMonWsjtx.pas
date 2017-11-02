@@ -6,20 +6,27 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, maskedit, ColorBox, Menus, RichMemo, strutils,  process, RegExpr;
+  StdCtrls, maskedit, ColorBox, Menus, ExtCtrls, RichMemo, strutils, process,
+  RegExpr;
 
 type
 
   { TfrmMonWsjtx }
 
   TfrmMonWsjtx = class(TForm)
+    cbflw: TCheckBox;
+    EditAlert: TEdit;
+    edtFollow: TEdit;
+    edtFollowCall: TEdit;
+    pnlFollow: TPanel;
+    pnlAlert: TPanel;
+    tbAlert: TToggleBox;
     noTxt: TCheckBox;
     chkHistory: TCheckBox;
     cmCqDx: TMenuItem;
     cmFont: TMenuItem;
     popFontDlg: TFontDialog;
     popColorDlg: TColorDialog;
-    EditAlert: TEdit;
     lblBand: TLabel;
     lblMode: TLabel;
     cmHead: TMenuItem;
@@ -28,12 +35,13 @@ type
     cmAny: TMenuItem;
     cmHere: TMenuItem;
     popColors: TPopupMenu;
-    tbmyAll: TToggleBox;
-    tbmyAlert: TToggleBox;
     tbLocAlert: TToggleBox;
+    tbmyAll: TToggleBox;
+    tbmyAlrt: TToggleBox;
+    tbFollow: TToggleBox;
     tbTCAlert: TToggleBox;
-    tbAlert: TToggleBox;
     WsjtxMemo: TRichMemo;
+    procedure cbflwChange(Sender: TObject);
     procedure chkHistoryChange(Sender: TObject);
     procedure cmAnyClick(Sender: TObject);
     procedure cmBandClick(Sender: TObject);
@@ -43,16 +51,20 @@ type
     procedure cmNeverClick(Sender: TObject);
     procedure EditAlertEnter(Sender: TObject);
     procedure EditAlertExit(Sender: TObject);
+    procedure edtFollowCallEnter(Sender: TObject);
+    procedure edtFollowCallExit(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure noTxtChange(Sender: TObject);
     procedure tbAlertChange(Sender: TObject);
+    procedure tbFollowChange(Sender: TObject);
     procedure tbLocAlertChange(Sender: TObject);
-    procedure tbmyAlertChange(Sender: TObject);
     procedure tbmyAllChange(Sender: TObject);
+    procedure tbmyAlrtChange(Sender: TObject);
     procedure tbTCAlertChange(Sender: TObject);
+    procedure WsjtxMemoChange(Sender: TObject);
     procedure WsjtxMemoDblClick(Sender: TObject);
   private
     procedure FocusLastLine;
@@ -65,6 +77,7 @@ type
     procedure CleanWsjtxMemo;
     function NextElement(Message:string;var index:integer):String;
     procedure AddDecodedMessage(Message,Band,Reply:string);
+    procedure AddFollowedMessage(Message,Reply:string);
     procedure NewBandMode(Band,Mode:string);
     { public declarations }
   end;
@@ -222,9 +235,23 @@ end;
 procedure TfrmMonWsjtx.EditAlertExit(Sender: TObject);
 begin
       cqrini.WriteString('MonWsjtx','TextAlert',EditAlert.Text);
+      cqrini.WriteBool('MonWsjtx','Follow',tbFollow.Checked);
       EditAlert.Text := trim(EditAlert.Text);
       EditedText := EditAlert.Text;
 end;
+
+procedure TfrmMonWsjtx.edtFollowCallEnter(Sender: TObject);
+begin
+  tbFollow.Checked := false;
+end;
+
+procedure TfrmMonWsjtx.edtFollowCallExit(Sender: TObject);
+begin
+  edtFollowCall.Text := trim(UpperCase(edtFollowCall.Text));   //sure upcase-trimmed
+  cqrini.WriteString('MonWsjtx','FollowCall',edtFollowCall.Text);
+end;
+
+
 
 procedure TfrmMonWsjtx.cmBandClick(Sender: TObject);
 begin
@@ -265,6 +292,23 @@ begin
   cqrini.WriteBool('MonWsjtx','NoHistory',chkHistory.Checked);
 end;
 
+procedure TfrmMonWsjtx.cbflwChange(Sender: TObject);
+begin
+  cqrini.WriteBool('MonWsjtx','FollowShow',cbflw.Checked);
+  if cbflw.Checked then
+  begin
+     WsjtxMemo.BorderSpacing.Bottom:=96;
+     pnlFollow.Visible:=true;
+     edtFollow.Text :='';;
+  end
+  else
+  begin
+     tbFollow.Checked:=false;
+     WsjtxMemo.BorderSpacing.Bottom:=51;
+     pnlFollow.Visible:=false;
+  end;
+end;
+
 procedure TfrmMonWsjtx.noTxtChange(Sender: TObject);
 begin
    cqrini.WriteBool('MonWsjtx','NoTxt',noTxt.Checked);
@@ -290,6 +334,22 @@ begin
      end;
 end;
 
+procedure TfrmMonWsjtx.tbFollowChange(Sender: TObject);
+begin
+  cqrini.WriteBool('MonWsjtx','Follow',tbFollow.Checked);
+  if tbFollow.Checked then
+  begin
+      tbFollow.Font.Color := clGreen;
+      tbFollow.Font.Style := [fsBold];
+      end
+   else
+    begin
+      tbFollow.Font.Color := clRed;
+      tbFollow.Font.Style := [];
+      edtFollow.Text :='';
+    end;
+end;
+
 procedure TfrmMonWsjtx.tbLocAlertChange(Sender: TObject);
 begin
    cqrini.WriteBool('MonWsjtx','LocAlert',tbLocAlert.Checked);
@@ -302,21 +362,6 @@ begin
     begin
       tbLocAlert.Font.Color := clRed;
       tbLocAlert.Font.Style := [];
-    end;
-end;
-
-procedure TfrmMonWsjtx.tbmyAlertChange(Sender: TObject);
-begin
-   cqrini.WriteBool('MonWsjtx','MyAlert',tbmyAlert.Checked);
-  if tbmyAlert.Checked then
-  begin
-      tbmyAlert.Font.Color := clGreen;
-      tbmyAlert.Font.Style := [fsBold];
-      end
-   else
-    begin
-      tbmyAlert.Font.Color := clRed;
-      tbmyAlert.Font.Style := [];
     end;
 end;
 
@@ -335,6 +380,21 @@ begin
     end;
 end;
 
+procedure TfrmMonWsjtx.tbmyAlrtChange(Sender: TObject);
+begin
+     cqrini.WriteBool('MonWsjtx','MyAlert',tbmyAlrt.Checked);
+  if tbmyAlrt.Checked then
+  begin
+      tbmyAlrt.Font.Color := clGreen;
+      tbmyAlrt.Font.Style := [fsBold];
+      end
+   else
+    begin
+      tbmyAlrt.Font.Color := clRed;
+      tbmyAlrt.Font.Style := [];
+    end;
+end;
+
 procedure TfrmMonWsjtx.tbTCAlertChange(Sender: TObject);
 begin
   cqrini.WriteBool('MonWsjtx','TextAlertCall',tbTCAlert.Checked);
@@ -348,6 +408,11 @@ begin
     begin
       tbTCAlert.SetTextBuf('Text');
     end;
+end;
+
+procedure TfrmMonWsjtx.WsjtxMemoChange(Sender: TObject);
+begin
+
 end;
 
 procedure TfrmMonWsjtx.cmCqDxClick(Sender: TObject);
@@ -370,7 +435,10 @@ begin
       cqrini.WriteInteger('MonWsjtx','FontSize',popFontDlg.Font.Size);
       WsjtxMemo.Font.Name :=popFontDlg.Font.Name;
       WsjtxMemo.Font.Size :=popFontDlg.Font.Size;
+      edtFollow.Font.Name :=popFontDlg.Font.Name;
+      edtFollow.Font.Size :=popFontDlg.Font.Size;
       CleanWsjtxMemo;
+      edtFollow.Text:='';
     end
 end;
 
@@ -393,7 +461,7 @@ procedure TfrmMonWsjtx.FormShow(Sender: TObject);
 begin
    chkHistory.Checked := cqrini.ReadBool('MonWsjtx','NoHistory',False);
    noTxt.Checked := cqrini.ReadBool('MonWsjtx','NoTxt',False);
-   tbmyAlert.Checked := cqrini.ReadBool('MonWsjtx','MyAlert',False);
+   tbmyAlrt.Checked := cqrini.ReadBool('MonWsjtx','MyAlert',False);
    tbmyAll.Checked := cqrini.ReadBool('MonWsjtx','MyAll',False);
    tbLocAlert.Checked:= cqrini.ReadBool('MonWsjtx','LocAlert',False);
    EditAlert.Text := cqrini.ReadString('MonWsjtx','TextAlert','');
@@ -409,7 +477,15 @@ begin
    wkdany := StringToColor(cqrini.ReadString('MonWsjtx','wkdany','clMaroon'));
    wkdnever := StringToColor(cqrini.ReadString('MonWsjtx','wkdnever','clGreen'));
    extCqCall := StringToColor(cqrini.ReadString('MonWsjtx','extCqCall','$000055FF'));
+   edtFollow.Font.Name :=WsjtxMemo.Font.Name ;
+   edtFollow.Font.Size :=WsjtxMemo.Font.Size;
+   cbflw.Checked := cqrini.ReadBool('MonWsjtx','FollowShow',False);
+   tbFollow.Checked := cqrini.ReadBool('MonWsjtx','Follow',False);
+   edtFollowCall.Text := uppercase( cqrini.ReadString('MonWsjtx','FollowCall',''));
+
    CleanWsjtxMemo;
+   if ((trim(edtFollowCall.Text) = '') and tbFollow.Checked ) then tbFollow.Checked := false; //should not happen, chk it here
+
 end;
 
 procedure TfrmMonWsjtx.NewBandMode(Band,Mode:string);
@@ -418,6 +494,7 @@ Begin
      lblBand.Caption := Band;
      lblMode.Caption := Mode;
      CleanWsjtxMemo;
+     edtFollow.Text := '';
 end;
 function TfrmMonWsjtx.NextElement(Message:string;var index:integer):String;
 //detach next element from Message. Move index pointer, do not touch message string itself
@@ -466,7 +543,11 @@ Begin
        '175200 ~ CQ NO EU RZ3DX');  // for dbg
      end;
 end;
-
+procedure TfrmMonWsjtx.AddFollowedMessage(Message,Reply:string);
+Begin
+  if dmData.DebugLevel>=1 then Writeln('Follow line:',Message);
+  edtFollow.Text := Message;
+end;
 
 procedure TfrmMonWsjtx.AddDecodedMessage(Message,band,Reply:string);
 const
@@ -653,7 +734,7 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
                msgLoc:='----';
 
          if dmData.DebugLevel>=1 then Writeln('LOCATOR IS:',msgLoc);
-         if ( isMyCall and tbMyAlert.Checked and tbmyAll.Checked and (msgLoc='----') ) then msgLoc:='<!!>';//locator for "ALL-MY"
+         if ( isMyCall and tbmyAlrt.Checked and tbmyAll.Checked and (msgLoc='----') ) then msgLoc:='<!!>';//locator for "ALL-MY"
 
          if not ( (msgLoc='----') and isMyCall ) then //if mycall: line must have locator to print(I.E. Answer to my CQ)
          Begin                                        //and other combinations (CQs) will print, too
@@ -783,7 +864,7 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
               end
              else if ( (EditedText <>'') and (pos(EditedText,MonitorLine) > 0 )) then  myAlert := 'text'; // overrides locator
            end; // tbAlert
-           if ( tbMyAlert.Checked and isMyCall ) then myAlert :='my'; //overrides anything else
+           if ( tbmyAlrt.Checked and isMyCall ) then myAlert :='my'; //overrides anything else
 
            if (myAlert <>'') and (timeToAlert<>msgTime) then
               Begin
@@ -793,6 +874,7 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
 
          end;//printing out  line
         end;  //continued
+
 end;
 
 
