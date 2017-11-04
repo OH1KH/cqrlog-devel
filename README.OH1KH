@@ -462,3 +462,6 @@
    - CQ-monitor: Followed call line turns red after 15sec of receive (FT8,MSK144) otherwise after 60sec to indicate that valid reply period for
      this line is over.
 								(2.1.0(129))
+04.11.2017
+   -Merged from master: DL8DTL sort and IFDEF changes
+								(2.1.0(130))
