@@ -456,3 +456,9 @@
      folder to your exisiting install. It is not added to test_binary.zip)
 								(2.1.0(128))
 
+02.11.2017
+   - LoTW import wails on 630M. I think the  dutils.pas: function TdmUtils.FreqFromBand(band, mode: string): string; is missing 630M definition.
+     Added that, but cannot test by my self.
+   - CQ-monitor: Followed call line turns red after 15sec of receive (FT8,MSK144) otherwise after 60sec to indicate that valid reply period for
+     this line is over.
+								(2.1.0(129))

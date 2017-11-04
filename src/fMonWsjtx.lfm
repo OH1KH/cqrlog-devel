@@ -365,4 +365,10 @@ object frmMonWsjtx: TfrmMonWsjtx
     left = 387
     top = 106
   end
+  object tmrFollow: TTimer
+    Enabled = False
+    OnTimer = tmrFollowTimer
+    left = 155
+    top = 378
+  end
 end

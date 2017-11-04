@@ -40,6 +40,7 @@ type
     tbmyAlrt: TToggleBox;
     tbFollow: TToggleBox;
     tbTCAlert: TToggleBox;
+    tmrFollow: TTimer;
     WsjtxMemo: TRichMemo;
     procedure cbflwChange(Sender: TObject);
     procedure chkHistoryChange(Sender: TObject);
@@ -64,6 +65,7 @@ type
     procedure tbmyAllChange(Sender: TObject);
     procedure tbmyAlrtChange(Sender: TObject);
     procedure tbTCAlertChange(Sender: TObject);
+    procedure tmrFollowTimer(Sender: TObject);
     procedure WsjtxMemoChange(Sender: TObject);
     procedure WsjtxMemoDblClick(Sender: TObject);
   private
@@ -410,6 +412,12 @@ begin
     end;
 end;
 
+procedure TfrmMonWsjtx.tmrFollowTimer(Sender: TObject);
+begin
+   tmrFollow.Enabled := false;
+   edtFollow.Font.Color := clRed;
+end;
+
 procedure TfrmMonWsjtx.WsjtxMemoChange(Sender: TObject);
 begin
 
@@ -546,7 +554,14 @@ end;
 procedure TfrmMonWsjtx.AddFollowedMessage(Message,Reply:string);
 Begin
   if dmData.DebugLevel>=1 then Writeln('Follow line:',Message);
+  tmrFollow.Enabled:=false;
+  edtFollow.Font.Color := clDefault;
   edtFollow.Text := Message;
+  if ((lblMode.Caption ='FT8') or (lblMode.Caption ='MSK144')) then
+    tmrFollow.Interval:= 15000
+   else
+    tmrFollow.Interval:= 60000;
+  tmrFollow.Enabled:=true;
 end;
 
 procedure TfrmMonWsjtx.AddDecodedMessage(Message,band,Reply:string);
