@@ -59,6 +59,7 @@ object frmMonWsjtx: TfrmMonWsjtx
     ParentFont = False
     PopupMenu = popColors
     ReadOnly = True
+    ScrollBars = ssAutoBoth
     TabOrder = 0
     WordWrap = False
     ZoomFactor = 1

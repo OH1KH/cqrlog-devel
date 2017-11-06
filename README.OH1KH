@@ -465,3 +465,9 @@
 04.11.2017
    -Merged from master: DL8DTL sort and IFDEF changes
 								(2.1.0(130))
+05.11.2017
+   -CQ-monitor: 15 lines is too little on 20m weekend CQs, even with no-history set!. Raised to 20 lines with auto scrollbars and some fix for scrolling.
+    help+PDF file update for this reason.
+   -Default frequencies: still 472kHz missing from there, too. Added.
+								(2.1.0(131))
+

@@ -76,6 +76,16 @@ Checking <b>“flw”</b> new part of monitor opens. This will make easier to fo
  That box uses same font and size as CQ-monitor.
  </br></br>Line contains:  <b>decoding_period_time</b> | <b>delta_frequency</b>  | <b>the_message</b>.  
  </br>Alerts are not connected  to this line. Follow and flw states and callsing are saved over program restart.
+ </br>Line color turns red from default color when corresponding response period is over.
+ </br>This will make easier to follow a DX who does not stay same frequency and jumps around answering to callers.
+ </br>
+ </br>CQ-monitor has known problem of color printing (richmemo unit) that causes CPU load to grow slowly during online hours. For so far solution for this  has not been found.
+ </br>
+ </br>How ever you can drop CPU load by just setting NewQSO/File/remote mode for wsjt to OFF and then immediately back to ON. This releases previously used memory and CPU load returns to normal and is a very fast fix that can be done during a reciving period.
+ </br>
+ </br>CQ-monitor has now 20 lines (if “no history” unchecked). Automatic scrollbars are visible if needed.
+
+
 <p>Line of CQ-monitor contains: 
 <ul>
 	<li/> time</br>

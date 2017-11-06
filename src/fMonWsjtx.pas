@@ -84,11 +84,13 @@ type
     { public declarations }
   end;
 Const
-MaxLines :integer = 16;        //Max monitor lines
+MaxLines :integer = 21;        //Max monitor lines text will show MaxLines-1 lines
+type
+  TReplyArray     = array of string [255];
 
 var
   frmMonWsjtx: TfrmMonWsjtx;
-  RepArr     : array [0 .. 16] of string[255];  //static array for reply strings: set max same as MaxLines
+  RepArr     : TReplyArray;  //static array for reply strings: set max same as MaxLines
   LastWsjtLineTime   : string;                  //time of last printed line
   myAlert            : string;                  //alert name moved to script as 1st parameter
                                                 //can be:'my'= ansver to my cq,
@@ -168,7 +170,7 @@ procedure TfrmMonWsjtx.CleanWsjtxMemo;
 var l : integer;
 Begin
      WsjtxMemo.lines.Clear;
-     for l:=0 to Maxlines do RepArr[l]:='';
+     for l:=0 to Maxlines-1 do RepArr[l]:='';
 end;
 
 procedure TfrmMonWsjtx.FocusLastLine;
@@ -185,16 +187,19 @@ end;
 procedure TfrmMonWsjtx.WsjtxMemoScroll;
 var i: integer;
 begin
+ with WsjtxMemo do
+ begin
   //scroll buffer if needed
-  if WsjtxMemo.lines.count >= MaxLines then
+  if lines.count >= MaxLines then
          Begin
           repeat
-            WsjtxMemo.lines.delete(0);
-            for i:=0 to MaxLines-2 do
-                RepArr[i] := RepArr[i+1];
-          until WsjtxMemo.lines.count <= Maxlines;
+            lines.delete(0);
+            for i:=0 to MaxLines-2 do RepArr[i] := RepArr[i+1];
+          until lines.count <= Maxlines;
+          RepArr[MaxLines-1] := '';
           FocusLastLine;
          end;
+  end;
 end;
 
 procedure TfrmMonWsjtx.WsjtxMemoDblClick(Sender: TObject);
@@ -452,6 +457,7 @@ end;
 
 procedure TfrmMonWsjtx.FormCreate(Sender: TObject);
 begin
+  SetLength(RepArr, MaxLines); //set reply buffer to maxlines
   EditAlert.Text := '';
   EditedText := '';
   LastWsjtLineTime:='';
@@ -844,10 +850,10 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
 
            if dmData.DebugLevel>=1 then Writeln('Looking this>',msgRes[1],'< from:',msgRes);
            case msgRes[1] of
-             'U'  :  AddColorStr(msgRes,wkdhere);       //Unknown
-             'C'  :  AddColorStr(msgRes,wkdAny);        //Confirmed
-             'Q'  :  AddColorStr(msgRes,clTeal);        //Qsl needed
-             'N'  :  AddColorStr(msgRes,wkdnever);      //New something
+             'U'  :  AddColorStr(cont+':'+msgRes,wkdhere);       //Unknown
+             'C'  :  AddColorStr(cont+':'+msgRes,wkdAny);        //Confirmed
+             'Q'  :  AddColorStr(cont+':'+msgRes,clTeal);        //Qsl needed
+             'N'  :  AddColorStr(cont+':'+msgRes,wkdnever);      //New something
 
             else    AddColorStr(msgRes,clDefault);     //something else...can't be
            end;
