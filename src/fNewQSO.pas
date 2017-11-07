@@ -537,6 +537,7 @@ type
     adif : Word;
     WhatUpNext : TWhereToUpload;
     UploadAll  : Boolean;
+    WsjtxDecodeRunning : boolean;
 
     RememberAutoMode : Boolean;
     procedure ShowDXCCInfo(ref_adif : Word = 0);
@@ -2069,6 +2070,12 @@ var
   end;
 
 begin
+  if WsjtxDecodeRunning then
+   begin
+     if dmData.DebugLevel>=1 then Writeln('WsjtDecode already running!');
+     exit;
+   end
+     else WsjtxDecodeRunning := true;   //do not jump here if already running
   if Wsjtxsock.WaitingData > 0 then
   Begin
   MyCall := UpperCase(cqrini.ReadString('Station', 'Call', ''));
@@ -2438,6 +2445,7 @@ begin
            ParStr := StFBuf(index);
            if dmData.DebugLevel>=1 then Writeln('Close Id:', ParStr);
            //wsjtx closed maybe need to disable remote mode  ?
+           WsjtxDecodeRunning :=false;
            DisableRemoteMode;
            Exit;
          end //Close
@@ -2465,6 +2473,7 @@ begin
    The reference implementations, particularly message_aggregator, can always be used to verify behaviour or
    to construct a recipe to replicate an issue.
     }
+  WsjtxDecodeRunning := false;
 end;
 
 procedure TfrmNewQSO.FormCreate(Sender: TObject);
@@ -6133,6 +6142,8 @@ procedure TfrmNewQSO.GoToRemoteMode(RemoteType : TRemoteModeType);
 var
   run  : Boolean = False;
   path : String = '';
+  tries: integer = 10;
+
 begin
   case RemoteType of
     rmtFldigi : begin
@@ -6156,6 +6167,7 @@ begin
                   if mnuRemoteMode.Checked then          //not both on at same time
                   DisableRemoteMode;
                   mnuRemoteModeWsjt.Checked := True;
+                  WsjtxDecodeRunning        := false;
                   lblCall.Caption           := 'Wsjtx remote';
                   path                      := cqrini.ReadString('wsjt','path','');
                   run                       := cqrini.ReadBool('wsjt','run',False);
@@ -6165,22 +6177,32 @@ begin
                   wHiSpeed  := 20;    //mS
                   wLoSpeed  := 1500;  //will be shorter when FT8 or MSK144 mode change in decode/status
 
-                  //Timer fetches only 1 UDP packet at time.
+
                   tmrWsjtx.Interval := wLoSpeed;      //  timer has now dynamic value. Most of time there is nothing to do
                   tmrWsjtx.Enabled  := True;          //  so timer can run more seldom.
                                                       //  When first UDP packet is received it will turn timer to wHiSpeed
                                                       //  for fast handling and when there is no more data wLoSpeed is turned
                                                       //  on again.
 
-                  // start UDP server
+                  // start UDP server  http://synapse.ararat.cz/doc/help/blcksock.TBlockSocket.html
                   WsjtxSock := TUDPBlockSocket.Create;
                   {if dmData.DebugLevel>=1 then} Writeln('Socket created!');
+                  WsjtxSock.EnableReuse(true);
+                  {if dmData.DebugLevel>=1 then} Writeln('Reuse enabled!');
                   try
                     WsjtxSock.bind(cqrini.ReadString('wsjt','ip','127.0.0.1'),cqrini.ReadString('wsjt','port','2237'));
                     {if dmData.DebugLevel>=1 then }Writeln('Bind issued '+cqrini.ReadString('wsjt','ip','127.0.0.1')+
-                                                                        ':'+cqrini.ReadString('wsjt','port','2237'))
+                                                                        ':'+cqrini.ReadString('wsjt','port','2237'));
+                     // On bind failure try to rebind every second
+                     while ((WsjtxSock.LastError <> 0) and (tries > 0 )) do
+                       begin
+                         dec(tries);
+                         sleep(1000);
+                         WsjtxSock.bind(cqrini.ReadString('wsjt','ip','127.0.0.1'),cqrini.ReadString('wsjt','port','2237'));
+                       end;
                   except
                       {if dmData.DebugLevel>=1 then} Writeln('Could not bind socket for wsjtx!');
+                      edtRemQSO.Text := 'Could not bind socket for wsjtx!';
                      DisableRemoteMode;
                      exit
                   end;
@@ -6198,10 +6220,19 @@ begin
 end;
 
 procedure TfrmNewQSO.DisableRemoteMode;
+var
+  tries : integer = 10;
 begin
+
   if  mnuRemoteModeWsjt.Checked then
   begin
-      tmrWsjtx.Enabled          := False;
+      tmrWsjtx.Enabled := False;
+      while ((WsjtxDecodeRunning) and (tries > 0)) do
+      begin
+        dec(tries);
+        sleep(100); //flush running decode
+        if dmData.DebugLevel>=1 then Writeln('Waiting WsjtDecode to end/Disableremotemode');
+      end;
       mnuWsjtxmonitor.Visible := False;    //we do not show "monitor" in view-submenu when not active
       if (frmMonWsjtx <> nil) then
        begin
@@ -6209,14 +6240,18 @@ begin
          else cqrini.WriteBool('Window','MonWsjtx',false);
         FreeAndNil(frmMonWsjtx); //to release flooding richmemo
        end;
+      if Assigned(WsjtxSock) then FreeAndNil(WsjtxSock);  // to release UDP socket
       mnuRemoteModeWsjt.Checked:= False;
   end;
+
   if mnuRemoteMode.Checked then
   begin
      tmrFldigi.Enabled         := False;
      if FldigiXmlRpc then frmxfldigi.Visible := false;
      mnuRemoteMode.Checked     := False;
   end ;
+
+
   chkAutoMode.Checked:= RememberAutoMode;
   lblCall.Caption           := 'Call:';
   lblCall.Font.Color        := clDefault;
@@ -6224,10 +6259,7 @@ begin
   cbOffline.Checked         := False;
   edtCall.SetFocus;
 
-  if Assigned(WsjtxSock) then
-  begin
-    FreeAndNil(WsjtxSock)
-  end
+
 end;
 
 procedure TfrmNewQSO.onExcept(Sender: TObject; E: Exception);

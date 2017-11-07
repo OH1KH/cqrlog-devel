@@ -34,6 +34,7 @@
   #          'my'= answer to my cq,
   # //       'loc'=new main grid,
   # //       'text'=text found from line Ex. 'w c' on text field fits to "New country"
+  # //       'call'=callsign found
   # // create files you want to be played
 
   # This scirpt is seeking names with '.wav' suffix! Change if needed    
@@ -470,4 +471,42 @@
     help+PDF file update for this reason.
    -Default frequencies: still 472kHz missing from there, too. Added.
 								(2.1.0(131))
+    -----------
+    If you do not like long country names in CQ-monitor they can be fixed with this script:
+    fixlongcountrynames.sh
+    -------------------------------
+    #/bin/sh
+    cd ~/.config/cqrlog/ctyfiles
+
+    # fix long name to these 3 files-------------------------------------------
+    #      /-----Existing name now------/new-name/ file to read > file to write
+
+     sed s/"Federal Republic of Germany"/Germany/g Country.tab > Countryf.tab
+     sed s/"Federal Republic of Germany"/Germany/g CallResolution.tbl > CallResolutionf.tbl
+     sed s/"Federal Republic of Germany"/Germany/g  AreaOK1RR.tbl > AreaOK1RRf.tbl
+
+    # finally copy new files over the old ones---------------------------------
+     mv Countryf.tab  Country.tab
+     mv CallResolutionf.tbl  CallResolution.tbl
+     mv AreaOK1RRf.tbl  AreaOK1RR.tbl
+ 
+    #reload fixed files to cqrlog----------------------------------------------
+     echo '-------------------------------------------------------'
+     echo 'Run now:  Window/QSOlist/File/"Import DXCC data"'  
+     echo 'When on dialog select: ".config/cqrlog/ctyfiles" folder'
+     echo ''
+     echo 'You need to do this after every DXCC update received'
+     echo '-------------------------------------------------------'
+    #done
+    --------------------------------
+    issue command: chmod a+x fixlongcountrynames.sh   after edit to be able to run script.
+
+07.11.2017
+    - WsjtX remote: Added shorcut key Ctrl+R for fast remote on/off. Rewritten some parts of opening and closing UDP socket 
+      and preventing timer to start double decodings. (reported that remote socket can not always be opened again after close).
+      Help and PDF update.
+								(2.1.0(132))
+
+
+
 
