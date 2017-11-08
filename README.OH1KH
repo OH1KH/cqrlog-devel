@@ -506,7 +506,9 @@
       and preventing timer to start double decodings. (reported that remote socket can not always be opened again after close).
       Help and PDF update.
 								(2.1.0(132))
-
-
+08.11.2017
+    - WsjtX remote: Ctrl+R was in use ! Changed to Ctrl+J that should be free (by help file).
+    - 630M still missing from GetAdifBandFromFreq and  C_RBN_BANDS. Added. Thanks for NO3M.
+    - wsjt and shortcutkeys help updated.
 
 

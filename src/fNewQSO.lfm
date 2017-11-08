@@ -3881,7 +3881,7 @@ object frmNewQSO: TfrmNewQSO
       end
       object mnuRemoteModeWsjt: TMenuItem
         Action = acRemoteWsjt
-        ShortCut = 16466
+        ShortCut = 16458
       end
       object MenuItem59: TMenuItem
         Caption = '-'

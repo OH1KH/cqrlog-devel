@@ -64,7 +64,7 @@ const
     ('1800.0', '3500.0', '7000.0', '10100.0', '14000.0', '21000.0', '28000.0');
 
   C_RBN_CONT  = 'AF,AN,AS,EU,NA,SA,OC';
-  C_RBN_BANDS = '160M,80M,40M,30M,20M,17M,15M,12M,10M,6M,2M';
+  C_RBN_BANDS = '630M,160M,80M,40M,30M,20M,17M,15M,12M,10M,6M,2M';
   C_RBN_MODES = 'CW,RTTY,PSK31';
 
 
@@ -364,6 +364,11 @@ begin
     if ((Dec >= 133) and (Dec <= 139)) then
     begin
       Result := '2190M';
+      exit;
+    end;
+    if ((Dec >= 472) and (Dec <= 479)) then
+    begin
+      Result := '630M';
       exit;
     end;
   end;
