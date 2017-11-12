@@ -510,5 +510,8 @@
     - WsjtX remote: Ctrl+R was in use ! Changed to Ctrl+J that should be free (by help file).
     - 630M still missing from GetAdifBandFromFreq and  C_RBN_BANDS. Added. Thanks for NO3M.
     - wsjt and shortcutkeys help updated.
-
-
+								(2.1.0(133))
+12.11.2017
+    - Export bugfix: "Choose fields to export" button 'Re/Set All̈́' position conflicts now with appeared (from merge??)
+      "Most recent entries on top" checkbox. Movet Re/Set-button to same line with OK and Cancel.
+								(2.1.0(134))

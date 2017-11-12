@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, maskedit, ColorBox, Menus, ExtCtrls, RichMemo, strutils, process,
-  RegExpr;
+  StdCtrls, maskedit, ColorBox, Menus, ExtCtrls, RichMemo, strutils, process;
 
 type
 
@@ -104,7 +103,6 @@ var
   wkdband            : Tcolor;
   wkdany             : Tcolor;
   wkdnever           : Tcolor;
-  RegexObj           : TRegExpr;                //for txt & call search
   EditedText         : string;                  //holds editAlert after finished (loose focus)
   Ssearch,Sfull      : String;
   Spos               : integer;
