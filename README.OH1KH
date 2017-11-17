@@ -515,3 +515,6 @@
     - Export bugfix: "Choose fields to export" button 'Re/Set All̈́' position conflicts now with appeared (from merge??)
       "Most recent entries on top" checkbox. Movet Re/Set-button to same line with OK and Cancel.
 								(2.1.0(134))
+17.11.2017
+    - CQ-monitor: Calling CQ SOMETEXT without own call (!!!???!) caused porgram halt. Fixed these to NOCALL.
+								(2.1.0(135))
