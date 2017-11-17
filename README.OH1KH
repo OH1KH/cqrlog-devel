@@ -518,3 +518,5 @@
 17.11.2017
     - CQ-monitor: Calling CQ SOMETEXT without own call (!!!???!) caused porgram halt. Fixed these to NOCALL.
 								(2.1.0(135))
+    - Merged from master: 2.2.0  parsing RBN spots fixed
+								(2.1.0(136) should this be 2.2.0 (101)?)
