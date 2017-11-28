@@ -104,6 +104,9 @@ type
     qBandMapFil: TSQLQuery;
     qRbnMon: TSQLQuery;
     qFreqMem: TSQLQuery;
+    trW: TSQLTransaction;
+    trW1: TSQLTransaction;
+    W: TSQLQuery;
     trFreqMem: TSQLTransaction;
     trRbnMon: TSQLTransaction;
     trBandMapFil: TSQLTransaction;
@@ -131,6 +134,7 @@ type
     dsrImport: TDatasource;
     dsrQSOBefore: TDatasource;
     dsrMain: TDatasource;
+    W1: TSQLQuery;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure Q1BeforeOpen(DataSet: TDataSet);

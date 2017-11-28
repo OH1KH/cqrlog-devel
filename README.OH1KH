@@ -526,3 +526,8 @@
       IsAlertCall is rewritten and now can handle:
        mode=all+band=all, mode=SET+band=all,  mode=all+band=SET  and  mode=SET+band=SET combinations.
 								(2.1.0(137)   
+28.11.2017
+    - AlertCalls: alert calls had conflict (open query) using same transaction as worked gris/wsjtx monitor.
+      Alert calls list disappeared always when wsjyt/wkd grids worked on background.
+      Fixed by creating new pairs of query/transaction W/trW, W1/trW1 for wkdgrids/wsjtx use.
+								(2.1.0(138) 

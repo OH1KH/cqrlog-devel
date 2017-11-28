@@ -1145,7 +1145,9 @@ end;
 
 function TdmDXCluster.IsAlertCall(const call,band,mode : String;RegExp :Boolean) : Boolean;
 const
+   //with complete call search %s or "call_alert/callsign" can be target. No difference.
    C_SEL = 'select * from call_alert where callsign = %s';
+   //with "pertial callsigns" %s is target and column "call_alert/callsign" contains regexp condition
    C_RGX_SEL = 'select * from call_alert where %s regexp callsign';
 begin
   Result := False;

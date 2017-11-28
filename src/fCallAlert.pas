@@ -160,7 +160,7 @@ begin
     finally
       dmData.Q.EnableControls
     end
-  end
+  end;
 end;
 
 procedure TfrmCallAlert.FormClose(Sender: TObject; var CloseAction: TCloseAction
