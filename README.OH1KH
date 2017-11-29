@@ -531,3 +531,12 @@
       Alert calls list disappeared always when wsjyt/wkd grids worked on background.
       Fixed by creating new pairs of query/transaction W/trW, W1/trW1 for wkdgrids/wsjtx use.
 								(2.1.0(138) 
+29.11.2017
+   - AlertCalls: alert calls still conflicts with wsjt remote. Actually with qrz/hamqth lookup done on background
+     when alert calls form is open. Created one more query/transaction pair for alert calls use.
+     Using that needs modification to refreshalertcalls (should not, but yes) query must be closed before refresh.
+     When it was done with "common tr/query pair" did some other part close it as it worked without closing?
+     If alert callsign list form is open and wsjtx remote running, the wsjtx-monitor lines will all turn black 
+     after first transmit (after qrz/hamqth query).Colors come back on next decode after alert calls list is closed.
+     Is SwowModal reason for this?
+								(2.1.0(139) 

@@ -80,6 +80,8 @@ type
     dsrLogList: TDatasource;
     dsrmQ: TDatasource;
     mQ: TSQLQuery;
+    Q2: TSQLQuery;
+    trQ2: TSQLTransaction;
     qSQLConsole: TSQLQuery;
     scCommon: TSQLScript;
     scLog: TSQLScript;
@@ -105,6 +107,7 @@ type
     qRbnMon: TSQLQuery;
     qFreqMem: TSQLQuery;
     trW: TSQLTransaction;
+    W1: TSQLQuery;
     trW1: TSQLTransaction;
     W: TSQLQuery;
     trFreqMem: TSQLTransaction;
@@ -134,10 +137,10 @@ type
     dsrImport: TDatasource;
     dsrQSOBefore: TDatasource;
     dsrMain: TDatasource;
-    W1: TSQLQuery;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure Q1BeforeOpen(DataSet: TDataSet);
+    procedure Q2BeforeOpen(DataSet: TDataSet);
     procedure qBandsBeforeOpen(DataSet: TDataSet);
     procedure QBeforeOpen(DataSet: TDataSet);
     procedure mQBeforeOpen(DataSet: TDataSet);
@@ -149,6 +152,8 @@ type
     procedure scViewsException(Sender: TObject; Statement: TStrings;
       TheException: Exception; var Continue: boolean);
     procedure tmrDBPingTimer(Sender: TObject);
+    procedure W1BeforeOpen(DataSet: TDataSet);
+    procedure WBeforeOpen(DataSet: TDataSet);
   private
     fDBName  : String;
     fHomeDir : String;
@@ -1233,6 +1238,11 @@ begin
   if fDebugLevel >=1 then Writeln(Q1.SQL.Text)
 end;
 
+procedure TdmData.Q2BeforeOpen(DataSet: TDataSet);
+begin
+   if fDebugLevel >=1 then Writeln(Q2.SQL.Text)
+end;
+
 procedure TdmData.qBandsBeforeOpen(DataSet: TDataSet);
 begin
   if fDebugLevel>=1 then Writeln(qBands.SQL.Text)
@@ -1261,6 +1271,14 @@ end;
 procedure TdmData.qLongNoteBeforeOpen(DataSet: TDataSet);
 begin
   if fDebugLevel >=1 then Writeln(qLongNote.SQL.Text)
+end;
+procedure TdmData.W1BeforeOpen(DataSet: TDataSet);
+begin
+   if fDebugLevel >=1 then Writeln(W1.SQL.Text)
+end;
+procedure TdmData.WBeforeOpen(DataSet: TDataSet);
+begin
+   if fDebugLevel >=1 then Writeln(W.SQL.Text)
 end;
 
 procedure TdmData.scLogException(Sender: TObject; Statement: TStrings;
@@ -1321,6 +1339,7 @@ begin
   end
 }
 end;
+
 
 procedure TdmData.SaveQSO(date : TDateTime; time_on,time_off,call : String; freq : Currency;mode,rst_s,
                  rst_r, stn_name,qth,qsl_s,qsl_r,qsl_via,iota,pwr : String; itu,waz : Integer;

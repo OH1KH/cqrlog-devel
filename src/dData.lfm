@@ -436,19 +436,19 @@ object dmData: TdmData
     Options = []
     Params = <>
     ParseSQL = False
-    left = 544
+    left = 528
     top = 216
   end
   object trLogList: TSQLTransaction
     Active = False
     Action = caNone
     Options = []
-    left = 544
+    left = 528
     top = 288
   end
   object dsrLogList: TDataSource
     DataSet = qLogList
-    left = 544
+    left = 528
     top = 360
   end
   object qSQLConsole: TSQLQuery
@@ -637,7 +637,7 @@ object dmData: TdmData
     Active = False
     Action = caNone
     Options = []
-    left = 544
+    left = 528
     top = 144
   end
   object Q1: TSQLQuery
@@ -647,7 +647,7 @@ object dmData: TdmData
     Options = []
     Params = <>
     ParseSQL = False
-    left = 544
+    left = 528
     top = 80
   end
   object trQ: TSQLTransaction
@@ -775,7 +775,7 @@ object dmData: TdmData
     UseSetTerm = True
     UseCommit = True
     UseDefines = True
-    left = 544
+    left = 528
     top = 472
   end
   object scOnlineLogTriggers: TSQLScript
@@ -946,6 +946,8 @@ object dmData: TdmData
   end
   object W: TSQLQuery
     FieldDefs = <>
+    BeforeOpen = WBeforeOpen
+    Transaction = trW
     Options = []
     Params = <>
     left = 368
@@ -960,6 +962,8 @@ object dmData: TdmData
   end
   object W1: TSQLQuery
     FieldDefs = <>
+    BeforeOpen = W1BeforeOpen
+    Transaction = trW1
     Options = []
     Params = <>
     left = 416
@@ -970,6 +974,23 @@ object dmData: TdmData
     Action = caNone
     Options = []
     left = 416
+    top = 144
+  end
+  object Q2: TSQLQuery
+    FieldDefs = <>
+    BeforeOpen = Q2BeforeOpen
+    Transaction = trQ2
+    Options = []
+    Params = <>
+    ParseSQL = False
+    left = 576
+    top = 80
+  end
+  object trQ2: TSQLTransaction
+    Active = False
+    Action = caNone
+    Options = []
+    left = 576
     top = 144
   end
 end
