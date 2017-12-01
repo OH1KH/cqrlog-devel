@@ -538,5 +538,5 @@
      When it was done with "common tr/query pair" did some other part close it as it worked without closing?
      If alert callsign list form is open and wsjtx remote running, the wsjtx-monitor lines will all turn black 
      after first transmit (after qrz/hamqth query).Colors come back on next decode after alert calls list is closed.
-     Is SwowModal reason for this?
+     Is ShowModal reason for this?
 								(2.1.0(139) 
