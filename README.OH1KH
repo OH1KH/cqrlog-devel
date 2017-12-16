@@ -540,3 +540,6 @@
      after first transmit (after qrz/hamqth query).Colors come back on next decode after alert calls list is closed.
      Is ShowModal reason for this?
 								(2.1.0(139) 
+16.12.2017
+   - Added voice keyer support also for FM and AM modes and also from CWkeys form. Added info to Help files.
+								(2.1.0(140) 
