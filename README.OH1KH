@@ -543,3 +543,6 @@
 16.12.2017
    - Added voice keyer support also for FM and AM modes and also from CWkeys form. Added info to Help files.
 								(2.1.0(140) 
+17.12.2017
+   - Merged latest changes from master
+								(2.1.0(141) 
