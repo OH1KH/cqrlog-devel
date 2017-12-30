@@ -546,3 +546,8 @@
 17.12.2017
    - Merged latest changes from master
 								(2.1.0(141) 
+29.12.2017
+   - Merged latest changes from master
+   - fixed some help files
+   - Version follows master, now 2.2.0 (devel subversion 100)
+								(2.2.0(100) 
