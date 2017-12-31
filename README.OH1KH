@@ -551,3 +551,6 @@
    - fixed some help files
    - Version follows master, now 2.2.0 (devel subversion 100)
 								(2.2.0(100) 
+31.12.2017
+   - bugfix: WEB-DXCluter Font button had no action
+								(2.2.0(101) 
