@@ -64,6 +64,7 @@ type
     rbRadio1: TRadioButton;
     rbRadio2: TRadioButton;
     tmrRadio : TTimer;
+    tbPwrSw: TToggleBox;
     procedure acAddModMemExecute(Sender: TObject);
     procedure btnMemDwnClick(Sender: TObject);
     procedure btnMemUpClick(Sender: TObject);
@@ -93,6 +94,7 @@ type
     procedure btnSSBClick(Sender: TObject);
     procedure rbRadio1Click(Sender: TObject);
     procedure rbRadio2Click(Sender: TObject);
+    procedure tbPwrSwClick(Sender: TObject);
     procedure tmrRadioTimer(Sender : TObject);
   private
     radio : TRigControl;
@@ -190,7 +192,6 @@ property RigPoll     : Word    read fRigPoll     write fRigPoll;
       Rig_RigCtldHost : String;
       Rig_RigPoll     : Word;
       Rig_RigSendCWR  : Boolean;
-      Rig_ClearRit    : Boolean;
 
       {
       Rig_Model       : Integer;
@@ -231,7 +232,8 @@ var
     mRig.RigCtldPort := Rig_RigCtldPort;
     mRig.RigCtldHost := Rig_RigCtldHost;
     mRig.RigPoll     := Rig_RigPoll;
-    mRig.RigSendCWR  := Rig_RigSendCWR
+    mRig.RigSendCWR  := Rig_RigSendCWR;
+
   end;
 
 
@@ -425,7 +427,7 @@ begin
   dmUtils.LoadWindowPos(frmTRXControl);
   rbRadio1.Caption := cqrini.ReadString('TRX1','Desc','Radio 1');
   rbRadio2.Caption := cqrini.ReadString('TRX2','Desc','Radio 2');
-  old_mode := ''
+  old_mode := '';
 end;
 
 procedure TfrmTRXControl.btn10mClick(Sender: TObject);
@@ -620,6 +622,23 @@ begin
   InicializeRig
 end;
 
+procedure TfrmTRXControl.tbPwrSwClick(Sender: TObject);
+begin
+     if tbPwrSw.Checked then
+        if Assigned(radio) then
+        begin
+         radio.PwrOn;
+         tbPwrSw.Font.Color:= clRed;
+        end;
+
+     if not tbPwrSw.Checked then
+        if Assigned(radio) then
+        begin
+         radio.PwrOff;
+         tbPwrSw.Font.Color:= clDefault;
+        end;
+end;
+
 procedure TfrmTRXControl.tmrRadioTimer(Sender : TObject);
 begin
   SynTRX
@@ -767,6 +786,11 @@ begin
   tmrRadio.Interval := radio.RigPoll;
   tmrRadio.Enabled  := True;
   Result := True;
+                            //get pwr state   HOW? (send rig 0x88 / response is 0,1,2 )
+  tbPwrSw.Checked := true;  // all rigs do not support rigctld power switching
+  tbPwrSwClick(nil);        //so we just put pwr button ON and send rigctld PWR ON cmd
+                            //if rig does not support it that makes no harm.
+                            //if supports we do know pwr state from now on.
 
   if not radio.Connected then
   begin

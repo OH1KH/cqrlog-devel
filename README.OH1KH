@@ -554,3 +554,28 @@
 31.12.2017
    - bugfix: WEB-DXCluter Font button had no action
 								(2.2.0(101) 
+22.01.2018
+   - added "Run at cqrlog start" and "Run at cqrlog stop" calls to scripts ~/.config/cqrlog/start.sh
+     ~/.config/cqrlog/stot.sh They are called when program is up/ges down and rigctld is running.
+     You can do anything with them. At start switch on your coffee maker and when cqlog is closed
+      switch coffee maker off  :D :D :D
+     At stop phase 1000ms (1sec) time is waited letting script access to rigctld befor it goes down.
+     This should be enough to execute a command.
+     For powering rig via rigctld power command make start.sh like:
+     ---------------------------------------------
+     #!/bin/bash
+     echo -n -e '\x87'1 |  nc localhost 4532
+     exit
+     ---------------------------------------------
+     For stop.sh script copy start.sh and change 1 (after 87') to 0
+     Remember to chmod a+x start.sh  (and stop.sh) to make them execute for all.
+   - added PWR button to TRXControl window. State of rig power os not checked (as all rigs do not
+     support it. At rig initialize butoon is activated and rigctld pwer on command is sent anyway.
+     This should sync rig and button.     
+   - fixed qso entry "qso_dxcc" state to FALSE when logging happens from remote fldigi, fldigi xmlrpc
+     or wsjt-x. This was left TRUE for them all. When manual log entry is done it is set FALSE.
+     Meaning of this it bit unknown, but if it is TRUE when editing qso and adding country prefix
+     OH1KH -> SM/OH1KH the country info does not change (unless you focus field "state" and then
+     focus some other field). Fix was to set old_adif:=adif before saving qso. Tnx Andreas DL7OAP.
+   - fixed socket state error on fldigi xmlrpc. (did not work at all) Socket state was read after
+     it was free'ed.

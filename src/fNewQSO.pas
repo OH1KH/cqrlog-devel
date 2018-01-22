@@ -505,6 +505,7 @@ type
     procedure tmrUploadAllTimer(Sender: TObject);
     procedure tmrWsjtxTimer(Sender: TObject);
   private
+    StartRun : Boolean;
     fEditQSO : Boolean;
     fViewQSO : Boolean;
     old_stat_adif : Word;
@@ -600,6 +601,7 @@ type
     property ViewQSO : Boolean read fViewQSO write fViewQSO default False;
 
     procedure DisableRemoteMode;   //Moved from private
+    procedure SaveRemote;
 
     procedure OnBandMapClick(Sender:TObject;Call,Mode : String;Freq:Currency);
     procedure AppIdle(Sender: TObject; var Handled: Boolean);
@@ -619,6 +621,7 @@ type
     procedure ReturnToNewQSO;
     procedure InitializeCW;
     procedure RunVK(key_pressed: String);
+    procedure RunST(script: String);
   end;
 
   type
@@ -1319,7 +1322,12 @@ begin
   dmData.InsertProfiles(cmbProfiles,False);
   cmbProfiles.Text := dmData.GetDefaultProfileText;
   ChangeCallBookCaption;
-  BringToFront
+  BringToFront;
+  if not StartRun then
+   Begin   //run "when cqrlog is starting" -script
+    RunST('start.sh');
+    StartRun := true;
+   end;
 end;
 
 procedure TfrmNewQSO.CloseAllWindows;
@@ -1849,7 +1857,7 @@ begin
       if dmData.DebugLevel>=1 then Writeln('note:',note);
       edtRemQSO.Text := note
     end;
-    btnSave.Click
+    SaveRemote;
   end;   //while msgrcv
  end; //else fldigixmlrpc
 
@@ -2437,7 +2445,7 @@ begin
 
            //----------------------------------------------------
            if dmData.DebugLevel>=1 then Writeln(' WSJTX decode #5 logging: press save');
-           btnSave.Click;
+           SaveRemote;
            if dmData.DebugLevel>=1 then Writeln(' WSJTX decode #5 logging now ended');
          end; //QSO logged in
 
@@ -2478,6 +2486,7 @@ end;
 
 procedure TfrmNewQSO.FormCreate(Sender: TObject);
 begin
+  StartRun := false;
   CWint := nil;
   tmrRadio.Enabled := False;
   fViewQSO := False;
@@ -2488,7 +2497,7 @@ begin
   old_t_mode := '';
   old_prof   := -1;
   WhatUpNext := upHamQTH;
-  UploadAll  := False
+  UploadAll  := False;
 end;
 
 procedure TfrmNewQSO.btnSaveClick(Sender: TObject);
@@ -3283,6 +3292,8 @@ begin
     else
       CreateAutoBackup()
   end;
+  RunST('stop.sh'); //run "when cqrlog is closing" -script
+  sleep(1000); //give scirpt time to use rigctld if that is needed
   if mnuRemoteModeWsjt.Checked or mnuRemoteMode.Checked then DisableRemoteMode;
   CloseAllWindows;
   SaveSettings;
@@ -5982,6 +5993,22 @@ begin
   end
 end;
 
+procedure TfrmNewQSO.RunST(script: String);   //run start stop script
+var
+   AProcess: TProcess;
+begin
+  if not FileExists(dmData.HomeDir + script) then
+  exit;
+  AProcess := TProcess.Create(nil);
+  try
+    AProcess.CommandLine := 'bash ' + dmData.HomeDir + script;
+    if dmData.DebugLevel>=1 then Writeln('Command line: ',AProcess.CommandLine);
+    AProcess.Execute
+  finally
+    AProcess.Free
+  end
+end;
+
 procedure TfrmNewQSO.RunVK(key_pressed: String);
 const
   cVoiceKeyer = 'voice_keyer/voice_keyer.sh';
@@ -6260,6 +6287,11 @@ begin
   edtCall.SetFocus;
 
 
+end;
+procedure  TfrmNewQSO.SaveRemote;
+Begin
+     old_adif:=adif; // to prevent ChangeDXCC going True on qso save (a sort of fix ??? hooo...)
+     btnSave.Click;
 end;
 
 procedure TfrmNewQSO.onExcept(Sender: TObject; E: Exception);

@@ -104,6 +104,8 @@ type TRigControl = class
     procedure SetFreqKHz(freq : Double);
     procedure ClearRit;
     procedure Restart;
+    procedure PwrOn;
+    procedure PwrOff;
 end;
 
 implementation
@@ -235,10 +237,17 @@ procedure TRigControl.SetFreqKHz(freq : Double);
 begin
   RigCommand.Add('F '+FloatToStr(freq*1000-TXOffset*1000000))
 end;
-
 procedure TRigControl.ClearRit;
 begin
   RigCommand.Add('J 0')
+end;
+procedure TRigControl.PwrOn;
+begin
+  RigCommand.Add(#$87+' 1')
+end;
+procedure TRigControl.PwrOff;
+begin
+  RigCommand.Add(#$87+' 0')
 end;
 
 function TRigControl.GetCurrVFO  : TVFO;
