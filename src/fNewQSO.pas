@@ -2327,16 +2327,17 @@ begin
           note  := '';
           pwr   := '';
 
-          date := dmUtils.GetDateTime(0);
+          //date := dmUtils.GetDateTime(0);
           edtDate.Clear;
-          dmUtils.DateInRightFormat(date,Mask,sDate);
-          edtDate.Text:=sDate;
+          //dmUtils.DateInRightFormat(date,Mask,sDate);
+          //edtDate.Text:=sDate;
 
           //----------------------------------------------------
            if TryJulianDateToDateTime(DiFBuf(index),DTim)  then  //date (not used in cqrlog)
-             if dmData.DebugLevel>=1 then Writeln('Date :',FormatDateTime('YYYY-MM-DD',DTim));
+             if dmData.DebugLevel>=1 then Writeln('End Date :',FormatDateTime('YYYY-MM-DD',DTim));
+           // we do not use end date:
           //-----------------------------------------TIME-----------
-           ParNum := UiFBuf(index);          //time
+           ParNum := UiFBuf(index);    //set qso end time
            Min  := ParNum div 60000;  //minutes from 00:00    UTC
            Hour := Min div 60;
            Min  := Min - Hour * 60;
@@ -2349,8 +2350,7 @@ begin
              TimeLine := TimeLine + '0' + intToStr(Min)
            else
              TimeLine := TimeLine + intToStr(Min);
-           if dmData.DebugLevel>=1 then Writeln('Time: ',TimeLine);
-           edtStartTime.Text := TimeLine;
+           if dmData.DebugLevel>=1 then Writeln('End Time: ',TimeLine);
            edtEndTime.Text := TimeLine;
            //----------------------------------------------------
            ParNum := BFBuf(index);  //timespec local/utc   (not used in cqrlog)
@@ -2442,6 +2442,29 @@ begin
               edtNameExit(nil); //makes 1st ltr upcase
             end;
            if dmData.DebugLevel>=1 then Writeln('edtName before pressing save:',edtName.Text );
+          //----------------------------------------------------
+           if TryJulianDateToDateTime(DiFBuf(index),DTim)  then  //date (not used in cqrlog)
+           //start date used
+           dmUtils.DateInRightFormat(DTim,Mask,sDate);
+           edtDate.Text:=sDate;
+           if dmData.DebugLevel>=1 then Writeln('Start Date :',sDate);
+          //-----------------------------------------TIME-----------
+           ParNum := UiFBuf(index);    //set qso start time
+           Min  := ParNum div 60000;  //minutes from 00:00    UTC
+           Hour := Min div 60;
+           Min  := Min - Hour * 60;
+           TimeLine :='';
+           if length(intToStr(Hour)) = 1 then
+             TimeLine := TimeLine + '0'+ intToStr(Hour) +':'
+           else
+             TimeLine :=TimeLine + intToStr(Hour) +':';
+           if length(intToStr(Min)) = 1 then
+             TimeLine := TimeLine + '0' + intToStr(Min)
+           else
+             TimeLine := TimeLine + intToStr(Min);
+           if dmData.DebugLevel>=1 then Writeln('Start Time: ',TimeLine);
+           edtStartTime.Text := TimeLine;
+           //----------------------------------------------------
 
            //----------------------------------------------------
            if dmData.DebugLevel>=1 then Writeln(' WSJTX decode #5 logging: press save');

@@ -583,4 +583,9 @@
 23.01.2018
    - added also old_call:='' to saveremoteqso to be sure cqs_dxcc keeps false.
 								(2.2.0(103)  
-
+   - added wsjt-x logging the start and end times. Previously the end time was used for start and
+     end time as UDP msg#5(logging) did implement just only one date and time (@ 2015). Now Start time
+     is added at the end of message and first time is used as end time.
+     Both times are now logged correctly and because just one date in cqrlog the start date
+     from wsjt-x is used.
+								(2.2.0(104)  
