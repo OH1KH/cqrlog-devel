@@ -579,3 +579,8 @@
      focus some other field). Fix was to set old_adif:=adif before saving qso. Tnx Andreas DL7OAP.
    - fixed socket state error on fldigi xmlrpc. (did not work at all) Socket state was read after
      it was free'ed.
+								(2.2.0(102)
+23.01.2018
+   - added also old_call:='' to saveremoteqso to be sure cqs_dxcc keeps false.
+								(2.2.0(103)  
+

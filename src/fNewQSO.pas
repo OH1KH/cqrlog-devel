@@ -6290,6 +6290,7 @@ begin
 end;
 procedure  TfrmNewQSO.SaveRemote;
 Begin
+     old_call:='';
      old_adif:=adif; // to prevent ChangeDXCC going True on qso save (a sort of fix ??? hooo...)
      btnSave.Click;
 end;
