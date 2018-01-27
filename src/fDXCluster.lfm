@@ -192,6 +192,7 @@ object frmDXCluster: TfrmDXCluster
           Action = acFont
           Anchors = [akTop, akRight]
           BorderSpacing.InnerBorder = 4
+          Caption = 'Font'
           TabOrder = 3
         end
       end

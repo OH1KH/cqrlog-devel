@@ -21,7 +21,7 @@
   
   Setting audio alert play.
   You need separate soundcard for wsjt-x and other for alerts. 1st might be inside
-  the PC 2nd may be your inside your rig or some kind of USB sound card (ham digi interface).
+  the PC 2nd may be your inside your rig or some kind of UBB sound card (ham digi interface).
 
   Move voice_alert.sh and wav files to ~/.config/cqrlog/voice_keyer  directory
   Make sure you have 'aplay' installed.
@@ -589,3 +589,6 @@
      Both times are now logged correctly and because just one date in cqrlog the start date
      from wsjt-x is used.
 								(2.2.0(104)  
+27.01.2017
+   - merged from amster. LoTWexport change (by Petr)
+								(2.2.0(105)  
