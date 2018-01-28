@@ -38,21 +38,29 @@
       ~/.config/cqrlog/start.sh</br>
      ~/.config/cqrlog/stop.sh</br></p><p>
      They are called when program is up/goes down and rigctld is still running.
-     You can do anything with them. At start you can switch on your coffee maker and when cqlog is closed
-      switch coffee maker off  :D :D :D</br>
-     At stop phase 1000ms (1sec) wait time is added to let  script access to rigctld before it goes down.
+     You can do anything with them. </br>
+     If you have PC controlled relay box you can  start  your coffee maker when cqrlog starts and when cqlog is closed
+     switch coffee maker off  :D :D :D</br>
+     If you have rotctld yuo can turn your antenna to start direction.
+     With rigctld you can power your rig, or/and set your favorite frequency and mode when cqrlog starts.
+     </br>At cqrlog closing phase 1000ms (1sec) wait time is added so that script can access to rigctld before it goes down.
      This should be enough to execute a command.<br>
-     For powering rig via rigctld power command make start.sh like:</br><pre>
+     Some examples for script with rigctld commands (for more consult "man rigctld"):</br><pre>
      ---------------------------------------------
      #!/bin/bash
-     echo -n -e '\x87'1 |  nc localhost 4532
+     # remove # from beginning of line you want to take in use:
+     #echo -n -e '\x87'0 |  nc localhost 4532 #Turns rig power OFF
+     #echo -n -e '\x87'1 |  nc localhost 4532 #Turns rig power ON
+     #echo -n -e '\x87'2 |  nc localhost 4532 #Turns rig power STANDBY
+     #echo -n -e F 3510000 |  nc localhost 4532 # Set frequency to 3.510Mhz
+     #echo -n -e M USB 0 |  nc localhost 4532 #Set mode USB with default filter width
+     #echo -n -e M CW 500 |  nc localhost 4532 #Set mode CW with 500Hz filter (must be installed)
      exit
      ---------------------------------------------
      </pre>
-     For stop.sh script copy start.sh and change 1 (after 87') to 0 to get rigctld set rig power off.</br>
-     Or change 1 (after 87') to 2  to get rigctld set rig to stand by.
+     For stop.sh it is just a copy of start.sh with different lines selected (# removed from start)
      </br>
-     Remember to chmod a+x start.sh  (and stop.sh) to make them execute for all.
+     Remember to chmod a+x start.sh and stop.sh to make them execute for all.
      </p><p> NOTE: Your rig may not start with rigctld power-on command if it is totally powered of (CPU is not running). 
      </br>In that case try to set it to stand by-state at closing time. Then it may start again with power-on command.
 </p>

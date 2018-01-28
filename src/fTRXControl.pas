@@ -51,6 +51,9 @@ type
     btnFM: TButton;
     btnVFOA: TButton;
     btnVFOB: TButton;
+    btPon: TButton;
+    btPoff: TButton;
+    btPstby: TButton;
     gbBand: TGroupBox;
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
@@ -64,10 +67,12 @@ type
     rbRadio1: TRadioButton;
     rbRadio2: TRadioButton;
     tmrRadio : TTimer;
-    tbPwrSw: TToggleBox;
     procedure acAddModMemExecute(Sender: TObject);
     procedure btnMemDwnClick(Sender: TObject);
     procedure btnMemUpClick(Sender: TObject);
+    procedure btPoffClick(Sender: TObject);
+    procedure btPonClick(Sender: TObject);
+    procedure btPstbyClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender : TObject; var CanClose : boolean);
     procedure FormCreate(Sender: TObject);
@@ -94,7 +99,6 @@ type
     procedure btnSSBClick(Sender: TObject);
     procedure rbRadio1Click(Sender: TObject);
     procedure rbRadio2Click(Sender: TObject);
-    procedure tbPwrSwClick(Sender: TObject);
     procedure tmrRadioTimer(Sender : TObject);
   private
     radio : TRigControl;
@@ -622,23 +626,6 @@ begin
   InicializeRig
 end;
 
-procedure TfrmTRXControl.tbPwrSwClick(Sender: TObject);
-begin
-     if tbPwrSw.Checked then
-        if Assigned(radio) then
-        begin
-         radio.PwrOn;
-         tbPwrSw.Font.Color:= clRed;
-        end;
-
-     if not tbPwrSw.Checked then
-        if Assigned(radio) then
-        begin
-         radio.PwrOff;
-         tbPwrSw.Font.Color:= clDefault;
-        end;
-end;
-
 procedure TfrmTRXControl.tmrRadioTimer(Sender : TObject);
 begin
   SynTRX
@@ -687,6 +674,39 @@ begin
   dmData.GetPreviousFreqFromMem(freq,mode,bandwidth);
   if freq > 0 then
     SetFreqModeBandWidth(freq,mode,bandwidth)
+end;
+
+procedure TfrmTRXControl.btPoffClick(Sender: TObject);
+begin
+    if Assigned(radio) then
+        begin
+         radio.PwrOff;
+         btPon.Font.Color:= clDefault;
+         btPstby.Font.Color:= clDefault;
+         btPoff.Font.Color:= clRed;
+        end;
+end;
+
+procedure TfrmTRXControl.btPonClick(Sender: TObject);
+begin
+   if Assigned(radio) then
+        begin
+         radio.PwrOn;
+         btPon.Font.Color:= clRed;
+         btPstby.Font.Color:= clDefault;
+         btPoff.Font.Color:= clDefault;
+        end;
+end;
+
+procedure TfrmTRXControl.btPstbyClick(Sender: TObject);
+begin
+     if Assigned(radio) then
+        begin
+         radio.PwrStBy;
+         btPon.Font.Color:= clDefault;
+         btPstby.Font.Color:= clRed;
+         btPoff.Font.Color:= clDefault;
+        end;
 end;
 
 procedure TfrmTRXControl.FormCloseQuery(Sender : TObject; var CanClose : boolean
@@ -786,9 +806,9 @@ begin
   tmrRadio.Interval := radio.RigPoll;
   tmrRadio.Enabled  := True;
   Result := True;
-                            //get pwr state   HOW? (send rig 0x88 / response is 0,1,2 )
-  tbPwrSw.Checked := true;  // all rigs do not support rigctld power switching
-  tbPwrSwClick(nil);        //so we just put pwr button ON and send rigctld PWR ON cmd
+
+                            // all rigs do not support rigctld power switching
+  btPonClick(nil);          //so we just put pwr button ON and send rigctld PWR ON cmd
                             //if rig does not support it that makes no harm.
                             //if supports we do know pwr state from now on.
 

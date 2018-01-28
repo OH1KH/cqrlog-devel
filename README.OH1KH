@@ -592,3 +592,9 @@
 27.01.2017
    - merged from amster. LoTWexport change (by Petr)
 								(2.2.0(105)  
+28.01.2017
+   - Changed TRXControl window PWR button to 3 buttons P-on, P-off, P-standby.
+   - help file additions. Test binary zip now has help files included as tgz. See README.testing
+     for install instructions.
+								(2.2.0(106)  
+
