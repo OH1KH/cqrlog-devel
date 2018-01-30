@@ -597,4 +597,12 @@
    - help file additions. Test binary zip now has help files included as tgz. See README.testing
      for install instructions.
 								(2.2.0(106)  
-
+30.01.2017
+   - disabled DXCluster call alert when webcluster in in use. It does not work in current webcluster
+     connection.
+   - Added StartConnectCommand for telnet dxcluster. Type DXCluter command to edit box, but not
+     send it to cluster, instead press Ctrl-S saves the command. It will be sent to DXCluster when
+     connection is established and DXCluster prompt received for first time for now on.
+     Command is cleared by pressing Ctrl-S when edit box is empty.
+   - Corresponding help files updated.
+ 						                (2.2.0(107)  
