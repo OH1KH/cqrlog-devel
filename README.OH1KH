@@ -589,15 +589,15 @@
      Both times are now logged correctly and because just one date in cqrlog the start date
      from wsjt-x is used.
 								(2.2.0(104)  
-27.01.2017
+27.01.2018
    - merged from amster. LoTWexport change (by Petr)
 								(2.2.0(105)  
-28.01.2017
+28.01.2018
    - Changed TRXControl window PWR button to 3 buttons P-on, P-off, P-standby.
    - help file additions. Test binary zip now has help files included as tgz. See README.testing
      for install instructions.
 								(2.2.0(106)  
-30.01.2017
+30.01.2018
    - disabled DXCluster call alert when webcluster in in use. It does not work in current webcluster
      connection.
    - Added StartConnectCommand for telnet dxcluster. Type DXCluter command to edit box, but not
@@ -606,3 +606,7 @@
      Command is cleared by pressing Ctrl-S when edit box is empty.
    - Corresponding help files updated.
  						                (2.2.0(107)  
+31.01.2018
+   - New design of TRXContorl window. Power buttons can be shown/hide using dropdown menu "Settigs".
+     Default is hidden.
+ 						                (2.2.0(108)  
