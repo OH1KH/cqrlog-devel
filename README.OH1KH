@@ -3,7 +3,8 @@
 
 
 --------------------------------------------------------------------------------------------------
-           YOU WILL FIND LATEST UPDATES COMMENTED AT THE END OF THIS FILE !!!!
+          !!!! YOU WILL FIND LATEST UPDATES COMMENTED AT THE END OF THIS FILE !!!!
+     !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE NOT INTERESTED IN HISTORY !!!!!!
 -------------------------------------------------------------------------------------------------- 
 
 
@@ -600,10 +601,14 @@
 30.01.2018
    - disabled DXCluster call alert when webcluster in in use. It does not work in current webcluster
      connection.
-   - Added StartConnectCommand for telnet dxcluster. Type DXCluter command to edit box, but not
-     send it to cluster, instead press Ctrl-S saves the command. It will be sent to DXCluster when
-     connection is established and DXCluster prompt received for first time for now on.
-     Command is cleared by pressing Ctrl-S when edit box is empty.
+   - Added StartConnectCommand for telnet dxcluster. Type DXCluster command you want to use into
+     DXCluster's "command:"-line, but not send it to cluster. Instead press Ctrl-S to save the
+     command as StartConnectionCommand.
+     You do not have to be connected to DXCluster while doing this, but it works also when
+     you are connected.
+     The command will be sent to DXCluster when connection is established and DXCluster prompt
+     received for first time for now on.
+     Command is cleared by pressing Ctrl-S when "command"-line is empty.
    - Corresponding help files updated.
  						                (2.2.0(107)  
 31.01.2018
