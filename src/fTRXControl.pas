@@ -62,6 +62,7 @@ type
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
     mnuMem: TMainMenu;
     pnlRig: TPanel;
     pnlMain: TPanel;
@@ -100,6 +101,7 @@ type
     procedure btnRTTYClick(Sender: TObject);
     procedure btnSSBClick(Sender: TObject);
     procedure MenuItem3Click(Sender: TObject);
+    procedure MenuItem4Click(Sender: TObject);
     procedure rbRadio1Click(Sender: TObject);
     procedure rbRadio2Click(Sender: TObject);
     procedure tmrRadioTimer(Sender : TObject);
@@ -633,6 +635,12 @@ begin
          Menuitem3.Checked:= true;
         end;
       cqrini.WriteBool('TRX','PowerButtons',pnlPower.Visible);
+end;
+
+procedure TfrmTRXControl.MenuItem4Click(Sender: TObject);
+begin
+  cqrini.WriteInteger('Pref', 'ActPageIdx', 5);  //set DXCuster tab active. Number may change if preferences page change
+  frmNewQSO.acPreferences.Execute
 end;
 
 procedure TfrmTRXControl.rbRadio1Click(Sender: TObject);

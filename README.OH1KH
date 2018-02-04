@@ -615,3 +615,12 @@
    - New design of TRXContorl window. Power buttons can be shown/hide using dropdown menu "Settigs".
      Default is hidden.
  						                (2.2.0(108)  
+04.02.2018
+   - StartConnectCommand  can now still be set with Ctrl-S and now also via preferences. Change can be
+     done in either way.
+   - DXCluster button "preferences"/dropdown-menu/preferences work in way that the tabDXCluster of
+     preferences is open if preferences are called from DXCluster window.
+   - TRXControl  has now dropdown-menu item "preferences". The tabTRXControl of preferences is open
+     when called from TRXControl window.
+   - Corresponding help files fixed
+ 						                (2.2.0(109)

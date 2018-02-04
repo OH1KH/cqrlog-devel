@@ -349,7 +349,6 @@ var
 begin
   mnuCallalert.Checked := cqrini.ReadBool('DXCluster', 'AlertEnabled', False);
   ChangeCallAlertCaption;
-
   p.x := 10;
   p.y := 10;
   p := btnPreferences.ClientToScreen(p);
@@ -358,6 +357,7 @@ end;
 
 procedure TfrmDXCluster.acProgPrefExecute(Sender : TObject);
 begin
+  cqrini.WriteInteger('Pref', 'ActPageIdx', 10);  //set DXCuster tab active. Number may change if preferences page change
   frmNewQSO.acPreferences.Execute
 end;
 
