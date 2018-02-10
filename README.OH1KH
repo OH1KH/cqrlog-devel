@@ -627,3 +627,6 @@
 09.02.2018
    - When in remote mode preferences opens to fldigi/wsjt-tab
 						                (2.2.0(110)
+10.02.2018
+   - TRXcontrol missing band buttons because of wrong anchors. Fixed.
+						                (2.2.0(111)

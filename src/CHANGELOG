@@ -3,6 +3,8 @@ Legend:
   + new feature
   - bugfix
 --------------------
+2.2.0 (2018-02-09)
+  + when remote preferences open to fldigi/wsjt tab (Saku, OH1KH)
 2.2.0 (2018-02-08)
   + StartConnectCommand  DXCluster/telnet; set with Ctrl-S and preferences (Saku, OH1KH)
   + Open stright to right tab of preferences when called from DXCluster or TRXconrol (Saku, OH1KH) 
