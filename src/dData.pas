@@ -24,7 +24,7 @@ uses
 
 const
   cDB_LIMIT = 500;
-  cDB_MAIN_VER = 13;
+  cDB_MAIN_VER = 15;
   cDB_COMN_VER = 4;
   cDB_PING_INT = 300;  //ping interval for database connection in seconds
                        //program crashed after long time of inactivity
@@ -297,12 +297,14 @@ type
                       rst_r, stn_name,qth,qsl_s,qsl_r,qsl_via,iota,pwr : String; itu,waz : Integer;
                       loc, my_loc,county,award,remarks : String; adif : Integer;
                       idcall,state,cont : String; qso_dxcc : Boolean; profile : Integer;
-                      nclub1,nclub2,nclub3,nclub4,nclub5 : String);
+                      nclub1,nclub2,nclub3,nclub4,nclub5, PropMode, Satellite : String;
+                      RxFreq : Currency);
 
     procedure EditQSO(date : TDateTime; time_on,time_off,call : String; freq : Currency;mode,rst_s,
                       rst_r, stn_name,qth,qsl_s,qsl_r,qsl_via,iota,pwr : String; itu,waz : Integer;
                       loc, my_loc,county,award,remarks : String; adif : Word; idcall,state,cont : String;
-                      qso_dxcc : Boolean; profile : Integer; idx : LongInt);
+                      qso_dxcc : Boolean; profile : Integer; PropMode, Satellite : String;
+                      RxFreq : Currency; idx : LongInt);
     procedure SaveComment(call,text : String);
     procedure DeleteComment(id : Integer);
     procedure PrepareImport;
@@ -401,7 +403,7 @@ begin
     try
       lblComment.Caption := 'Importing DXCC data ...';
       Directory  := dmData.fHomeDir + 'ctyfiles' + PathDelim;
-      ImportType := 1;
+      ImportType := imptImportDXCCTables;
       ShowModal
     finally
       Free
@@ -412,7 +414,7 @@ begin
       lblComment.Caption := 'Importing QSL data ...';
       Directory     := dmData.fHomeDir + 'ctyfiles' + PathDelim;
       FileName      := Directory+'qslmgr.csv';
-      ImportType    := 5;
+      ImportType    := imptImportQSLMgrs;
       CloseAfImport := True;
       ShowModal
     finally
@@ -1345,12 +1347,14 @@ procedure TdmData.SaveQSO(date : TDateTime; time_on,time_off,call : String; freq
                  rst_r, stn_name,qth,qsl_s,qsl_r,qsl_via,iota,pwr : String; itu,waz : Integer;
                  loc, my_loc,county,award,remarks : String; adif : Integer;
                  idcall,state,cont : String; qso_dxcc : Boolean; profile : Integer;
-                 nclub1,nclub2,nclub3,nclub4,nclub5 : String);
+                 nclub1,nclub2,nclub3,nclub4,nclub5, PropMode, Satellite : String;
+                 RxFreq : Currency);
 var
   qsodate : String;
   band    : String;
   changed : Integer;
   sWAZ, sITU : String;
+  rx_freq : String;
 begin
   Q.Close;
   if dmData.trQ.Active then
@@ -1366,6 +1370,9 @@ begin
     sWAZ := 'null';
   if itu = 0 then
     sITU := 'null';
+  rx_freq := FloatToStr(RxFreq);
+  if (rx_freq = '0') then
+    rx_freq := 'null';
   qsl_via := copy(qsl_via,1,30);
   award   := copy(award,1,50);
   state   := copy(state,1,4);
@@ -1376,7 +1383,7 @@ begin
   Q.SQL.Text :=  'insert into cqrlog_main (qsodate,time_on,time_off,callsign,freq,mode,'+
                  'rst_s,rst_r,name,qth,qsl_s,qsl_r,qsl_via,iota,pwr,itu,waz,loc,my_loc,'+
                  'county,award,remarks,adif,idcall,state,qso_dxcc,band,profile,cont,club_nr1,'+
-                 'club_nr2,club_nr3,club_nr4,club_nr5) values('+QuotedStr(qsodate) +
+                 'club_nr2,club_nr3,club_nr4,club_nr5, prop_mode, satellite, rxfreq) values('+QuotedStr(qsodate) +
                  ','+QuotedStr(time_on)+','+QuotedStr(time_off)+
                  ','+QuotedStr(call)+','+FloatToStr(freq)+
                  ','+QuotedStr(mode)+','+QuotedStr(rst_s)+
@@ -1393,32 +1400,25 @@ begin
                  ','+IntToStr(adif)+','+ QuotedStr(idcall) + ','+ QuotedStr(state) +','+IntToStr(changed)+
                  ','+QuotedStr(band)+','+ IntToStr(profile) +','+QuotedStr(cont)+
                  ','+QuotedStr(nclub1)+','+QuotedStr(nclub2)+','+QuotedStr(nclub3)+
-                 ','+QuotedStr(nclub4)+','+QuotedStr(nclub5)+')';
+                 ','+QuotedStr(nclub4)+','+QuotedStr(nclub5)+','+QuotedStr(PropMode)+','+QuotedStr(Satellite)+','+rx_freq+
+                 ')';
   if fDebugLevel >=1 then
     Writeln(Q.SQL.Text);
   Q.ExecSQL;
   trQ.Commit
 end;
-{
-procedure TdmData.EditQSO(date: TDateTime; time_on, time_off, call: String;
-  freq: Currency; mode, rst_s, rst_r, stn_name, qth, qsl_s, qsl_r, qsl_via,
-  iota, pwr: String; itu, waz: Integer; loc, my_loc, county, award, remarks,
-  dxcc_ref, idcall, state, cont: String; qso_dxcc: Boolean; profile: Integer;
-  idx: LongInt);
-begin
-
-end;
-}
 
 procedure TdmData.EditQSO(date : TDateTime; time_on,time_off,call : String; freq : Currency;mode,rst_s,
                  rst_r, stn_name,qth,qsl_s,qsl_r,qsl_via,iota,pwr : String; itu,waz : Integer;
                  loc, my_loc,county,award,remarks : String; adif : Word; idcall,state,cont : String;
-                  qso_dxcc : Boolean; profile : Integer; idx : LongInt);
+                 qso_dxcc : Boolean; profile : Integer; PropMode, Satellite : String;
+                 RxFreq : Currency; idx : LongInt);
 var
   qsodate : String;
   band    : String;
   changed : Integer;
   sWAZ, sITU : String;
+  rx_freq : String;
 begin
   Q.Close;
   if trQ.Active then trQ.Rollback;
@@ -1434,6 +1434,10 @@ begin
     sWAZ := 'null';
   if itu = 0 then
     sITU := 'null';
+  rx_freq := FloatToStr(RxFreq);
+  if (rx_freq = '0') then
+    rx_freq := 'null';
+
   cont := UpperCase(copy(cont,1,2));
   qth  := copy(qth,1,60);
   qsodate := (FormatDateTime('YYYY-MM-DD',date));
@@ -1449,7 +1453,8 @@ begin
            ', qso_dxcc = '+ IntToStr(changed) + ', name = ' +QuotedStr(Trim(stn_name)) +
            ', qth = ' + QuotedStr(Trim(qth)) + ', award = ' + QuotedStr(award) +', band = ' + QuotedStr(band) +
            ', profile = ' + IntToStr(profile) + ', idcall = ' + QuotedStr(idcall) + ', state=' + QuotedStr(state) +
-           ', cont = ' + QuotedStr(cont)+
+           ', cont = ' + QuotedStr(cont)+ ', prop_mode = ' + QuotedStr(PropMode) + ', satellite = ' + QuotedStr(Satellite)+
+           ', rxfreq = ' + rx_freq +
            ' where id_cqrlog_main = ' + IntToStr(idx);
   if fDebugLevel >=1 then
     Writeln(Q.SQL.Text);
@@ -3051,6 +3056,8 @@ procedure TdmData.UpgradeMainDatabase(old_version : Integer);
 var
   err : Boolean = False;
 begin
+  if fDebugLevel>=1 then Writeln('[UpgradeMainDatabase] Old version: ', old_version,  '  cDB_MAIN_VER: ', cDB_MAIN_VER);
+
   if old_version < cDB_MAIN_VER then
   begin
     if trQ1.Active then trQ1.Rollback;
@@ -3247,7 +3254,7 @@ begin
         Q1.SQL.Add('  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,');
         Q1.SQL.Add('  callsign varchar(20) NOT NULL,');
         Q1.SQL.Add('  band varchar(6) NULL,');
-        Q1.SQL.Add('  mode varchar(6) NULL');
+        Q1.SQL.Add('  mode varchar(10) NULL');
         Q1.SQL.Add(') COLLATE '+QuotedStr('utf8_bin')+';');
         if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
         Q1.ExecSQL;
@@ -3271,7 +3278,7 @@ begin
         Q1.SQL.Add('CREATE TABLE freqmem (');
         Q1.SQL.Add('  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,');
         Q1.SQL.Add('  freq numeric(10,4) NOT NULL,');
-        Q1.SQL.Add('  mode varchar(6) NOT NULL,');
+        Q1.SQL.Add('  mode varchar(10) NOT NULL,');
         Q1.SQL.Add('  bandwidth int NOT NULL');
         Q1.SQL.Add(') COLLATE '+QuotedStr('utf8_bin')+';');
         if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
@@ -3291,21 +3298,87 @@ begin
         trQ1.Commit
       end;
 
-      trQ1.StartTransaction;
-      Q1.SQL.Text := 'drop view view_cqrlog_main_by_callsign';
-      if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
-      Q1.ExecSQL;
-      Q1.SQL.Text := 'drop view view_cqrlog_main_by_qsodate';
-      if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
-      Q1.ExecSQL;
-      if old_version >= 13 then
+      if old_version < 14 then
+      begin
+        trQ1.StartTransaction;
+        Q1.SQL.Text := 'alter table cqrlog_main change mode mode varchar(12) not null';
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+        trQ1.Commit;
+
+        trQ1.StartTransaction;
+        Q1.SQL.Text := 'alter table log_changes change mode mode varchar(12) null';
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+        trQ1.Commit;
+
+        trQ1.StartTransaction;
+        Q1.SQL.Text := 'alter table log_changes change old_mode old_mode varchar(12) null';
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+        trQ1.Commit;
+
+        trQ1.StartTransaction;
+        Q1.SQL.Text := 'alter table call_alert change mode mode varchar(12) null';
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+        trQ1.Commit;
+
+        trQ1.StartTransaction;
+        Q1.SQL.Text := 'alter table freqmem change mode mode varchar(12) null';
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+
+        trQ1.Commit
+      end;
+
+      if (old_version < 15) then
+      begin
+        trQ1.StartTransaction;
+        Q1.SQL.Text := 'alter table cqrlog_main add rxfreq numeric(10,4) null';
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+        trQ1.Commit;
+
+        trQ1.StartTransaction;
+        Q1.SQL.Text := 'alter table cqrlog_main add satellite varchar(30) default '+QuotedStr('');
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+        trQ1.Commit;
+
+        trQ1.StartTransaction;
+        Q1.SQL.Text := 'alter table cqrlog_main add prop_mode varchar(30) default '+QuotedStr('');
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+        trQ1.Commit
+      end;
+
+      if TableExists('view_cqrlog_main_by_callsign') then
+      begin
+        trQ1.StartTransaction;
+        Q1.SQL.Text := 'drop view view_cqrlog_main_by_callsign';
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+        trQ1.Commit
+      end;
+
+      if TableExists('view_cqrlog_main_by_qsodate') then
+      begin
+        trQ1.StartTransaction;
+        Q1.SQL.Text := 'drop view view_cqrlog_main_by_qsodate';
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+        trQ1.Commit
+      end;
+
+      if TableExists('view_cqrlog_main_by_qsodate_asc') then
       begin
         trQ1.StartTransaction;
         Q1.SQL.Text := 'drop view view_cqrlog_main_by_qsodate_asc';
         if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
         Q1.ExecSQL;
+        trQ1.Commit
       end;
-      trQ1.Commit;
 
       CreateViews;
 
@@ -4446,7 +4519,6 @@ begin
   else
     QSOColorDate := now
 end;
-
 
 end.
 

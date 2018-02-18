@@ -630,3 +630,6 @@
 10.02.2018
    - TRXcontrol missing band buttons because of wrong anchors. Fixed.
 						                (2.2.0(111)
+18.02.2018
+   - Merged from master
+						                (2.2.0(112)

@@ -38,7 +38,7 @@ const
     ':', '|', '-', '=', '+', '@', '#', '*', '%', '_', '(', ')', '$', '<', '>'];
   empty_freq = '0.00000';
   empty_azimuth = '0.0';
-  cMaxModes = 44; //was 39 //was 42
+  cMaxModes = 45; //was 39 //was 42
   cModes: array [0..cMaxModes] of string =
     ('CW', 'SSB', 'AM', 'FM', 'RTTY', 'SSTV', 'PACTOR', 'PSK', 'ATV', 'CLOVER', 'GTOR', 'MTOR',
     'PSK31', 'HELL', 'MT63',
@@ -46,7 +46,7 @@ const
     'THROB', 'BPSK63', 'PACKET',
     'OLIVIA', 'MFSK16', 'JT4','JT6M', 'JT65', 'JT65A', 'JT65B', 'JT65C',
     'JT9', 'QRA64', 'ISCAT', 'MSK144', 'FT8', 'FSK441', 'PSK125',
-    'PSK63', 'WSPR', 'PSK250', 'ROS');
+    'PSK63', 'WSPR', 'PSK250', 'ROS', 'DIGITALVOICE');
   cMaxBandsCount = 27; //26 bands
 
   cDefaultFreq =
@@ -256,6 +256,9 @@ type
     function  GetDescKeyFromCode(key : Word) : String;
     function  EncodeURLData(data : String) : String;
     function  GetRigIdFromComboBoxItem(ItemText : String) : String;
+    function  GetDataFromHttp(Url : String; var data : String) : Boolean;
+    function  MyStrToDateTime(DateTime : String) : TDateTime;
+    function  MyDateTimeToStr(DateTime : TDateTime) : String;
 end;
 
 var
@@ -4345,8 +4348,73 @@ begin
   aColumns[37].FieldName := 'COUNTRY';
   aColumns[37].Visible   := cqrini.ReadBool('Columns','Country',False);
 
+  aColumns[38].FieldName := 'PROP_MODE';
+  aColumns[38].Visible   := cqrini.ReadBool('Columns', 'Propagation', False);
+
+  aColumns[39].FieldName := 'RXFREQ';
+  aColumns[39].Visible   := cqrini.ReadBool('Columns', 'RXFreq', False);
+
+  aColumns[40].FieldName := 'SATELLITE';
+  aColumns[40].Visible   := cqrini.ReadBool('Columns', 'SatelliteName', False);
+
   for i:=0 to Length(aColumns)-1 do
     aColumns[i].Exists := False
+end;
+
+function TdmUtils.GetDataFromHttp(Url : String; var data : String) : Boolean;
+var
+  HTTP   : THTTPSend;
+  m      : TStringList;
+begin
+  Result := False;
+  data   := '';
+  http   := THTTPSend.Create;
+  m      := TStringList.Create;
+  try
+    HTTP.ProxyHost := cqrini.ReadString('Program','Proxy','');
+    HTTP.ProxyPort := cqrini.ReadString('Program','Port','');
+    HTTP.UserName  := cqrini.ReadString('Program','User','');
+    HTTP.Password  := cqrini.ReadString('Program','Passwd','');
+    if HTTP.HTTPMethod('GET', Url) then
+    begin
+      m.LoadFromStream(HTTP.Document);
+      data   := trim(m.Text);
+      Result := True
+    end
+  finally
+    http.Free;
+    m.Free
+  end
+end;
+
+function TdmUtils.MyStrToDateTime(DateTime : String) : TDateTime;
+var
+  tmp: string;
+begin
+  tmp := FormatSettings.ShortDateFormat;
+  try
+    FormatSettings.ShortDateFormat := 'YYYY-MM-DD';
+    try
+      Result := StrToDateTime(DateTime)
+    except
+      Result := StrToDate('1980-01-01 00:00:01')
+    end
+  finally
+    FormatSettings.ShortDateFormat := tmp
+  end
+end;
+
+function TdmUtils.MyDateTimeToStr(DateTime : TDateTime) : String;
+var
+  tmp: string;
+begin
+  tmp := FormatSettings.ShortDateFormat;
+  try
+    FormatSettings.ShortDateFormat := 'YYYY-MM-DD';
+    Result := DateTimeToStr(DateTime)
+  finally
+    FormatSettings.ShortDateFormat := tmp
+  end
 end;
 
 

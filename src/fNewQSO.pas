@@ -25,6 +25,8 @@ uses
 const
   cRefCall = 'Ref. call (to change press CTRL+R)   ';
   cMyLoc   = 'My grid (to change press CTRL+L) ';
+  cQSLMgrVersionCheckUrl = 'http://www.ok2cqr.com/linux/cqrlog/qslmgr/ver.dat';
+  cCntyVersionCheckUrl = 'http://www.ok2cqr.com/linux/cqrlog/ctyfiles/ver.dat';
 
 type
   TRemoteModeType = (rmtFldigi, rmtWsjt);
@@ -81,9 +83,18 @@ type
     acUploadToClubLog: TAction;
     acUploadToHamQTH: TAction;
     acTune : TAction;
+    btnClearSatellite : TButton;
     chkAutoMode: TCheckBox;
+    cmbPropagation : TComboBox;
+    cmbSatellite : TComboBox;
     dbgrdQSOBefore: TDBGrid;
+    edtRXFreq : TEdit;
+    Label16 : TLabel;
+    Label26 : TLabel;
+    Label35 : TLabel;
+    Label36 : TLabel;
     lblQSLRcvdDate: TLabel;
+    mCountry : TMemo;
     MenuItem32 : TMenuItem;
     MenuItem33 : TMenuItem;
     MenuItem34 : TMenuItem;
@@ -154,7 +165,6 @@ type
     edtState: TEdit;
     edtWAZ: TEdit;
     GroupBox1: TGroupBox;
-    GroupBox2: TGroupBox;
     grbCallBook: TGroupBox;
     imgMain: TImageList;
     imgMain1: TImageList;
@@ -179,7 +189,6 @@ type
     Label23: TLabel;
     Label24: TLabel;
     Label25: TLabel;
-    Label26: TLabel;
     Label27: TLabel;
     Label28: TLabel;
     Label29: TLabel;
@@ -217,7 +226,6 @@ type
     MainMenu1: TMainMenu;
     mCallBook: TMemo;
     mComment: TMemo;
-    mCountry: TMemo;
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
@@ -294,16 +302,18 @@ type
     mnuNewQSO: TMenuItem;
     mnuFile: TMenuItem;
     mnuTRXControl: TMenuItem;
+    pgDetails : TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
     Panel4: TPanel;
+    Panel5 : TPanel;
     Panel6: TPanel;
     pnlOffline: TPanel;
     popEditQSO: TPopupMenu;
     sbNewQSO: TStatusBar;
     sbtneQSL : TSpeedButton;
-    sgrdStatistic: TStringGrid;
+    sgrdStatistic : TStringGrid;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
     SpeedButton3: TSpeedButton;
@@ -314,6 +324,8 @@ type
     sbtnLoTW: TSpeedButton;
     sbtnHamQTH : TSpeedButton;
     sbtnRefreshTime: TSpeedButton;
+    tabDXCCStat : TTabSheet;
+    tabSatellite : TTabSheet;
     tmrWsjtx: TTimer;
     tmrUploadAll: TTimer;
     tmrFldigi: TTimer;
@@ -349,11 +361,14 @@ type
     procedure acUploadToHamQTHExecute(Sender: TObject);
     procedure acUploadToHrdLogExecute(Sender: TObject);
     procedure acPropExecute(Sender: TObject);
+    procedure btnClearSatelliteClick(Sender : TObject);
     procedure chkAutoModeChange(Sender: TObject);
     procedure cmbFreqExit(Sender: TObject);
     procedure cmbIOTAEnter(Sender: TObject);
+    procedure cmbPropagationChange(Sender : TObject);
     procedure cmbQSL_REnter(Sender: TObject);
     procedure cmbQSL_SEnter(Sender: TObject);
+    procedure cmbSatelliteChange(Sender : TObject);
     procedure dbgrdQSOBeforeColumnSized(Sender: TObject);
     procedure edtAwardEnter(Sender: TObject);
     procedure edtCallChange(Sender: TObject);
@@ -521,6 +536,9 @@ type
     old_mode   : String;
     old_freq   : String;
     old_qslr   : String;
+    old_sat    : String;
+    old_prop   : String;
+    old_rxfreq : String;
     posun      : String;
 
     old_time   : String;
@@ -575,6 +593,11 @@ type
     procedure onExcept(Sender: TObject; E: Exception);
     procedure DisplayCoordinates(latitude, Longitude : Currency);
     procedure DrawGrayline;
+
+    procedure CheckForExternalTablesUpdate;
+    procedure CheckForDXCCTablesUpdate;
+    procedure CheckForQslManagersUpdate;
+    procedure CheckForMembershipUpdate;
 
     function CheckFreq(freq : String) : String;
   public
@@ -642,6 +665,7 @@ type
       procedure Execute; override;
   end;
 
+
 var
   frmNewQSO    : TfrmNewQSO;
 
@@ -682,66 +706,37 @@ uses dUtils, fChangeLocator, dDXCC, dDXCluster, dData, fMain, fSelectDXCC, fGray
      fLongNote, fRefCall, fKeyTexts, fCWType, fExportProgress, fPropagation, fCallAttachment,
      fQSLViewer, fCWKeys, uMyIni, fDBConnect, fAbout, uVersion, fChangelog,
      fBigSquareStat, fSCP, fRotControl, fLogUploadStatus, fRbnMonitor, fException, fCommentToCall,
-     fRemind, fContest,fXfldigi;
+     fRemind, fContest, fXfldigi, dMembership, dSatellite;
 
 procedure TQSLTabThread.Execute;
 var
-  HTTP   : THTTPSend;
-  m      : TStringList;
+  data   : string;
   FileDate : TDateTime;
 begin
   FreeOnTerminate := True;
-  http   := THTTPSend.Create;
-  m      := TStringList.Create;
-  try
-    HTTP.ProxyHost := cqrini.ReadString('Program','Proxy','');
-    HTTP.ProxyPort := cqrini.ReadString('Program','Port','');
-    HTTP.UserName  := cqrini.ReadString('Program','User','');
-    HTTP.Password  := cqrini.ReadString('Program','Passwd','');
-    if HTTP.HTTPMethod('GET', 'http://www.ok2cqr.com/linux/cqrlog/qslmgr/ver.dat') then
-    begin
-      m.LoadFromStream(HTTP.Document);
-      FileDate := dmUtils.MyStrToDate(trim(m.Text));
-      if FileDate > dmUtils.GetLastQSLUpgradeDate then
-      begin
-        Synchronize(@frmNewQSO.SynQSLTab)
-      end
-    end
-  finally
-    http.Free;
-    m.Free
+  if dmUtils.GetDataFromHttp(cQSLMgrVersionCheckUrl, data) then
+  begin
+    FileDate := dmUtils.MyStrToDate(data);
+    if FileDate > dmUtils.GetLastQSLUpgradeDate then
+      Synchronize(@frmNewQSO.SynQSLTab)
   end
 end;
 
 
 procedure TDXCCTabThread.Execute;
 var
-  HTTP   : THTTPSend;
-  m      : TStringList;
+  data   : string;
   FileDate : TDateTime;
 begin
   FreeOnTerminate := True;
-  http   := THTTPSend.Create;
-  m      := TStringList.Create;
-  try
-    HTTP.ProxyHost := cqrini.ReadString('Program','Proxy','');
-    HTTP.ProxyPort := cqrini.ReadString('Program','Port','');
-    HTTP.UserName  := cqrini.ReadString('Program','User','');
-    HTTP.Password  := cqrini.ReadString('Program','Passwd','');
-    if HTTP.HTTPMethod('GET', 'http://www.ok2cqr.com/linux/cqrlog/ctyfiles/ver.dat') then
-    begin
-      m.LoadFromStream(HTTP.Document);
-      FileDate := dmUtils.MyStrToDate(trim(m.Text));
-      if FileDate > dmUtils.GetLastUpgradeDate then
-      begin
+  if dmUtils.GetDataFromHttp(cCntyVersionCheckUrl, data) then
+  begin
+    FileDate := dmUtils.MyStrToDate(data);
+    if FileDate > dmUtils.GetLastUpgradeDate then
         Synchronize(@frmNewQSO.SynDXCCTab)
-      end;
-    end;
-  finally
-    http.Free;
-    m.Free
   end
 end;
+
 
 procedure TfrmNewQSO.SynDXCCTab;
 begin
@@ -752,11 +747,13 @@ begin
     try
       Caption            := 'Downloading DXCC data ...';
       lblComment.Caption := 'Downloading DXCC data ...';
-      ImportType := 3;
+      ImportType := imptDownloadDXCCData;
       ShowModal;
     finally
       Free
     end;
+    if (edtCall.Text = '') then
+      ClearAll;                //reload combo boxes with prop modes and satelite names
     dmDXCC.ReloadDXCCTables;
     dmDXCluster.ReloadDXCCTables
   end
@@ -771,7 +768,7 @@ begin
     try
       Caption            := 'Downloading QSL managers ...';
       lblComment.Caption := 'Downloading QSL managers ...';
-      ImportType := 6;
+      ImportType := imptDownloadQSLData;
       ShowModal;
     finally
       Free
@@ -1080,6 +1077,10 @@ begin
   dmUtils.InsertModes(cmbMode);
   dmUtils.InsertFreq(cmbFreq);
 
+  dmSatellite.GetListOfSatellites(cmbSatellite, old_sat);
+  dmSatellite.GetListOfPropModes(cmbPropagation, old_prop);
+  edtRXFreq.Text := old_rxfreq;
+
   if cbOffline.Checked then
   begin
     edtStartTime.Text := sTimeOn;
@@ -1163,9 +1164,6 @@ begin
 end;
 
 procedure TfrmNewQSO.LoadSettings;
-var
-  Tab   : TDXCCTabThread;
-  thqsl : TQSLTabThread;
 begin
   dmUtils.ModifyXplanetConf;
   dmUtils.LoadFontSettings(frmNewQSO);
@@ -1282,19 +1280,9 @@ begin
   if cqrini.ReadBool('Window','RBNMonitor',False) then
     acRBNMonitor.Execute;
 
-  if cqrini.ReadBool('Program','CheckDXCCTabs',True) then
-  begin
-    Tab := TDXCCTabThread.Create(True);
-    Tab.FreeOnTerminate := True;
-    Tab.Start
-  end;
+  CheckForExternalTablesUpdate;
 
-  if cqrini.ReadBool('Program','CheckQSLTabs',True) then
-  begin
-    thqsl := TQSLTabThread.Create(True);
-    thqsl.FreeOnTerminate := True;
-    thqsl.Start
-  end;
+  pgDetails.Pages[1].TabVisible := cqrini.ReadBool('NewQSO','SatelliteMode', False);
 
   //this have to be done here when log is selected (settings at database)
   frmReminder.chRemi.Checked := cqrini.ReadBool('Reminder','chRemi',False);
@@ -2519,8 +2507,11 @@ begin
   old_t_band := '';
   old_t_mode := '';
   old_prof   := -1;
+  old_prop   := '';
+  old_sat    := '';
+  old_rxfreq := '';
   WhatUpNext := upHamQTH;
-  UploadAll  := False;
+  UploadAll  := False
 end;
 
 procedure TfrmNewQSO.btnSaveClick(Sender: TObject);
@@ -2531,6 +2522,7 @@ var
   Delete : Boolean = False;
   ShowMain : Boolean = False;
   date     : TDate;
+  RxFreq   : Double = 0;
 begin
   ShowMain := (fEditQSO or fViewQSO) and (not fromNewQSO);
   if not cbOffline.Checked then
@@ -2600,6 +2592,9 @@ begin
     ChangeDXCC := True; //if user chooses another country by direct enter to the edtDXCCref
                      //without clicking to btnDXCCRef
 
+  if not TryStrToFloat(edtRXFreq.Text, RxFreq) then
+    RxFreq := 0;
+
   if fEditQSO then
   begin
     if fromNewQSO then
@@ -2634,6 +2629,9 @@ begin
                    lblCont.Caption,
                    ChangeDXCC,
                    dmData.GetNRFromProfile(cmbProfiles.Text),
+                   dmSatellite.GetPropShortName(cmbPropagation.Text),
+                   dmSatellite.GetSatShortName(cmbSatellite.Text),
+                   RxFreq,
                    id);
     if (old_call<>edtCall.Text) or (old_mode<>cmbMode.Text) or (StrToFloat(old_freq)<>StrToFloat(cmbFreq.Text)) or
        (old_date<>StrToDate(edtDate.Text)) or (old_time<>edtStartTime.Text) or (old_rsts<>edtHisRST.Text) or
@@ -2650,7 +2648,10 @@ begin
         edtCallExit(nil)
       end;
 
-    old_prof := dmData.GetNRFromProfile(cmbProfiles.Text);
+    old_prof   := dmData.GetNRFromProfile(cmbProfiles.Text);
+    old_sat    := dmSatellite.GetSatShortName(cmbSatellite.Text);
+    old_prop   := dmSatellite.GetPropShortName(cmbPropagation.Text);
+    old_rxfreq := edtRXFreq.Text;
     date := StrToDate(edtDate.Text);
     {
     if (not cbOffline.Checked) or (mnuRemoteMode.Checked) then
@@ -2715,7 +2716,11 @@ begin
                    frmQSODetails.ClubNR2,
                    frmQSODetails.ClubNR3,
                    frmQSODetails.ClubNR4,
-                   frmQSODetails.ClubNR5)
+                   frmQSODetails.ClubNR5,
+                   dmSatellite.GetPropShortName(cmbPropagation.Text),
+                   dmSatellite.GetSatShortName(cmbSatellite.Text),
+                   RxFreq
+                   )
   end;
   if fEditQSO and (not fromNewQSO) then
   begin
@@ -3844,6 +3849,13 @@ begin
    frmPropagation.Show
 end;
 
+procedure TfrmNewQSO.btnClearSatelliteClick(Sender : TObject);
+begin
+  cmbPropagation.ItemIndex := 0;
+  cmbSatellite.ItemIndex   := 0;
+  edtRXFreq.Clear
+end;
+
 procedure TfrmNewQSO.acCWFKeyExecute(Sender: TObject);
 begin
   UpdateFKeyLabels;
@@ -3959,6 +3971,14 @@ begin
   cmbIOTA.SelectAll
 end;
 
+procedure TfrmNewQSO.cmbPropagationChange(Sender : TObject);
+begin
+  if (cmbPropagation.Text <> '') or (cmbSatellite.Text <> '') or (edtRXFreq.Text <> '') then
+    tabSatellite.Font.Color := clRed
+  else
+    tabSatellite.Font.Color := clDefault
+end;
+
 procedure TfrmNewQSO.cmbQSL_REnter(Sender: TObject);
 begin
   cmbQSL_R.SelectAll
@@ -3967,6 +3987,13 @@ end;
 procedure TfrmNewQSO.cmbQSL_SEnter(Sender: TObject);
 begin
   cmbQSL_S.SelectAll
+end;
+
+procedure TfrmNewQSO.cmbSatelliteChange(Sender : TObject);
+begin
+  cmbPropagationChange(nil);
+  if ((cmbSatellite.Text <> '') and (cmbPropagation.Text = '')) then
+    cmbPropagation.Text := 'SAT|Satellite'
 end;
 
 procedure TfrmNewQSO.dbgrdQSOBeforeColumnSized(Sender: TObject);
@@ -4524,11 +4551,10 @@ begin
     if cmbQSL_S.Text = 'B' then
       cmbQSL_S.Text := 'MD'
   end;
-  if (not (fEditQSO or fViewQSO)) or (old_call<>edtCall.Text) then
-  begin
-    idcall := dmUtils.GetIDCall(edtCall.Text);
-    sbNewQSO.Panels[1].Text := cRefCall + idcall
-  end;
+
+  idcall := dmUtils.GetIDCall(edtCall.Text);
+  sbNewQSO.Panels[1].Text := cRefCall + idcall;
+
   if (not(fEditQSO or fViewQSO)) then
   begin
     if SearchQRZ then
@@ -4986,7 +5012,7 @@ begin
   dbgrdQSOBefore.DataSource := dmData.dsrQSOBefore;
   dbgrdQSOBefore.ResetColWidths;
   LoadGrid;
-  SetLength(aColumns,38);
+  SetLength(aColumns,41);
   dmUtils.LoadVisibleColumnsConfiguration(aColumns);
 
   fQsoGr   := cqrini.ReadString('Fonts','QGrids','Sans 10');
@@ -5069,16 +5095,6 @@ begin
           if aColumns[y].Visible and (dbgrdQSOBefore.Columns[i].Width = 0) then
             dbgrdQSOBefore.Columns[i].Width := 60
         end
-      end;
-
-      if fDefault then
-      begin
-        dbgrdQSOBefore.Columns[i].Title.Font.Name := 'default';
-        dbgrdQSOBefore.Columns[i].Title.Font.Size := 0
-      end
-      else begin
-        dbgrdQSOBefore.Columns[i].Title.Font.Name := fQsoGr;
-        dbgrdQSOBefore.Columns[i].Title.Font.Size := fqSize
       end
     end;
 
@@ -5091,7 +5107,22 @@ begin
         dbgrdQSOBefore.Columns[dbgrdQSOBefore.Columns.Count-1].DisplayName := aColumns[i].FieldName;
         dbgrdQSOBefore.Columns[dbgrdQSOBefore.Columns.Count-1].Width       := 60
       end
+    end;
+
+    for i:=0 to dbgrdQSOBefore.Columns.Count-1 do
+    begin
+      Writeln(dbgrdQSOBefore.Columns[i].DisplayName);
+      if fDefault then
+      begin
+        dbgrdQSOBefore.Columns[i].Title.Font.Name := 'default';
+        dbgrdQSOBefore.Columns[i].Title.Font.Size := 0
+      end
+      else begin
+        dbgrdQSOBefore.Columns[i].Title.Font.Name := fQsoGr;
+        dbgrdQSOBefore.Columns[i].Title.Font.Size := fqSize
+      end
     end
+
   finally
     dbgrdQSOBefore.DataSource.DataSet.EnableControls
   end
@@ -5405,7 +5436,10 @@ begin
     begin
       lblQSLRcvdDate.Caption := 'QSL rcvd on '+dmData.qQSOBefore.FieldByName('qslr_date').AsString;
       lblQSLRcvdDate.Visible := True
-    end
+    end;
+    dmSatellite.GetListOfSatellites(cmbSatellite, dmData.qQSOBefore.FieldByName('satellite').AsString);
+    dmSatellite.GetListOfPropModes(cmbPropagation, dmData.qQSOBefore.FieldByName('prop_mode').AsString);
+    edtRXFreq.Text := FloatToStr(dmData.qQSOBefore.FieldByName('rxfreq').AsFloat)
   end
   else begin
     cmbProfiles.Text := dmData.GetProfileText(dmData.qCQRLOG.FieldByName('profile').AsInteger);
@@ -5447,8 +5481,13 @@ begin
     begin
       lblQSLRcvdDate.Caption := 'QSL rcvd on '+dmData.qCQRLOG.FieldByName('qslr_date').AsString;
       lblQSLRcvdDate.Visible := True
-    end
+    end;
+    dmSatellite.GetListOfSatellites(cmbSatellite, dmData.qCQRLOG.FieldByName('satellite').AsString);
+    dmSatellite.GetListOfPropModes(cmbPropagation, dmData.qCQRLOG.FieldByName('prop_mode').AsString);
+    edtRXFreq.Text := FloatToStr(dmData.qCQRLOG.FieldByName('rxfreq').AsFloat)
   end;
+  if (edtRXFreq.Text = '0') then
+    edtRXFreq.Text := '';
   sbNewQSO.Panels[1].Text := cRefCall + idcall;
   adif := dmDXCC.AdifFromPfx(edtDXCCRef.Text);
   if fromNewQSO then
@@ -6348,6 +6387,43 @@ begin
   frmGrayline.d   := lblLong.Caption;
   frmGrayline.pfx := lblDXCC.Caption;
   frmGrayline.kresli
+end;
+
+procedure TfrmNewQSO.CheckForExternalTablesUpdate;
+begin
+  CheckForDXCCTablesUpdate;
+  CheckForQslManagersUpdate;
+  CheckForMembershipUpdate
+end;
+
+procedure TfrmNewQSO.CheckForDXCCTablesUpdate;
+var
+  Tab   : TDXCCTabThread;
+begin
+  if cqrini.ReadBool('Program','CheckDXCCTabs',True) then
+  begin
+    Tab := TDXCCTabThread.Create(True);
+    Tab.FreeOnTerminate := True;
+    Tab.Start
+  end
+end;
+
+procedure TfrmNewQSO.CheckForQslManagersUpdate;
+var
+  thqsl : TQSLTabThread;
+begin
+  if cqrini.ReadBool('Program','CheckQSLTabs',True) then
+  begin
+    thqsl := TQSLTabThread.Create(True);
+    thqsl.FreeOnTerminate := True;
+    thqsl.Start
+  end
+end;
+
+procedure TfrmNewQSO.CheckForMembershipUpdate;
+begin
+  if cqrini.ReadBool('Clubs', 'CheckForUpdate', False) then
+    dmMembership.CheckForMembershipUpdate
 end;
 
 end.

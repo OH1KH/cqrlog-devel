@@ -72,6 +72,7 @@ type
     btnCfgStorage: TButton;
     btnAddTrxMem : TButton;
     btnSelectQSOColor : TButton;
+    btnForceMembershipUpdate : TButton;
     cb10m1: TCheckBox;
     cb12m1: TCheckBox;
     cb136kHz: TCheckBox;
@@ -118,6 +119,11 @@ type
     cb125m: TCheckBox;
     cb60m: TCheckBox;
     cb30cm: TCheckBox;
+    chkRXFreq : TCheckBox;
+    chkSatellite : TCheckBox;
+    chkPropagation : TCheckBox;
+    chkSatelliteMode : TCheckBox;
+    chkCheckMembershipUpdate : TCheckBox;
     chkConToDXC: TCheckBox;
     chkFldXmlRpc: TCheckBox;
     chkQSOColor : TCheckBox;
@@ -967,6 +973,7 @@ type
     procedure btnChangeDefaultFreqClick(Sender: TObject);
     procedure btnKeyTextClick(Sender: TObject);
     procedure btnSplitClick(Sender: TObject);
+    procedure btnForceMembershipUpdateClick(Sender : TObject);
     procedure chkClUpEnabledChange(Sender: TObject);
     procedure chkHaUpEnabledChange(Sender: TObject);
     procedure chkHrUpEnabledChange(Sender: TObject);
@@ -1037,6 +1044,8 @@ type
     procedure pnlQSOColorClick(Sender : TObject);
   private
     wasOnlineLogSupportEnabled : Boolean;
+
+    procedure SaveClubSection;
   public
     { public declarations }
     ActPageIdx : integer;
@@ -1061,7 +1070,7 @@ implementation
 uses dUtils, dData, fMain, fFreq, fQTHProfiles, fSerialPort, fClubSettings, fLoadClub,
   fGrayline, fNewQSO, fBandMap, fBandMapWatch, fDefaultFreq, fKeyTexts, fTRXControl,
   fSplitSettings, uMyIni, fNewQSODefValues, fDXCluster, fCallAlert, fConfigStorage, fPropagation,
-  fRadioMemories;
+  fRadioMemories, dMembership;
 
 procedure TfrmPreferences.btnOKClick(Sender: TObject);
 var
@@ -1098,6 +1107,7 @@ begin
   cqrini.WriteBool('NewQSO','CapFirstQTHLetter',chkCapFirstQTHLetter.Checked);
   cqrini.WriteBool('NewQSO','UseCallbookZonesEtc',chkUseCallbookZonesEtc.Checked);
   cqrini.WriteBool('NewQSO','FillAwardField',chkFillAwardField.Checked);
+  cqrini.WriteBool('NewQSO','SatelliteMode', chkSatelliteMode.Checked);
 
   cqrini.WriteString('Program', 'Proxy', edtProxy.Text);
   cqrini.WriteString('Program', 'Port', edtPort.Text);
@@ -1156,6 +1166,9 @@ begin
   cqrini.WriteBool('Columns', 'eQSLQSLRDate', chkeQSLRcvdDate.Checked);
   cqrini.WriteBool('Columns', 'QSLRAll', chkQSLRAll.Checked);
   cqrini.WriteBool('Columns', 'Country', chkCountry.Checked);
+  cqrini.WriteBool('Columns', 'Propagation', chkPropagation.Checked);
+  cqrini.WriteBool('Columns', 'SatelliteName', chkSatellite.Checked);
+  cqrini.WriteBool('Columns', 'RXFreq', chkRXFreq.Checked);
 
   cqrini.WriteBool('Bands', '137kHz', cb136kHz.Checked);
   cqrini.WriteBool('Bands', '472kHz', cb472kHz.Checked);
@@ -1344,11 +1357,7 @@ begin
   cqrini.WriteInteger('IOTA', 'QSLIOTA', clboxQSLIOTA.Selected);
   cqrini.WriteBool('IOTA', 'ShowIOTAInfo', chkShowIOTAInfo.Checked);
 
-  cqrini.WriteString('Clubs', 'First', cmbFirstClub.Text);
-  cqrini.WriteString('Clubs', 'Second', cmbSecondClub.Text);
-  cqrini.WriteString('Clubs', 'Third', cmbThirdClub.Text);
-  cqrini.WriteString('Clubs', 'Fourth', cmbFourthClub.Text);
-  cqrini.WriteString('Clubs', 'Fifth', cmbFifthClub.Text);
+  SaveClubSection;
 
   cqrini.WriteString('BandMap', 'BandFont', lblBandMapFont.Font.Name);
   cqrini.WriteInteger('BandMap', 'FontSize', fbandSize);
@@ -1565,6 +1574,14 @@ begin
   frmNewQSO.ClearAfterFreqChange := False;//cqrini.ReadBool('NewQSO','ClearAfterFreqChange',False);
   frmNewQSO.ChangeFreqLimit      := cqrini.ReadFloat('NewQSO','FreqChange',0.010);
 
+
+  if not chkSatelliteMode.Checked then
+  begin
+     frmNewQSO.btnClearSatelliteClick(nil);
+     frmNewQSO.pgDetails.TabIndex := 0
+  end;
+  frmNewQSO.pgDetails.Pages[1].TabVisible  := chkSatelliteMode.Checked;
+
   if ReloadFreq then
     dmUtils.InsertFreq(frmNewQSO.cmbFreq);
   if ReloadModes then
@@ -1595,6 +1612,9 @@ begin
   frmTRXControl.rbRadio1.Caption := edtRadio1.Text;
   frmTRXControl.rbRadio2.Caption := edtRadio2.Text;
   frmTRXControl.SetDebugMode(chkTrxControlDebug.Checked or (dmData.DebugLevel>0));
+
+  if ((frmNewQSO.sbNewQSO.Panels[0].Text = '') or (frmNewQSO.sbNewQSO.Panels[0].Text = cMyLoc)) then
+    frmNewQSO.sbNewQSO.Panels[0].Text := cMyLoc + edtLoc.Text;
 
   cqrini.SaveToDisk;
   dmData.SaveConfigFile;
@@ -2123,6 +2143,12 @@ begin
     end;
 end;
 
+procedure TfrmPreferences.btnForceMembershipUpdateClick(Sender : TObject);
+begin
+  SaveClubSection;
+  dmMembership.CheckForMembershipUpdate
+end;
+
 procedure TfrmPreferences.chkClUpEnabledChange(Sender: TObject);
 begin
   edtClUserName.Enabled := chkClUpEnabled.Checked;
@@ -2454,6 +2480,7 @@ begin
   chkCapFirstQTHLetter.Checked := cqrini.ReadBool('NewQSO','CapFirstQTHLetter',True);
   chkUseCallbookZonesEtc.Checked := cqrini.ReadBool('NewQSO','UseCallbookZonesEtc',True);
   chkFillAwardField.Checked := cqrini.ReadBool('NewQSO','FillAwardField',True);
+  chkSatelliteMode.Checked := cqrini.ReadBool('NewQSO','SatelliteMode', False);
 
   edtProxy.Text := cqrini.ReadString('Program', 'Proxy', '');
   edtPort.Text := cqrini.ReadString('Program', 'Port', '');
@@ -2517,6 +2544,9 @@ begin
   chkeQSLRcvdDate.Checked := cqrini.ReadBool('Columns', 'eQSLQSLRDate', False);
   chkQSLRAll.Checked := cqrini.ReadBool('Columns', 'QSLRAll', False);
   chkCountry.Checked := cqrini.ReadBool('Columns', 'Country', False);
+  chkPropagation.Checked := cqrini.ReadBool('Columns', 'Propagation', False);
+  chkSatellite.Checked := cqrini.ReadBool('Columns', 'SatelliteName', False);
+  chkRXFreq.Checked := cqrini.ReadBool('Columns', 'RXFreq', False);
 
   cb136kHz.Checked := cqrini.ReadBool('Bands', '137kHz', False);
   cb472kHz.Checked := cqrini.ReadBool('Bands', '472kHz', False);
@@ -2720,6 +2750,7 @@ begin
   cmbThirdClub.Text := cqrini.ReadString('Clubs', 'Third', '');
   cmbFourthClub.Text := cqrini.ReadString('Clubs', 'Fourth', '');
   cmbFifthClub.Text := cqrini.ReadString('Clubs', 'Fifth', '');
+  chkCheckMembershipUpdate.Checked := cqrini.ReadBool('Clubs', 'CheckForUpdate', False);
 
   lblBandMapFont.Font.Name := cqrini.ReadString('BandMap', 'BandFont', 'Monospace');
   lblBandMapFont.Font.Size := cqrini.ReadInteger('BandMap', 'FontSize', 8);
@@ -2925,6 +2956,16 @@ end;
 procedure TfrmPreferences.pnlQSOColorClick(Sender : TObject);
 begin
   btnSelectQSOColor.Click
+end;
+
+procedure TfrmPreferences.SaveClubSection;
+begin
+  cqrini.WriteString('Clubs', 'First', cmbFirstClub.Text);
+  cqrini.WriteString('Clubs', 'Second', cmbSecondClub.Text);
+  cqrini.WriteString('Clubs', 'Third', cmbThirdClub.Text);
+  cqrini.WriteString('Clubs', 'Fourth', cmbFourthClub.Text);
+  cqrini.WriteString('Clubs', 'Fifth', cmbFifthClub.Text);
+  cqrini.WriteBool('Clubs', 'CheckForUpdate', chkCheckMembershipUpdate.Checked)
 end;
 
 end.
