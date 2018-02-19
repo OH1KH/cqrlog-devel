@@ -152,22 +152,22 @@ object frmeQSLUpload: TfrmeQSLUpload
     Top = 0
     Width = 575
     Align = alTop
-    ClientHeight = 60
-    ClientWidth = 571
+    ClientHeight = 62
+    ClientWidth = 573
     TabOrder = 0
     object rbWebExportAll: TRadioButton
       Left = 14
-      Height = 24
+      Height = 23
       Top = 6
-      Width = 137
+      Width = 131
       Caption = ' Export all QSOs'
       TabOrder = 0
     end
     object rbWebExportNotExported: TRadioButton
       Left = 14
-      Height = 24
+      Height = 23
       Top = 31
-      Width = 374
+      Width = 358
       Caption = 'Export only QSOs which have never been uploaded'
       Checked = True
       TabOrder = 1
@@ -180,20 +180,20 @@ object frmeQSLUpload: TfrmeQSLUpload
     Top = 64
     Width = 575
     Align = alTop
-    ClientHeight = 52
-    ClientWidth = 571
+    ClientHeight = 54
+    ClientWidth = 573
     TabOrder = 1
     object Label1: TLabel
       Left = 14
-      Height = 17
+      Height = 15
       Top = 14
-      Width = 106
+      Width = 102
       Caption = 'QTH Nickname:'
       ParentColor = False
     end
     object edtQTH: TEdit
       Left = 174
-      Height = 27
+      Height = 32
       Top = 9
       Width = 174
       TabOrder = 0
@@ -206,14 +206,14 @@ object frmeQSLUpload: TfrmeQSLUpload
     Width = 575
     Align = alClient
     Caption = ' Upload '
-    ClientHeight = 342
-    ClientWidth = 571
+    ClientHeight = 345
+    ClientWidth = 573
     TabOrder = 2
     object mStat: TMemo
       Left = 0
-      Height = 304
+      Height = 307
       Top = 0
-      Width = 571
+      Width = 573
       Align = alClient
       Lines.Strings = (
         ''
@@ -225,15 +225,15 @@ object frmeQSLUpload: TfrmeQSLUpload
     object pnlUpload: TPanel
       Left = 0
       Height = 38
-      Top = 304
-      Width = 571
+      Top = 307
+      Width = 573
       Align = alBottom
       BevelOuter = bvNone
       ClientHeight = 38
-      ClientWidth = 571
+      ClientWidth = 573
       TabOrder = 1
       object btnUpload: TButton
-        Left = 414
+        Left = 416
         Height = 25
         Top = 11
         Width = 70
@@ -251,7 +251,7 @@ object frmeQSLUpload: TfrmeQSLUpload
         ParentColor = False
       end
       object btnClose: TButton
-        Left = 494
+        Left = 496
         Height = 25
         Top = 11
         Width = 67
