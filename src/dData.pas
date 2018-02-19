@@ -999,7 +999,12 @@ begin
   if not FileExistsUTF8(fHomeDir+'eqsl.txt') then
     CopyFile(s+'eqsl.txt',fHomeDir+'eqsl.txt',True);
   if not FileExistsUTF8(fHomeDir+'MASTER.SCP') then
-    CopyFile(s+'MASTER.SCP',fHomeDir+'MASTER.SCP',True)
+    CopyFile(s+'MASTER.SCP',fHomeDir+'MASTER.SCP',True);
+
+  if not FileExistsUTF8(fHomeDir+'sat_name.tab') then
+    CopyFile(s+'sat_name.tab', fHomeDir+'sat_name.tab');
+  if not FileExistsUTF8(fHomeDir+'prop_mode.tab') then
+    CopyFile(s+'prop_mode.tab', fHomeDir+'prop_mode.tab')
 end;
 
 procedure TdmData.PrepareDXCCData;
