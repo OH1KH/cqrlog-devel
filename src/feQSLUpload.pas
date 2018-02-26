@@ -140,8 +140,10 @@ begin
       Writeln(f,tmp);
 
       tmp := '<RST_SENT' + dmUtils.StringToADIF(dmData.Q.FieldByName('rst_s').AsString);
+      Writeln(f,tmp);
 
       tmp := '<RST_RCVD' + dmUtils.StringToADIF(dmData.Q.FieldByName('rst_r').AsString);
+      Writeln(f,tmp);
 
       if (dmData.Q.FieldByName('prop_mode').AsString <> '') then
         Writeln(f, '<PROP_MODE' + dmUtils.StringToADIF(dmData.Q.FieldByName('prop_mode').AsString));
