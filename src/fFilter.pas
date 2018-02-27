@@ -120,12 +120,14 @@ type
     procedure btnLoadClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
     procedure btnSelectDXCCClick(Sender: TObject);
+    procedure edtQTHChange(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure edtDateFromExit(Sender: TObject);
     procedure edtDateToExit(Sender: TObject);
+    procedure GroupBox8Click(Sender: TObject);
   private
   public
     tmp : String;
@@ -419,6 +421,11 @@ begin
   end
 end;
 
+procedure TfrmFilter.GroupBox8Click(Sender: TObject);
+begin
+
+end;
+
 procedure TfrmFilter.btnCancelClick(Sender: TObject);
 begin
   Close
@@ -470,6 +477,11 @@ begin
   finally
     frmSelectDXCC.Free
   end
+end;
+
+procedure TfrmFilter.edtQTHChange(Sender: TObject);
+begin
+
 end;
 
 procedure TfrmFilter.FormKeyUp(Sender: TObject; var Key: Word;

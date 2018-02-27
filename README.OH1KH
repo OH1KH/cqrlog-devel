@@ -642,3 +642,8 @@
   - Merged from master
   - CQ-monitor: show delta frequency instead of time if "no history" cheked. It is more valuable data then.
 						                (2.2.0(115)
+27.02.2018
+  - QSL/Filter. Added text "X.x MHz" to frequency group box to clarify input format. Fixed sizes and anchors.
+  - help files of wsjt updated
+						                (2.2.0(116)
+
