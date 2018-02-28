@@ -646,4 +646,13 @@
   - QSL/Filter. Added text "X.x MHz" to frequency group box to clarify input format. Fixed sizes and anchors.
   - help files of wsjt updated
 						                (2.2.0(116)
-
+28.02.2018
+  - Cq-monitor: Followed station's captured line turns now from default color (black) to silver gray when 
+    right period of possible answer is passed.
+    Same way, if there are no CQ lines during period then old monitor lines will turn to silver gray 
+    indicating that right period of possible answer is passed.
+    This happens ONLY if "no history" is checked. If not, colors stay as they are.
+    CQ-lines turning to silver gray does not disable double click answering property. It is just informative
+    color change. 
+  - wsjt help files updated
+						                (2.2.0(117)
