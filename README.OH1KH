@@ -1,13 +1,656 @@
-10.3.2017 started  to move additions from 1.9.0
-
-
 
 --------------------------------------------------------------------------------------------------
-          !!!! YOU WILL FIND LATEST UPDATES COMMENTED AT THE END OF THIS FILE !!!!
-     !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE NOT INTERESTED IN HISTORY !!!!!!
+       !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
+     !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 -------------------------------------------------------------------------------------------------- 
 
 
+01.03.2018
+   - QSO/Filter: Bugfix of layout (caused runtime error.Tnx Andreas DL7OAP). 
+   - Band selector added. Selecting band initiates "Freq from" and "Freq to" to band limits that are
+     defined from Prferences/Bands/Frequencies.
+     Help files updated.
+28.02.2018
+  - Cq-monitor: Followed station's captured line turns now from default color (black) to silver gray when 
+    right period of possible answer is passed.
+    Same way, if there are no CQ lines during period then old monitor lines will turn to silver gray 
+    indicating that right period of possible answer is passed.
+    This happens ONLY if "no history" is checked. If not, colors stay as they are.
+    CQ-lines turning to silver gray does not disable double click answering property. It is just informative
+    color change. 
+  - wsjt help files updated
+						                (2.2.0(117)
+27.02.2018
+  - QSL/Filter. Added text "X.x MHz" to frequency group box to clarify input format. Fixed sizes and anchors.
+  - help files of wsjt updated
+						                (2.2.0(116)
+26.02.2018
+  - Merged from master
+  - CQ-monitor: show delta frequency instead of time if "no history" cheked. It is more valuable data then.
+						                (2.2.0(115)
+19.02.2018
+   - fixed eQSL upload bug. Missing query fields (new ones9 and wrong query to read them Q1 -> Q
+						                (2.2.0(113)
+  - Merged from master
+						                (2.2.0(114)
+18.02.2018
+   - Merged from master
+						                (2.2.0(112)
+10.02.2018
+   - TRXcontrol missing band buttons because of wrong anchors. Fixed.
+						                (2.2.0(111)
+09.02.2018
+   - When in remote mode preferences opens to fldigi/wsjt-tab
+						                (2.2.0(110)
+04.02.2018
+   - StartConnectCommand  can now still be set with Ctrl-S and now also via preferences. Change can be
+     done in either way.
+   - DXCluster button "preferences"/dropdown-menu/preferences work in way that the tabDXCluster of
+     preferences is open if preferences are called from DXCluster window.
+   - TRXControl  has now dropdown-menu item "preferences". The tabTRXControl of preferences is open
+     when called from TRXControl window.
+   - Corresponding help files fixed
+ 						                (2.2.0(109)
+31.01.2018
+   - New design of TRXContorl window. Power buttons can be shown/hide using dropdown menu "Settigs".
+     Default is hidden.
+ 						                (2.2.0(108)  
+30.01.2018
+   - disabled DXCluster call alert when webcluster in in use. It does not work in current webcluster
+     connection.
+   - Added StartConnectCommand for telnet dxcluster. Type DXCluster command you want to use into
+     DXCluster's "command:"-line, but not send it to cluster. Instead press Ctrl-S to save the
+     command as StartConnectionCommand.
+     You do not have to be connected to DXCluster while doing this, but it works also when
+     you are connected.
+     The command will be sent to DXCluster when connection is established and DXCluster prompt
+     received for first time for now on.
+     Command is cleared by pressing Ctrl-S when "command"-line is empty.
+   - Corresponding help files updated.
+ 						                (2.2.0(107)  
+28.01.2018
+   - Changed TRXControl window PWR button to 3 buttons P-on, P-off, P-standby.
+   - help file additions. Test binary zip now has help files included as tgz. See README.testing
+     for install instructions.
+								(2.2.0(106)  
+27.01.2018
+   - merged from amster. LoTWexport change (by Petr)
+								(2.2.0(105)  
+23.01.2018
+   - added also old_call:='' to saveremoteqso to be sure cqs_dxcc keeps false.
+								(2.2.0(103)  
+   - added wsjt-x logging the start and end times. Previously the end time was used for start and
+     end time as UDP msg#5(logging) did implement just only one date and time (@ 2015). Now Start time
+     is added at the end of message and first time is used as end time.
+     Both times are now logged correctly and because just one date in cqrlog the start date
+     from wsjt-x is used.
+								(2.2.0(104)  
+22.01.2018
+   - added "Run at cqrlog start" and "Run at cqrlog stop" calls to scripts ~/.config/cqrlog/start.sh
+     ~/.config/cqrlog/stot.sh They are called when program is up/ges down and rigctld is running.
+     You can do anything with them. At start switch on your coffee maker and when cqlog is closed
+      switch coffee maker off  :D :D :D
+     At stop phase 1000ms (1sec) time is waited letting script access to rigctld befor it goes down.
+     This should be enough to execute a command.
+     For powering rig via rigctld power command make start.sh like:
+     ---------------------------------------------
+     #!/bin/bash
+     echo -n -e '\x87'1 |  nc localhost 4532
+     exit
+     ---------------------------------------------
+     For stop.sh script copy start.sh and change 1 (after 87') to 0
+     Remember to chmod a+x start.sh  (and stop.sh) to make them execute for all.
+   - added PWR button to TRXControl window. State of rig power os not checked (as all rigs do not
+     support it. At rig initialize butoon is activated and rigctld pwer on command is sent anyway.
+     This should sync rig and button.     
+   - fixed qso entry "qso_dxcc" state to FALSE when logging happens from remote fldigi, fldigi xmlrpc
+     or wsjt-x. This was left TRUE for them all. When manual log entry is done it is set FALSE.
+     Meaning of this it bit unknown, but if it is TRUE when editing qso and adding country prefix
+     OH1KH -> SM/OH1KH the country info does not change (unless you focus field "state" and then
+     focus some other field). Fix was to set old_adif:=adif before saving qso. Tnx Andreas DL7OAP.
+   - fixed socket state error on fldigi xmlrpc. (did not work at all) Socket state was read after
+     it was free'ed.
+								(2.2.0(102)
+31.12.2017
+   - bugfix: WEB-DXCluter Font button had no action
+								(2.2.0(101) 
+29.12.2017
+   - Merged latest changes from master
+   - fixed some help files
+   - Version follows master, now 2.2.0 (devel subversion 100)
+								(2.2.0(100) 
+17.12.2017
+   - Merged latest changes from master
+								(2.1.0(141) 
+16.12.2017
+   - Added voice keyer support also for FM and AM modes and also from CWkeys form. Added info to Help files.
+								(2.1.0(140) 
+29.11.2017
+   - AlertCalls: alert calls still conflicts with wsjt remote. Actually with qrz/hamqth lookup done on background
+     when alert calls form is open. Created one more query/transaction pair for alert calls use.
+     Using that needs modification to refreshalertcalls (should not, but yes) query must be closed before refresh.
+     When it was done with "common tr/query pair" did some other part close it as it worked without closing?
+     If alert callsign list form is open and wsjtx remote running, the wsjtx-monitor lines will all turn black 
+     after first transmit (after qrz/hamqth query).Colors come back on next decode after alert calls list is closed.
+     Is ShowModal reason for this?
+								(2.1.0(139) 
+
+28.11.2017
+    - AlertCalls: alert calls had conflict (open query) using same transaction as worked gris/wsjtx monitor.
+      Alert calls list disappeared always when wsjyt/wkd grids worked on background.
+      Fixed by creating new pairs of query/transaction W/trW, W1/trW1 for wkdgrids/wsjtx use.
+								(2.1.0(138) 
+
+24.11.2017
+    - DXCluster/AlertCalls: Bugfix regexp comparison must be other way round to hit (in partial callsigns)
+      IsAlertCall is now run ONLY if alert is selected.
+      IsAlertCall is rewritten and now can handle:
+       mode=all+band=all, mode=SET+band=all,  mode=all+band=SET  and  mode=SET+band=SET combinations.
+								(2.1.0(137)   
+
+17.11.2017
+    - CQ-monitor: Calling CQ SOMETEXT without own call (!!!???!) caused porgram halt. Fixed these to NOCALL.
+								(2.1.0(135))
+    - Merged from master: 2.2.0  parsing RBN spots fixed
+								(2.1.0(136) should this be 2.2.0 (101)?)
+
+12.11.2017
+    - Export bugfix: "Choose fields to export" button 'Re/Set All̈́' position conflicts now with appeared (from merge??)
+      "Most recent entries on top" checkbox. Movet Re/Set-button to same line with OK and Cancel.
+								(2.1.0(134))
+
+08.11.2017
+    - WsjtX remote: Ctrl+R was in use ! Changed to Ctrl+J that should be free (by help file).
+    - 630M still missing from GetAdifBandFromFreq and  C_RBN_BANDS. Added. Thanks for NO3M.
+    - wsjt and shortcutkeys help updated.
+								(2.1.0(133))
+
+07.11.2017
+    - WsjtX remote: Added shorcut key Ctrl+R for fast remote on/off. Rewritten some parts of opening and closing UDP socket 
+      and preventing timer to start double decodings. (reported that remote socket can not always be opened again after close).
+      Help and PDF update.
+								(2.1.0(132))
+
+05.11.2017
+   -CQ-monitor: 15 lines is too little on 20m weekend CQs, even with no-history set!. Raised to 20 lines with auto scrollbars and some fix for 
+    scrolling.
+    help+PDF file update for this reason.
+   -Default frequencies: still 472kHz missing from there, too. Added.
+								(2.1.0(131))
+    -----------
+    If you do not like long country names in CQ-monitor they can be fixed with this script:
+    fixlongcountrynames.sh
+    -------------------------------
+    #/bin/sh
+    cd ~/.config/cqrlog/ctyfiles
+
+    # fix long name to these 3 files-------------------------------------------
+    #      /-----Existing name now------/new-name/ file to read > file to write
+
+     sed s/"Federal Republic of Germany"/Germany/g Country.tab > Countryf.tab
+     sed s/"Federal Republic of Germany"/Germany/g CallResolution.tbl > CallResolutionf.tbl
+     sed s/"Federal Republic of Germany"/Germany/g  AreaOK1RR.tbl > AreaOK1RRf.tbl
+
+    # finally copy new files over the old ones---------------------------------
+     mv Countryf.tab  Country.tab
+     mv CallResolutionf.tbl  CallResolution.tbl
+     mv AreaOK1RRf.tbl  AreaOK1RR.tbl
+ 
+    #reload fixed files to cqrlog----------------------------------------------
+     echo '-------------------------------------------------------'
+     echo 'Run now:  Window/QSOlist/File/"Import DXCC data"'  
+     echo 'When on dialog select: ".config/cqrlog/ctyfiles" folder'
+     echo ''
+     echo 'You need to do this after every DXCC update received'
+     echo '-------------------------------------------------------'
+    #done
+    --------------------------------
+    issue command: chmod a+x fixlongcountrynames.sh   after edit to be able to run script.
+
+04.11.2017
+   -Merged from master: DL8DTL sort and IFDEF changes
+								(2.1.0(130))
+02.11.2017
+   - LoTW import wails on 630M. I think the  dutils.pas: function TdmUtils.FreqFromBand(band, mode: string): string; is missing 630M definition.
+     Added that, but cannot test by my self.
+   - CQ-monitor: Followed call line turns red after 15sec of receive (FT8,MSK144) otherwise after 60sec to indicate that valid reply period for
+     this line is over.
+								(2.1.0(129))
+
+01.11.2017
+   - WSJTX monitor: Added new feature "Follow". When "flw" is checked opens new part to bottom of window. Left editbox receives followed 
+     callsing.
+     Right side will show decoded line where that callsign is as originating (2nd) call and is NOT CQ or directed to YOUR CALL.
+     Line has: timestamp, deltafreq, message text
+     Status of checks and the call is saved over program restart. No alerts are connected to this line.
+     The purpose of this line is to make easier to follow a DX (from all other deceded lines) who does not stay on permanent frequency,
+     but jumps around answering callers.
+   - Help files are updated. You should find similar things from internal help than from the CqrlogAdditions2.pdf
+     (but only if you get folder src/help from my GitHub https://github.com/OH1KH/cqrlog-devel and overlay the help
+     folder to your exisiting install. It is not added to test_binary.zip)
+								(2.1.0(128))
+
+29.10.2017
+   - WSJTX monitor: Changed all alert check boxes to buttons. Tried to make better execption handling for "innovative" user ways to call 
+     directed CQ. (this does not fix all of them...never!)
+								(2.1.0(127))
+
+28.10.2017
+   - WSJTX monitor: Addition to text-alert. Works as before text-in-text for complete monitor line, or looks just only callsign with 
+     text-in-text, starts with (XY*) or ends with (*XY). One asterisk can be used at start or at end of search string to indicate start or end 
+     search.
+     Several comma separated search strings can be used at callsign search. OH*,*OH,A,B,C,*D
+								(2.1.0(126))
+
+15.09.2017
+   - WSJTX monitor: Minor change to print out for extended cq direction.
+								(2.1.0(125))
+
+09.10.2017
+
+   - Changelog: Added comment message about the test binary with request to read the accompanying documents.
+   - DXCluster/Chat_RX window: Defaut size is now 2 (invisible). Resize it if you need it from button "Preferences/Chat size/[use slider]"
+     Value will be saved with used log, so this affects only for first use ever.
+								(2.1.0(122))
+
+   - WSJTX Monitor:More specific print out for extended cq direction to help operator decide should he answer this cq or not.
+								(2.1.0(123))
+   - DXCluster: Redirecting to Chat window uses now connection username (call) instead of log call that may be different than used
+     to log to   DXCluster.
+								(2.1.0(124))
+
+06.10.2017
+   - Band Map: Copied setting "Show only active band" from Preferences to Band map filter settings. (As it really is 
+     a filter). It is now in both places, but is easier and faster to change via Band Map Filter dialog.
+								(2.1.0(119))
+
+   -Export: "Choose fields to export" now has button 'Re/Set All̈́' for fast setting/resetting all checkboxes in one touch.
+								(2.1.0(120))
+
+   -NewQso: Bugfix "mode: Auto" checkbox state was not correctly returned after program restart.
+								(2.1.0(121))
+
+20.09.2017
+   - CQ-monitor:  Country names (cut to length 15) are now displayed instead of callsign prefixes.
+     Extended CQs (CQ DX, CQ AS, CQ AF .. etc) are now compared against own continent. If "CQ DX" caller
+     callsign is from same continent as your call a "*" is added in front of country name and it is printed
+     with "CQ ext" color defined.
+     Same if "CQ AS" is called and your continent is not AS, and so on.
+     If continent cannot be compaired (CQ extension is something special) same "*" and "CQ ext" color is used.
+     This is to notify you to consider if answering follows good working practise and ham spirit rules.
+   - "My Alert" is now compared oppsite way: First word of decoded line is compared against your cqrlog/
+     preferences/station callsign. This should fit now also when you are using extended callsign XX/YOURCALL or
+     YOURCALL/XX in your log as wsjt-x traffic uses always plain callsigns during qsos.
+								(2.1.0(118))
+
+11.09.2017
+   - more study with richmemo slowness when on for long time. This does not solve the original problem that
+     exists (now 99% sure) at richmemo/lazarus code.
+     Now CQ-monitor form is created at the time it is needed (opened), not at program start.
+     When wsjt-remote is closed it will also distroy CQ-monitor form.(releases memory used by richmemo, too)
+     Closing CQ-monitor while wsjt-remote stays still on does not distroy form.
+     This way slowness (CPU load while richmemo printing) can be resolved without closing wsjtx & cqrlog.
+
+     Just drop wsjt-remote off and start it again! Slowness (and CPUload) has gone !
+
+     With this change richmemo slow printing changed so that lines are not slowly dropping. They appear fast,
+     but time between wsjt-x decode end and lines appearing to CQ-monitor increases. It is harder to notice,
+     but opening a terimal with "top -H -p $(pidof cqrlog) -d 0,2" you can easily find out when CPU load
+     starts to stay >90% while decoding
+								(2.1.0(117))
+
+08.09.2017
+
+   - CQ-monitor now remembers showing state. I.E if closed while last wsjtxremote use will be closed on next
+     program start and wsjtxremote initiate.
+								(2.1.0(116))
+
+04.09.2017
+
+   - merged from Petr's master today. Imported own version of DXCluster (has DXChat) and CQ-monitor changes that
+     has now send as pull request to master.
+     Tjakomemo is now translated by Petr as TColorMemo.  (Nice!) 
+								(2.1.0(115))
+
+23.08.2017
+
+   - DXChat minium size now only 2px. Should not take any room if you do not need it.
+     Cursor on size slider is double arrow, but when hidden the default
+								(2.1.0(114))
+
+21.8.2017
+   - Wsjtx-decode: Bugfix that caused program failure if wsjt-x program was closed before wsjt-x remote
+     mode was closed. Now closing wsjt-x program will close remote mode nicely as before.
+								(2.1.0(112))
+
+   - Manly for testing CQ-monitor slownes after long time on I added "noTxt" checkbox. It is usefull also for
+     users who do not care about monitor texts, but like still to have alerts working. Checking this
+     will skip richmemo updates, but keep other functions working.
+   - Close Cq-monitor will not stop remote-wsjtx. This has been so in past, but changed it at some state.
+     Now users who do not care CQ-monitoring and alerts can still log qsos and see qso data before logging.
+     Cq-monitor can be opened again from main menu Window/Wsjtx monitor as long as remote mode is on.
+								(2.1.0(113))
+
+20.08.2017
+   - CQ-monitor: Colors are now saved at the moment color selection menu closes. Should now be saved for sure!
+   - Wsjtx decode: New: Now all UDP datagrams in buffer are handled in one go. After that
+     timer waits 20ms (wHiSpeed) and if there are new datagrams they are handled in one go. This repeats
+     as long as after 20ms there are still datagrams in buffer. If not, timer is set to 1500ms to wait for
+     new period of decoding.
+     This may stress slow computers, specially if wsjt-x is run at same hardware. Standard modern PCs
+     should not have problems.
+								(2.1.0(111))
+
+19.08.2017
+   - DXCluster chat: now sizeable. Click DXCluster/preferences-button and select "Chat size" from
+     popUp menu. Bottom of DXCluster "command:" is changed to slider that sizes chat window.
+     Move slider with mouse-left. Lifing up mouse left button saves current value and restores "Command:".
+								(2.1.0(110))
+
+18.08.2017
+   - crash: When "no history" unchecked anf Cq-monitor get full scrolling and focusing last line kills
+     program if they have enter/leave critical sections used in code. Without works ok.
+     Left them away as useless anyway and changed scrolling so that it is checked after every newline added.
+     Before it was "on memo change" action that , I think, triggered too often (every single item addition).
+   - NewQSO wsjxdecode: Added "Wsjtxsock.WaitingData" before RcvPacket to buffer. Should now go to
+     RcvPacket only if there is new datagram. Increased buffer size from 100 to 1000 (just in case).
+   - Cq-monitor: can now streched to needed shape and size. Font (name and size, NOT style) can be changed
+     from same popup menu as call/loc colors (right click monitor).
+   - Again new SQL routines for Cq-monitor. Moved more work for SQLengine :)
+								(2.1.0(109))
+
+17.08.2017
+    - UDP wsjtxtimer: Idle polling LoSpeed is now 1500ms all other modes except FT8 and MSK144 where 
+      it is 500ms. When UDP packet is received turns to HiSpeed polling 20ms on all modes.
+      When no more pakets returns back to LoSpeed.
+      CQ-Monitor: Rewritten SQL routines. Dropped 7 queries from 9 ! Added CriticalSection.
+      Now critical section is used every time richmemo is accessed.
+								(2.1.0(108))
+
+16.08.2017
+
+    - Wsjtx CQ monitor: New color selections (more colors). Now also directed CQ (CQ DX, CQ NA ...) color
+      can be selected.
+    - DXChat: Completely new design. No buttons and settings. It is always there on top of DXspot list.
+      I think I like this! Maybe scaling relative to DXspot memo would be nice...
+      Done by "blind copy" of DXSpot memo (the way to use Tjakomeno without understanding a word of CZ :)
+								(2.1.0(107))
+
+15.08.2017
+
+    - Wsjtx CQ monitor: Same color "coding" now affects to locators as callsigns. You are able to see
+      "worked this band, but not current mode"(fuchsia, Upcase) and "worked on any other band/mode"
+      (maroon, Upcase) in addition with previous "worked this bamd and mode"(lowcase, red) and 
+      "not worked before"(Upcase, green).
+      Change of qso colors chages also these locator colors same way.
+    - Fixed database functions used for finding worked calls and locators.
+    - DXChat is still in progress, at the moment hiding and showing is done ONLY via DXCluster window
+      preferences/popup menu.
+      DXChat now uses same font as DXCluster.
+      OnTop and Hide are remembered (saved) over program restart.
+								(2.1.0(106))
+
+12.08.2017
+
+    - WSJTX CQ monitor: Now green text is also bold
+								(2.1.0(104))
+
+    - WSJTX CQ monitor: User selectable colors. Right click on monitor form shows selection popup menu. 
+      "Cancel" at selection popup menu hides color box in case of no new selection.
+      Otherwise new selection changes color and hides color box.
+    - "Stay on top" and "Hide" checkboxes for DXChat form. Hidden DXChat can be returned from DXCluster
+      "preferences-popup menu/Show chat". Checkboxes are unchecked at program start (states not saved).
+								(2.1.0(105))
+
+10.08.2017
+
+    - DXChat bugfix. Should work now forever(!?). Limit was 200chr by mistake. Scroll should happen @50 lines.
+      Added Clear and Close buttons. Did not add "keep hide" chekbox as there is then no way to restore it.
+      If it bothers you after 1st time it shows up drag it behind some other window and leave open.
+      It will not take focus again until closed and reopen.
+      Given up of font size adjust for now. It needs more study. (I would like to use jakoizmemo like DXCluster
+      window does, but can not understand a single word of it;( )
+                                                                      (2.1.0(102))  
+
+    - Propagation DK0WCY and DXChat now follows common settings of preferences/fonts
+                                                                     (2.1.0(103))            
+
+09.08.2017
+
+    - DXhat fixing. Buffer now 50 lines, should have same font and size as DXCluster (this needs testing as
+      it seems that in my system it is not!).
+      Adds now timestamp (your local PC time) before call to see when chat has come (if you are away).
+      New version released, so my testing version subnumber starts from 101.    
+      Added default frequency 5.351MHz to newQSO dropdown selection list (was missing).
+                                                                                         (2.1.0(101))
+
+28.07.2017
+
+     - Added DXChat form. Shows up automaticly when connected to DXCluster (telnet) and received a line
+       that starts "MYCall de " and line does not end to ">".
+       Then line contains (hopefully) a chat line from someone and it is printed to DXChat form preventing
+       it to disappear into flood of dx spots.
+       "MYCall de " is stripped out so line contains just senders call and the message.
+       Form shows up (and focuses) at first chat line but if it is left open it does not take focus when
+       next chat lines are received. If form is closed (X) it will show up again on next chat line rcvd.
+                                                                             (2.0.5(041))
+
+27.07.2017
+
+     - More informative CQ-monitor by colours of callsign.
+       Red lowcase   = worked this band and mode
+       Fuchsia upcase = worked this band, but not this mode
+       Maroon upcase = worked on any other band and mode
+       Green upcase  = never worked before on any band       
+                                                                              (2.0.5.(040))
+      
+17.07.2017
+
+     - Fixed timestamp at wsjt-decode from HH:MM to HHMMSS. This effects to CQ-monitor display and also
+       makes "no history" selection work with modes where period is less than minute long.      
+       Found out that double click on CQ-monitor line now initiates qso when FT8 is in use.
+       Assume that it happens also with MSK144 as this fix is happened because new wsjtx version has 
+       corrected UDP message.								(2.0.5.039)
+
+04.06.2017
+
+     - As having continued problems with GitHub usage I have created a new repository "cqrlog-devel" that 
+       has the latest version I'm using by my self.
+       I'm not going to make any pull requests from that repository.
+       The other of my repositories "cqrlog" is the one I'm using for pull requests, if any at all.
+       Those will be manually merged from cqrlog-delvel, one-by-one (as requested by Petr) and I'm not going to
+       add second before the first is accepted or rejected.
+       Because of manual operation I can not gurantee that merged source works in way it works in "cqrlog.devel",
+       Sorry, but playing with Git takes too much time, fails too often (becaude of misunderstandings of mine)
+       and is harder to learn than programming languages.
+       If you want properly tested version (from daily use as testing) look from "cqrlog.devel"
+
+30.06.2017
+
+    -Added JT4 and FT8 to mode list.
+    -Added FT8 mode letter to CQ-monitor.
+      FT8 is a new wsjt-x fast mode (15sec period) for HF and VHF working. It is not released as beta yet,
+      but can be found as devel version from wsjt-x svn.
+      There are known bug in UDP messages that adds one extra space. It is ame as with MSK144 and CQ-montor
+      can fix this, but reply for call from cq-monitor does not work before bug is fixed. That will be
+      checked when official beta of wsjt-x is released (no mind to correct it to cqrlog before that).
+                                                                                     (2.05.(038))
+
+08.06.2017
+
+    -Wsjtx Cq monitor: 
+ 	- Added JT4 and QRA64 mode letters.
+	- Added checkbox "ALL" to "MyAlert" (as option). Alerts all lines decoded that begin with MyCall.
+          Often now you get directly report as answer to your CQ. Even the R-report, that is not correct.
+          Checking ALL together with MyAlert you will get alert also from report, RRR and 73-lines.
+	  Without ALL checked you get alert just if your call is first on line and valid locator as last on line,
+          that is the protocol specified way to answer to CQ.       (2.05.(037))
+
+15.05.2017
+
+    -Fixed bug in Contest form that left reports sent/rcvd 599 when modes SSB,AM,FM because getting them wrong from
+     NewQSO form after it's ClearAll. Now cuts reports to have only 2 first numbers (usually 59) when focus
+     exits from edtCall-field of Contest form.
+    -Added "Allow regular expressions" checkbox to "Alert Calls"-form. Works in parallel with preferences/DXCluster
+     corresponding checkbox. (No need to open preferences for change of that)           (2.05.(036))    
+
+27.04.2017
+
+    -Added new parameter "Drop after SyncErr >" to preferences / fldigi. This automates remote mode closing when fldigi is closed. But as it
+     may affect also (in slow PCs) when fldigi is started by cqrlog it is user defineable. 0 disables it and 1-20 means timer rounds until drop
+     the remote mode. Timer round period is adjustable with "Try to load QSO from fldigi"-parameter.
+     When remote mode close happens by Sync error limit it leaves to NewQSO field "Comment QSO" text "Socket error, check fldigi!" (2.0.5(035))
+
+26.04.2017
+
+    -Added alternative fldigi remote using XmlRpc. Allows fldigi to run on other networked PC than cqrlog. For more details see: CqrlogAdditions2.pdf
+    -fixed some minor bugs on remote/frequency selection. (2.0.5(034))
+
+23.04.2017
+
+   - Changed Wsjtx decoding timer so that when UDP packets are available timer turns to HiSpeed (50ms, const value). When no more
+     Packets it turns to LoSpeed (1000ms).
+     This helps in situation where wsjt-x has been on band for long and then carlog/remote wsjt-x is turned on. At that point wsjt-x
+     will send all of it's buffered decodings at one go and there may be lots of old lines.
+     It also speeds up things during noraml decode period (secs 50 - 60 of minute) giving user more time to decide to whos CQ he
+     is going to answer.
+     Merged also latest changes from Master_ok2cqr                   (2.0.5(032))
+
+   - Small bugfix. tmrWsjtx was enabled after disableremotemode was called causing program exeption when wsjt-x was closed before cqrlog.
+     (2.0.5(033))
+
+22.04.2017
+
+   - Fixed CQ Monitor so that it now shows also MSK144 cqs. Double click on callsign line does not initiate reply as it does with JT65/JT9
+     I do not know should it with MSK144 mode, but I investigate it more in future and fix it if UDP specs have reply allowed when using MSK144.
+     (2.0.5(31))
+													(2.0.5(029))
+20.04.2017
+
+  - Changed contest form so that pressing 1xESC will return cursor to the end of previously typed callsign fro fixing. It also
+    stops CW keying if it is initiated (as it does on NewQSO).
+    New log seek (+qrz seek) is done again when leaving call field (tnx. note LA2FDA) 
+    2xESC returns also to call field, but clears previously typed callsign completely (as it does in NewQso).
+    This form is causing some focusing conflicts with NewQso form, but seems to work anyhow.
+    Needs attention of better skilled programmer.   (2.0.5.(030))
+
+11.04.2017
+
+  - Added IP address field to preferences/fldigi-wsjtx settings of wsjt-x. Defaults to 127.0.0.1 (localhost) but can be changed.
+    There is no valid IP format check so you have to type right formatted address.
+    This setting can be used if you run wsjt-x on different computer than cqrlog. If so, put the IP address of cqrlog computer
+    to Wsjt-x's settings/reporting replacing there the default 127.0.0.1
+    At cqrlog computer put cqrlog/preferences/wsjtx-settings IP address to the same as it's own network IP address. No need to change
+    port numbers. Remember to open your firewalls on both computers to allow UDP traffic from 2237 port on your network.
+    Tested with two laptops on same WiFi local network:
+       cqrlog PC ip address 192.168.60.222, cqrlog setting/wsjt-x:  port 2237 address 192.168.60.222
+       wsjt-x PC ip address 192.168.60.223, wstt-x setting/reporting  port 2237 address 192.168.60.222 
+
+3.4.2017
+
+ - returned Contest/Msg is Loc checkbox function to original meaning, I.E. when checked Msg is expected to be locator and placed 
+   now ONLY to New/QSO/Grid field (not together with received rst).
+ - added Contest/Tru checkbox for true reports exchange. Changes tabulation order so that it goes RSTs, RSTr, NRr, MSGr.
+   This might be useful in VHF, UHF, SHF Tropo, Es etc. openings (and maybe some contests, too) where you like fast qso logging.
+
+ - Added DXCluster additions.
+  -- ACalls toggle button does just the same as "Preferences/DXCluster/List of callsigns" I.E. opens alert calls list for edit:
+     This is easier and faster than using it via preferences. When edit list is closed alert remains active (button text is green)
+     Second press deactivates alert (button text is black).
+     Checkbox "Inc" changes alert to RegExp,so if any part of alert calls list fits to dx cluster's call it alerts.
+     Unchecked call must be exactly same. I.E. "Inc" checked with list call OF100FI alerts OF100FI/1, OF100FI/2 ..etc.
+  -- Typed command history. With Ctrl-Z you can scroll back 5 last commands (fix, if needed) and reuse them. (2.0.5(028))
+
+1.4.2017
+
+ - added "No" checkbox to contest form. Changes tabulation order of  NRr,MSGr to MSGr,NRr for contest where there is just message
+   but no number. Note that you can feed only numbers to NRs and NRr fields.
+ 
+1.4.2017
+
+ - added "No" checkbox to contest form. Changes tabulation order of  NRr,MSGr to MSGr,NRr for contest where there is just message
+   but no number. Note that you can feed only numbers to NRs and NRr fields.
+ 
+22.3.2017
+
+ - modified NewQSO/Window listing to alpabethical order
+ - added two selections "Reminder" and "Contest" and made forms and units for them. See CqrlogAdditions2.pdf for details.
+   Tried to minimize changes to original cqrlog source code by doing these as separate units, but some modifications must 
+   done inside original cqrlog source code to make these new ones to work.
+   
+   At same time I was thinking about moving wsjt-x decode inside of Wsjt-x monitor unit. It actually should be there.
+   (maybe some day, maybe not...).
+
+20.3.2017
+
+ - Worked locator grid's selections "follow rig" and "show wkd only" are remembered over program restart.
+ - Wsjtx Monitor selection "no history" and all alerting settings are remembered over program restart.
+ - tmrWsjtx.Interval is decreased to 150ms. Affects UDP packet decoding.
+   There is a situation where more speed is needed most:
+   If monitor is started when wsjt-x itself has been running long time before it will send all decoded packets that are in 
+   receive buffer (I.E. contets of "Band Activity" window of wsjt-x) during answer to ststus request wsjtx monitor is asking 
+   to know what band and mode is in use.
+   This also speeds up normal period decoding giving user more time (from that 10sec gap between periods) to decide to whose
+   CQ call he is going to answer.
+
+16.3.2017
+
+ - Stupid programmer makes stupid errors. All fuzz with directed CQ call was because part of code was inside debug execption.
+   So it worked every time when run inside lazarus, or if started from terminal with debug=1. Fixed and should be ok now.
+
+ - Fixed state of newQSO/Mode-AUTO selection return in case where program was closed with CQ monitor (wsjt-x remote) left on.
+   Now returns previous state on next start when wsjt-x remote is not yet activated. We will not save remote mode over program
+   restart.(2.0.5(023))
+  
+
+15.3.2017
+
+ - Added CQ monitor a function where asterisk *  is added CQ callers country code and printed in Fuchsia.
+   This is to indicate that caller is calling directed CQ (DX, EU, AS, AF, OC, NA, SA etc.) and user should check that he is in dircected area
+   before making answer to call.
+   I.E. To answer 'CQ DX' you must be in DIFFERENT CONTINENT than caller.(2.0.5(020))
+
+ - small bugfix (2.0.5(021))
+
+ - seem to be hard to do... Addition to CQ monitor(2.0.5(020)) works when run inside lazarus, but not run from executive ?????
+   lets see if this finally works. Otherwise "Houston we have problem..."(2.0.5(022))
+   
+
+14.3.2017
+ - Returned (somehow, at some master version lost) function where disbling wsjt-x remote mode returns state of newQSO/Mode-AUTO selection.
+   All needed code was there, but restoring part was removed from source(??).
+
+   NOTE! This exist in original 2.0.4 too, I think ! (as I have not modified fMain.pas at this point when doing additions)
+   
+ - Merged upstream/master. Version change 2.0.5, within brackets still my build version (2.0.5(019))
+ 
+13.3.2017
+ - Added two missing files fwkd.lrs and richmemo/richmemopackage.lrs that git has left out from transfer. Without them fetched
+   source from github to fresh computer did not compile cqrlog.
+   
+   Also tested how to handle richmemo. With these it compiled ok:
+   Then main screen of lazarus select "Package". From that menu select "Open package (.lpk)"
+   With file browser dialog find richmemopackage.lpk from richmemo folder and select it.
+   Package dialog opens.
+   Try to compile with button "compile". If it goes ok, (now should with all files) Press "Use" button and select "Add to procect".
+   
+   Now cqrlog should compile ok. (Note! Terms of lazarus menus are translated from Finnish to English. I do not know original terms)  
+
+ - Found bug in fMain.pas that allowed QSO edit while in wsjt-x remote causing error "Cannot focus disabled or invisible window".
+   Now fixed and asks now to close remote mode before editing (as fldigi remote does, too).
+
+
+11.3.2017
+ - removed "clearall" from wsjtx decode #5(logging) I think this losts qrz data. (altough it does not at v1.9.0!) (2.0.4(013))
+ - Fixed #5 logging so that it does change edtcall (no refetch from web) if it is same as decoded call.
+ - Fixed #5 logging so that if QRz locator is 6 char and the beginning is same as qsl locator the QRZ locator is keeped.(2.0.4(014))
+ - Fixed small error in locator compare (2.0.4(015))
+ - merged Petr's "sort by gridsqr" & "deleting comment" (2.0.4(016))
+ - Fixed decode #2 (wsjtx status) so that if call does not change new QRZ fetch is not done. So you may add your own notes to NewQSO
+   fields and they should remain there during #5( wsjtx logging) (2.0.4(017))
+   
+
+10.3.2017 started  to move additions from 1.9.0
 
 
  -You may find some help from this file. It is for 1.9.0 version and has "too much" for this 2.0.4
@@ -56,603 +699,3 @@
   --dk0wxy and worked grids now keep their open/close status and positions during restart 
  -Worked_grids mode selector now fills selection list from dUtils.cmbMode
 
-11.3.2017
- - removed "clearall" from wsjtx decode #5(logging) I think this losts qrz data. (altough it does not at v1.9.0!) (2.0.4(013))
- - Fixed #5 logging so that it does change edtcall (no refetch from web) if it is same as decoded call.
- - Fixed #5 logging so that if QRz locator is 6 char and the beginning is same as qsl locator the QRZ locator is keeped.(2.0.4(014))
- - Fixed small error in locator compare (2.0.4(015))
- - merged Petr's "sort by gridsqr" & "deleting comment" (2.0.4(016))
- - Fixed decode #2 (wsjtx status) so that if call does not change new QRZ fetch is not done. So you may add your own notes to NewQSO
-   fields and they should remain there during #5( wsjtx logging) (2.0.4(017))
-   
-13.3.2017
- - Added two missing files fwkd.lrs and richmemo/richmemopackage.lrs that git has left out from transfer. Without them fetched
-   source from github to fresh computer did not compile cqrlog.
-   
-   Also tested how to handle richmemo. With these it compiled ok:
-   Then main screen of lazarus select "Package". From that menu select "Open package (.lpk)"
-   With file browser dialog find richmemopackage.lpk from richmemo folder and select it.
-   Package dialog opens.
-   Try to compile with button "compile". If it goes ok, (now should with all files) Press "Use" button and select "Add to procect".
-   
-   Now cqrlog should compile ok. (Note! Terms of lazarus menus are translated from Finnish to English. I do not know original terms)  
-
- - Found bug in fMain.pas that allowed QSO edit while in wsjt-x remote causing error "Cannot focus disabled or invisible window".
-   Now fixed and asks now to close remote mode before editing (as fldigi remote does, too).
-
-14.3.2017
- - Returned (somehow, at some master version lost) function where disbling wsjt-x remote mode returns state of newQSO/Mode-AUTO selection.
-   All needed code was there, but restoring part was removed from source(??).
-
-   NOTE! This exist in original 2.0.4 too, I think ! (as I have not modified fMain.pas at this point when doing additions)
-   
- - Merged upstream/master. Version change 2.0.5, within brackets still my build version (2.0.5(019))
- 
-15.3.2017
-
- - Added CQ monitor a function where asterisk *  is added CQ callers country code and printed in Fuchsia.
-   This is to indicate that caller is calling directed CQ (DX, EU, AS, AF, OC, NA, SA etc.) and user should check that he is in dircected area
-   before making answer to call.
-   I.E. To answer 'CQ DX' you must be in DIFFERENT CONTINENT than caller.(2.0.5(020))
-
- - small bugfix (2.0.5(021))
-
- - seem to be hard to do... Addition to CQ monitor(2.0.5(020)) works when run inside lazarus, but not run from executive ?????
-   lets see if this finally works. Otherwise "Houston we have problem..."(2.0.5(022))
-   
-16.3.2017
-
- - Stupid programmer makes stupid errors. All fuzz with directed CQ call was because part of code was inside debug execption.
-   So it worked every time when run inside lazarus, or if started from terminal with debug=1. Fixed and should be ok now.
-
- - Fixed state of newQSO/Mode-AUTO selection return in case where program was closed with CQ monitor (wsjt-x remote) left on.
-   Now returns previous state on next start when wsjt-x remote is not yet activated. We will not save remote mode over program
-   restart.(2.0.5(023))
-  
-20.3.2017
-
- - Worked locator grid's selections "follow rig" and "show wkd only" are remembered over program restart.
- - Wsjtx Monitor selection "no history" and all alerting settings are remembered over program restart.
- - tmrWsjtx.Interval is decreased to 150ms. Affects UDP packet decoding.
-   There is a situation where more speed is needed most:
-   If monitor is started when wsjt-x itself has been running long time before it will send all decoded packets that are in 
-   receive buffer (I.E. contets of "Band Activity" window of wsjt-x) during answer to ststus request wsjtx monitor is asking 
-   to know what band and mode is in use.
-   This also speeds up normal period decoding giving user more time (from that 10sec gap between periods) to decide to whose
-   CQ call he is going to answer.
-
-22.3.2017
-
- - modified NewQSO/Window listing to alpabethical order
- - added two selections "Reminder" and "Contest" and made forms and units for them. See CqrlogAdditions2.pdf for details.
-   Tried to minimize changes to original cqrlog source code by doing these as separate units, but some modifications must 
-   done inside original cqrlog source code to make these new ones to work.
-   
-   At same time I was thinking about moving wsjt-x decode inside of Wsjt-x monitor unit. It actually should be there.
-   (maybe some day, maybe not...).
-
-1.4.2017
-
- - added "No" checkbox to contest form. Changes tabulation order of  NRr,MSGr to MSGr,NRr for contest where there is just message
-   but no number. Note that you can feed only numbers to NRs and NRr fields.
- 
-3.4.2017
-
- - returned Contest/Msg is Loc checkbox function to original meaning, I.E. when checked Msg is expected to be locator and placed 
-   now ONLY to New/QSO/Grid field (not together with received rst).
- - added Contest/Tru checkbox for true reports exchange. Changes tabulation order so that it goes RSTs, RSTr, NRr, MSGr.
-   This might be useful in VHF, UHF, SHF Tropo, Es etc. openings (and maybe some contests, too) where you like fast qso logging.
-
- - Added DXCluster additions.
-  -- ACalls toggle button does just the same as "Preferences/DXCluster/List of callsigns" I.E. opens alert calls list for edit:
-     This is easier and faster than using it via preferences. When edit list is closed alert remains active (button text is green)
-     Second press deactivates alert (button text is black).
-     Checkbox "Inc" changes alert to RegExp,so if any part of alert calls list fits to dx cluster's call it alerts.
-     Unchecked call must be exactly same. I.E. "Inc" checked with list call OF100FI alerts OF100FI/1, OF100FI/2 ..etc.
-  -- Typed command history. With Ctrl-Z you can scroll back 5 last commands (fix, if needed) and reuse them. (2.0.5(028))
-
-11.04.2017
-
-  - Added IP address field to preferences/fldigi-wsjtx settings of wsjt-x. Defaults to 127.0.0.1 (localhost) but can be changed.
-    There is no valid IP format check so you have to type right formatted address.
-    This setting can be used if you run wsjt-x on different computer than cqrlog. If so, put the IP address of cqrlog computer
-    to Wsjt-x's settings/reporting replacing there the default 127.0.0.1
-    At cqrlog computer put cqrlog/preferences/wsjtx-settings IP address to the same as it's own network IP address. No need to change
-    port numbers. Remember to open your firewalls on both computers to allow UDP traffic from 2237 port on your network.
-    Tested with two laptops on same WiFi local network:
-       cqrlog PC ip address 192.168.60.222, cqrlog setting/wsjt-x:  port 2237 address 192.168.60.222
-       wsjt-x PC ip address 192.168.60.223, wstt-x setting/reporting  port 2237 address 192.168.60.222 
-													(2.0.5(029))
-20.04.2017
-
-  - Changed contest form so that pressing 1xESC will return cursor to the end of previously typed callsign fro fixing. It also
-    stops CW keying if it is initiated (as it does on NewQSO).
-    New log seek (+qrz seek) is done again when leaving call field (tnx. note LA2FDA) 
-    2xESC returns also to call field, but clears previously typed callsign completely (as it does in NewQso).
-    This form is causing some focusing conflicts with NewQso form, but seems to work anyhow.
-    Needs attention of better skilled programmer.   (2.0.5.(030))
-
-22.04.2017
-
-   - Fixed CQ Monitor so that it now shows also MSK144 cqs. Double click on callsign line does not initiate reply as it does with JT65/JT9
-     I do not know should it with MSK144 mode, but I investigate it more in future and fix it if UDP specs have reply allowed when using MSK144.
-     (2.0.5(31))
-
-23.04.2017
-
-   - Changed Wsjtx decoding timer so that when UDP packets are available timer turns to HiSpeed (50ms, const value). When no more
-     Packets it turns to LoSpeed (1000ms).
-     This helps in situation where wsjt-x has been on band for long and then carlog/remote wsjt-x is turned on. At that point wsjt-x
-     will send all of it's buffered decodings at one go and there may be lots of old lines.
-     It also speeds up things during noraml decode period (secs 50 - 60 of minute) giving user more time to decide to whos CQ he
-     is going to answer.
-     Merged also latest changes from Master_ok2cqr                   (2.0.5(032))
-
-   - Small bugfix. tmrWsjtx was enabled after disableremotemode was called causing program exeption when wsjt-x was closed before cqrlog.
-     (2.0.5(033))
-
-26.04.2017
-
-    -Added alternative fldigi remote using XmlRpc. Allows fldigi to run on other networked PC than cqrlog. For more details see: CqrlogAdditions2.pdf
-    -fixed some minor bugs on remote/frequency selection. (2.0.5(034))
-
-27.04.2017
-
-    -Added new parameter "Drop after SyncErr >" to preferences / fldigi. This automates remote mode closing when fldigi is closed. But as it
-     may affect also (in slow PCs) when fldigi is started by cqrlog it is user defineable. 0 disables it and 1-20 means timer rounds until drop
-     the remote mode. Timer round period is adjustable with "Try to load QSO from fldigi"-parameter.
-     When remote mode close happens by Sync error limit it leaves to NewQSO field "Comment QSO" text "Socket error, check fldigi!" (2.0.5(035))
-
-15.05.2017
-
-    -Fixed bug in Contest form that left reports sent/rcvd 599 when modes SSB,AM,FM because getting them wrong from
-     NewQSO form after it's ClearAll. Now cuts reports to have only 2 first numbers (usually 59) when focus
-     exits from edtCall-field of Contest form.
-    -Added "Allow regular expressions" checkbox to "Alert Calls"-form. Works in parallel with preferences/DXCluster
-     corresponding checkbox. (No need to open preferences for change of that)           (2.05.(036))    
-
-08.06.2017
-
-    -Wsjtx Cq monitor: 
- 	- Added JT4 and QRA64 mode letters.
-	- Added checkbox "ALL" to "MyAlert" (as option). Alerts all lines decoded that begin with MyCall.
-          Often now you get directly report as answer to your CQ. Even the R-report, that is not correct.
-          Checking ALL together with MyAlert you will get alert also from report, RRR and 73-lines.
-	  Without ALL checked you get alert just if your call is first on line and valid locator as last on line,
-          that is the protocol specified way to answer to CQ.       (2.05.(037))
-
-30.06.2017
-
-    -Added JT4 and FT8 to mode list.
-    -Added FT8 mode letter to CQ-monitor.
-      FT8 is a new wsjt-x fast mode (15sec period) for HF and VHF working. It is not released as beta yet,
-      but can be found as devel version from wsjt-x svn.
-      There are known bug in UDP messages that adds one extra space. It is ame as with MSK144 and CQ-montor
-      can fix this, but reply for call from cq-monitor does not work before bug is fixed. That will be
-      checked when official beta of wsjt-x is released (no mind to correct it to cqrlog before that).
-                                                                                     (2.05.(038))
-04.06.2017
-
-     - As having continued problems with GitHub usage I have created a new repository "cqrlog-devel" that 
-       has the latest version I'm using by my self.
-       I'm not going to make any pull requests from that repository.
-       The other of my repositories "cqrlog" is the one I'm using for pull requests, if any at all.
-       Those will be manually merged from cqrlog-delvel, one-by-one (as requested by Petr) and I'm not going to
-       add second before the first is accepted or rejected.
-       Because of manual operation I can not gurantee that merged source works in way it works in "cqrlog.devel",
-       Sorry, but playing with Git takes too much time, fails too often (becaude of misunderstandings of mine)
-       and is harder to learn than programming languages.
-       If you want properly tested version (from daily use as testing) look from "cqrlog.devel"
-       
-17.07.2017
-
-     - Fixed timestamp at wsjt-decode from HH:MM to HHMMSS. This effects to CQ-monitor display and also
-       makes "no history" selection work with modes where period is less than minute long.      
-       Found out that double click on CQ-monitor line now initiates qso when FT8 is in use.
-       Assume that it happens also with MSK144 as this fix is happened because new wsjtx version has 
-       corrected UDP message.								(2.0.5.039)
-
-27.07.2017
-
-     - More informative CQ-monitor by colours of callsign.
-       Red lowcase   = worked this band and mode
-       Fuchsia upcase = worked this band, but not this mode
-       Maroon upcase = worked on any other band and mode
-       Green upcase  = never worked before on any band       
-                                                                              (2.0.5.(040))
-28.07.2017
-
-     - Added DXChat form. Shows up automaticly when connected to DXCluster (telnet) and received a line
-       that starts "MYCall de " and line does not end to ">".
-       Then line contains (hopefully) a chat line from someone and it is printed to DXChat form preventing
-       it to disappear into flood of dx spots.
-       "MYCall de " is stripped out so line contains just senders call and the message.
-       Form shows up (and focuses) at first chat line but if it is left open it does not take focus when
-       next chat lines are received. If form is closed (X) it will show up again on next chat line rcvd.
-                                                                             (2.0.5(041))
-09.08.2017
-
-    - DXhat fixing. Buffer now 50 lines, should have same font and size as DXCluster (this needs testing as
-      it seems that in my system it is not!).
-      Adds now timestamp (your local PC time) before call to see when chat has come (if you are away).
-      New version released, so my testing version subnumber starts from 101.    
-      Added default frequency 5.351MHz to newQSO dropdown selection list (was missing).
-                                                                                         (2.1.0(101))
-10.08.2017
-
-    - DXChat bugfix. Should work now forever(!?). Limit was 200chr by mistake. Scroll should happen @50 lines.
-      Added Clear and Close buttons. Did not add "keep hide" chekbox as there is then no way to restore it.
-      If it bothers you after 1st time it shows up drag it behind some other window and leave open.
-      It will not take focus again until closed and reopen.
-      Given up of font size adjust for now. It needs more study. (I would like to use jakoizmemo like DXCluster
-      window does, but can not understand a single word of it;( )
-                                                                      (2.1.0(102))  
-
-    - Propagation DK0WCY and DXChat now follows common settings of preferences/fonts
-                                                                     (2.1.0(103))            
-12.08.2017
-
-    - WSJTX CQ monitor: Now green text is also bold
-								(2.1.0(104))
-
-    - WSJTX CQ monitor: User selectable colors. Right click on monitor form shows selection popup menu. 
-      "Cancel" at selection popup menu hides color box in case of no new selection.
-      Otherwise new selection changes color and hides color box.
-    - "Stay on top" and "Hide" checkboxes for DXChat form. Hidden DXChat can be returned from DXCluster
-      "preferences-popup menu/Show chat". Checkboxes are unchecked at program start (states not saved).
-								(2.1.0(105))
-15.08.2017
-
-    - Wsjtx CQ monitor: Same color "coding" now affects to locators as callsigns. You are able to see
-      "worked this band, but not current mode"(fuchsia, Upcase) and "worked on any other band/mode"
-      (maroon, Upcase) in addition with previous "worked this bamd and mode"(lowcase, red) and 
-      "not worked before"(Upcase, green).
-      Change of qso colors chages also these locator colors same way.
-    - Fixed database functions used for finding worked calls and locators.
-    - DXChat is still in progress, at the moment hiding and showing is done ONLY via DXCluster window
-      preferences/popup menu.
-      DXChat now uses same font as DXCluster.
-      OnTop and Hide are remembered (saved) over program restart.
-								(2.1.0(106))
-16.08.2017
-
-    - Wsjtx CQ monitor: New color selections (more colors). Now also directed CQ (CQ DX, CQ NA ...) color
-      can be selected.
-    - DXChat: Completely new design. No buttons and settings. It is always there on top of DXspot list.
-      I think I like this! Maybe scaling relative to DXspot memo would be nice...
-      Done by "blind copy" of DXSpot memo (the way to use Tjakomeno without understanding a word of CZ :)
-								(2.1.0(107))
-17.08.2017
-    - UDP wsjtxtimer: Idle polling LoSpeed is now 1500ms all other modes except FT8 and MSK144 where 
-      it is 500ms. When UDP packet is received turns to HiSpeed polling 20ms on all modes.
-      When no more pakets returns back to LoSpeed.
-      CQ-Monitor: Rewritten SQL routines. Dropped 7 queries from 9 ! Added CriticalSection.
-      Now critical section is used every time richmemo is accessed.
-								(2.1.0(108))
-18.08.2017
-   - crash: When "no history" unchecked anf Cq-monitor get full scrolling and focusing last line kills
-     program if they have enter/leave critical sections used in code. Without works ok.
-     Left them away as useless anyway and changed scrolling so that it is checked after every newline added.
-     Before it was "on memo change" action that , I think, triggered too often (every single item addition).
-   - NewQSO wsjxdecode: Added "Wsjtxsock.WaitingData" before RcvPacket to buffer. Should now go to
-     RcvPacket only if there is new datagram. Increased buffer size from 100 to 1000 (just in case).
-   - Cq-monitor: can now streched to needed shape and size. Font (name and size, NOT style) can be changed
-     from same popup menu as call/loc colors (right click monitor).
-   - Again new SQL routines for Cq-monitor. Moved more work for SQLengine :)
-								(2.1.0(109))
-19.08.2017
-   - DXCluster chat: now sizeable. Click DXCluster/preferences-button and select "Chat size" from
-     popUp menu. Bottom of DXCluster "command:" is changed to slider that sizes chat window.
-     Move slider with mouse-left. Lifing up mouse left button saves current value and restores "Command:".
-								(2.1.0(110))
-
-20.08.2017
-   - CQ-monitor: Colors are now saved at the moment color selection menu closes. Should now be saved for sure!
-   - Wsjtx decode: New: Now all UDP datagrams in buffer are handled in one go. After that
-     timer waits 20ms (wHiSpeed) and if there are new datagrams they are handled in one go. This repeats
-     as long as after 20ms there are still datagrams in buffer. If not, timer is set to 1500ms to wait for
-     new period of decoding.
-     This may stress slow computers, specially if wsjt-x is run at same hardware. Standard modern PCs
-     should not have problems.
-								(2.1.0(111))
-21.8.2017
-   - Wsjtx-decode: Bugfix that caused program failure if wsjt-x program was closed before wsjt-x remote
-     mode was closed. Now closing wsjt-x program will close remote mode nicely as before.
-								(2.1.0(112))
-
-   - Manly for testing CQ-monitor slownes after long time on I added "noTxt" checkbox. It is usefull also for
-     users who do not care about monitor texts, but like still to have alerts working. Checking this
-     will skip richmemo updates, but keep other functions working.
-   - Close Cq-monitor will not stop remote-wsjtx. This has been so in past, but changed it at some state.
-     Now users who do not care CQ-monitoring and alerts can still log qsos and see qso data before logging.
-     Cq-monitor can be opened again from main menu Window/Wsjtx monitor as long as remote mode is on.
-								(2.1.0(113))
-
-23.08.2017
-
-   - DXChat minium size now only 2px. Should not take any room if you do not need it.
-     Cursor on size slider is double arrow, but when hidden the default
-								(2.1.0(114))
-04.09.2017
-
-   - merged from Petr's master today. Imported own version of DXCluster (has DXChat) and CQ-monitor changes that
-     has now send as pull request to master.
-     Tjakomemo is now translated by Petr as TColorMemo.  (Nice!) 
-								(2.1.0(115))
-08.09.2017
-
-   - CQ-monitor now remembers showing state. I.E if closed while last wsjtxremote use will be closed on next
-     program start and wsjtxremote initiate.
-								(2.1.0(116))
-
-11.09.2017
-   - more study with richmemo slowness when on for long time. This does not solve the original problem that
-     exists (now 99% sure) at richmemo/lazarus code.
-     Now CQ-monitor form is created at the time it is needed (opened), not at program start.
-     When wsjt-remote is closed it will also distroy CQ-monitor form.(releases memory used by richmemo, too)
-     Closing CQ-monitor while wsjt-remote stays still on does not distroy form.
-     This way slowness (CPU load while richmemo printing) can be resolved without closing wsjtx & cqrlog.
-
-     Just drop wsjt-remote off and start it again! Slowness (and CPUload) has gone !
-
-     With this change richmemo slow printing changed so that lines are not slowly dropping. They appear fast,
-     but time between wsjt-x decode end and lines appearing to CQ-monitor increases. It is harder to notice,
-     but opening a terimal with "top -H -p $(pidof cqrlog) -d 0,2" you can easily find out when CPU load
-     starts to stay >90% while decoding
-								(2.1.0(117))
-20.09.2017
-   - CQ-monitor:  Country names (cut to length 15) are now displayed instead of callsign prefixes.
-     Extended CQs (CQ DX, CQ AS, CQ AF .. etc) are now compared against own continent. If "CQ DX" caller
-     callsign is from same continent as your call a "*" is added in front of country name and it is printed
-     with "CQ ext" color defined.
-     Same if "CQ AS" is called and your continent is not AS, and so on.
-     If continent cannot be compaired (CQ extension is something special) same "*" and "CQ ext" color is used.
-     This is to notify you to consider if answering follows good working practise and ham spirit rules.
-   - "My Alert" is now compared oppsite way: First word of decoded line is compared against your cqrlog/
-     preferences/station callsign. This should fit now also when you are using extended callsign XX/YOURCALL or
-     YOURCALL/XX in your log as wsjt-x traffic uses always plain callsigns during qsos.
-								(2.1.0(118))
-06.10.2017
-   - Band Map: Copied setting "Show only active band" from Preferences to Band map filter settings. (As it really is 
-     a filter). It is now in both places, but is easier and faster to change via Band Map Filter dialog.
-								(2.1.0(119))
-
-   -Export: "Choose fields to export" now has button 'Re/Set All̈́' for fast setting/resetting all checkboxes in one touch.
-								(2.1.0(120))
-
-   -NewQso: Bugfix "mode: Auto" checkbox state was not correctly returned after program restart.
-								(2.1.0(121))
-09.10.2017
-
-   - Changelog: Added comment message about the test binary with request to read the accompanying documents.
-   - DXCluster/Chat_RX window: Defaut size is now 2 (invisible). Resize it if you need it from button "Preferences/Chat size/[use slider]"
-     Value will be saved with used log, so this affects only for first use ever.
-								(2.1.0(122))
-
-   - WSJTX Monitor:More specific print out for extended cq direction to help operator decide should he answer this cq or not.
-								(2.1.0(123))
-   - DXCluster: Redirecting to Chat window uses now connection username (call) instead of log call that may be different than used to log to DXCluster.
-								(2.1.0(124))
-
-15.09.2017
-   - WSJTX monitor: Minor change to print out for extended cq direction.
-								(2.1.0(125))
-28.10.2017
-   - WSJTX monitor: Addition to text-alert. Works as before text-in-text for complete monitor line, or looks just only callsign with text-in-text,
-     starts with (XY*) or ends with (*XY). One asterisk can be used at start or at end of search string to indicate start or end search.
-     Several comma separated search strings can be used at callsign search. OH*,*OH,A,B,C,*D
-								(2.1.0(126))
-29.10.2017
-   - WSJTX monitor: Changed all alert check boxes to buttons. Tried to make better execption handling for "innovative" user ways to call 
-     directed CQ. (this does not fix all of them...never!)
-								(2.1.0(127))
-01.11.2017
-   - WSJTX monitor: Added new feature "Follow". When "flw" is checked opens new part to bottom of window. Left editbox receives followed callsing.
-     Right side will show decoded line where that callsign is as originating (2nd) call and is NOT CQ or directed to YOUR CALL.
-     Line has: timestamp, deltafreq, message text
-     Status of checks and the call is saved over program restart. No alerts are connected to this line.
-     The purpose of this line is to make easier to follow a DX (from all other deceded lines) who does not stay on permanent frequency,
-     but jumps around answering callers.
-   - Help files are updated. You should find similar things from internal help than from the CqrlogAdditions2.pdf
-     (but only if you get folder src/help from my GitHub https://github.com/OH1KH/cqrlog-devel and overlay the help
-     folder to your exisiting install. It is not added to test_binary.zip)
-								(2.1.0(128))
-
-02.11.2017
-   - LoTW import wails on 630M. I think the  dutils.pas: function TdmUtils.FreqFromBand(band, mode: string): string; is missing 630M definition.
-     Added that, but cannot test by my self.
-   - CQ-monitor: Followed call line turns red after 15sec of receive (FT8,MSK144) otherwise after 60sec to indicate that valid reply period for
-     this line is over.
-								(2.1.0(129))
-04.11.2017
-   -Merged from master: DL8DTL sort and IFDEF changes
-								(2.1.0(130))
-05.11.2017
-   -CQ-monitor: 15 lines is too little on 20m weekend CQs, even with no-history set!. Raised to 20 lines with auto scrollbars and some fix for scrolling.
-    help+PDF file update for this reason.
-   -Default frequencies: still 472kHz missing from there, too. Added.
-								(2.1.0(131))
-    -----------
-    If you do not like long country names in CQ-monitor they can be fixed with this script:
-    fixlongcountrynames.sh
-    -------------------------------
-    #/bin/sh
-    cd ~/.config/cqrlog/ctyfiles
-
-    # fix long name to these 3 files-------------------------------------------
-    #      /-----Existing name now------/new-name/ file to read > file to write
-
-     sed s/"Federal Republic of Germany"/Germany/g Country.tab > Countryf.tab
-     sed s/"Federal Republic of Germany"/Germany/g CallResolution.tbl > CallResolutionf.tbl
-     sed s/"Federal Republic of Germany"/Germany/g  AreaOK1RR.tbl > AreaOK1RRf.tbl
-
-    # finally copy new files over the old ones---------------------------------
-     mv Countryf.tab  Country.tab
-     mv CallResolutionf.tbl  CallResolution.tbl
-     mv AreaOK1RRf.tbl  AreaOK1RR.tbl
- 
-    #reload fixed files to cqrlog----------------------------------------------
-     echo '-------------------------------------------------------'
-     echo 'Run now:  Window/QSOlist/File/"Import DXCC data"'  
-     echo 'When on dialog select: ".config/cqrlog/ctyfiles" folder'
-     echo ''
-     echo 'You need to do this after every DXCC update received'
-     echo '-------------------------------------------------------'
-    #done
-    --------------------------------
-    issue command: chmod a+x fixlongcountrynames.sh   after edit to be able to run script.
-
-07.11.2017
-    - WsjtX remote: Added shorcut key Ctrl+R for fast remote on/off. Rewritten some parts of opening and closing UDP socket 
-      and preventing timer to start double decodings. (reported that remote socket can not always be opened again after close).
-      Help and PDF update.
-								(2.1.0(132))
-08.11.2017
-    - WsjtX remote: Ctrl+R was in use ! Changed to Ctrl+J that should be free (by help file).
-    - 630M still missing from GetAdifBandFromFreq and  C_RBN_BANDS. Added. Thanks for NO3M.
-    - wsjt and shortcutkeys help updated.
-								(2.1.0(133))
-12.11.2017
-    - Export bugfix: "Choose fields to export" button 'Re/Set All̈́' position conflicts now with appeared (from merge??)
-      "Most recent entries on top" checkbox. Movet Re/Set-button to same line with OK and Cancel.
-								(2.1.0(134))
-17.11.2017
-    - CQ-monitor: Calling CQ SOMETEXT without own call (!!!???!) caused porgram halt. Fixed these to NOCALL.
-								(2.1.0(135))
-    - Merged from master: 2.2.0  parsing RBN spots fixed
-								(2.1.0(136) should this be 2.2.0 (101)?)
-24.11.2017
-    - DXCluster/AlertCalls: Bugfix regexp comparison must be other way round to hit (in partial callsigns)
-      IsAlertCall is now run ONLY if alert is selected.
-      IsAlertCall is rewritten and now can handle:
-       mode=all+band=all, mode=SET+band=all,  mode=all+band=SET  and  mode=SET+band=SET combinations.
-								(2.1.0(137)   
-28.11.2017
-    - AlertCalls: alert calls had conflict (open query) using same transaction as worked gris/wsjtx monitor.
-      Alert calls list disappeared always when wsjyt/wkd grids worked on background.
-      Fixed by creating new pairs of query/transaction W/trW, W1/trW1 for wkdgrids/wsjtx use.
-								(2.1.0(138) 
-29.11.2017
-   - AlertCalls: alert calls still conflicts with wsjt remote. Actually with qrz/hamqth lookup done on background
-     when alert calls form is open. Created one more query/transaction pair for alert calls use.
-     Using that needs modification to refreshalertcalls (should not, but yes) query must be closed before refresh.
-     When it was done with "common tr/query pair" did some other part close it as it worked without closing?
-     If alert callsign list form is open and wsjtx remote running, the wsjtx-monitor lines will all turn black 
-     after first transmit (after qrz/hamqth query).Colors come back on next decode after alert calls list is closed.
-     Is ShowModal reason for this?
-								(2.1.0(139) 
-16.12.2017
-   - Added voice keyer support also for FM and AM modes and also from CWkeys form. Added info to Help files.
-								(2.1.0(140) 
-17.12.2017
-   - Merged latest changes from master
-								(2.1.0(141) 
-29.12.2017
-   - Merged latest changes from master
-   - fixed some help files
-   - Version follows master, now 2.2.0 (devel subversion 100)
-								(2.2.0(100) 
-31.12.2017
-   - bugfix: WEB-DXCluter Font button had no action
-								(2.2.0(101) 
-22.01.2018
-   - added "Run at cqrlog start" and "Run at cqrlog stop" calls to scripts ~/.config/cqrlog/start.sh
-     ~/.config/cqrlog/stot.sh They are called when program is up/ges down and rigctld is running.
-     You can do anything with them. At start switch on your coffee maker and when cqlog is closed
-      switch coffee maker off  :D :D :D
-     At stop phase 1000ms (1sec) time is waited letting script access to rigctld befor it goes down.
-     This should be enough to execute a command.
-     For powering rig via rigctld power command make start.sh like:
-     ---------------------------------------------
-     #!/bin/bash
-     echo -n -e '\x87'1 |  nc localhost 4532
-     exit
-     ---------------------------------------------
-     For stop.sh script copy start.sh and change 1 (after 87') to 0
-     Remember to chmod a+x start.sh  (and stop.sh) to make them execute for all.
-   - added PWR button to TRXControl window. State of rig power os not checked (as all rigs do not
-     support it. At rig initialize butoon is activated and rigctld pwer on command is sent anyway.
-     This should sync rig and button.     
-   - fixed qso entry "qso_dxcc" state to FALSE when logging happens from remote fldigi, fldigi xmlrpc
-     or wsjt-x. This was left TRUE for them all. When manual log entry is done it is set FALSE.
-     Meaning of this it bit unknown, but if it is TRUE when editing qso and adding country prefix
-     OH1KH -> SM/OH1KH the country info does not change (unless you focus field "state" and then
-     focus some other field). Fix was to set old_adif:=adif before saving qso. Tnx Andreas DL7OAP.
-   - fixed socket state error on fldigi xmlrpc. (did not work at all) Socket state was read after
-     it was free'ed.
-								(2.2.0(102)
-23.01.2018
-   - added also old_call:='' to saveremoteqso to be sure cqs_dxcc keeps false.
-								(2.2.0(103)  
-   - added wsjt-x logging the start and end times. Previously the end time was used for start and
-     end time as UDP msg#5(logging) did implement just only one date and time (@ 2015). Now Start time
-     is added at the end of message and first time is used as end time.
-     Both times are now logged correctly and because just one date in cqrlog the start date
-     from wsjt-x is used.
-								(2.2.0(104)  
-27.01.2018
-   - merged from amster. LoTWexport change (by Petr)
-								(2.2.0(105)  
-28.01.2018
-   - Changed TRXControl window PWR button to 3 buttons P-on, P-off, P-standby.
-   - help file additions. Test binary zip now has help files included as tgz. See README.testing
-     for install instructions.
-								(2.2.0(106)  
-30.01.2018
-   - disabled DXCluster call alert when webcluster in in use. It does not work in current webcluster
-     connection.
-   - Added StartConnectCommand for telnet dxcluster. Type DXCluster command you want to use into
-     DXCluster's "command:"-line, but not send it to cluster. Instead press Ctrl-S to save the
-     command as StartConnectionCommand.
-     You do not have to be connected to DXCluster while doing this, but it works also when
-     you are connected.
-     The command will be sent to DXCluster when connection is established and DXCluster prompt
-     received for first time for now on.
-     Command is cleared by pressing Ctrl-S when "command"-line is empty.
-   - Corresponding help files updated.
- 						                (2.2.0(107)  
-31.01.2018
-   - New design of TRXContorl window. Power buttons can be shown/hide using dropdown menu "Settigs".
-     Default is hidden.
- 						                (2.2.0(108)  
-04.02.2018
-   - StartConnectCommand  can now still be set with Ctrl-S and now also via preferences. Change can be
-     done in either way.
-   - DXCluster button "preferences"/dropdown-menu/preferences work in way that the tabDXCluster of
-     preferences is open if preferences are called from DXCluster window.
-   - TRXControl  has now dropdown-menu item "preferences". The tabTRXControl of preferences is open
-     when called from TRXControl window.
-   - Corresponding help files fixed
- 						                (2.2.0(109)
-09.02.2018
-   - When in remote mode preferences opens to fldigi/wsjt-tab
-						                (2.2.0(110)
-10.02.2018
-   - TRXcontrol missing band buttons because of wrong anchors. Fixed.
-						                (2.2.0(111)
-18.02.2018
-   - Merged from master
-						                (2.2.0(112)
-19.02.2018
-   - fixed eQSL upload bug. Missing query fields (new ones9 and wrong query to read them Q1 -> Q
-						                (2.2.0(113)
-  - Merged from master
-						                (2.2.0(114)
-26.02.2018
-  - Merged from master
-  - CQ-monitor: show delta frequency instead of time if "no history" cheked. It is more valuable data then.
-						                (2.2.0(115)
-27.02.2018
-  - QSL/Filter. Added text "X.x MHz" to frequency group box to clarify input format. Fixed sizes and anchors.
-  - help files of wsjt updated
-						                (2.2.0(116)
-28.02.2018
-  - Cq-monitor: Followed station's captured line turns now from default color (black) to silver gray when 
-    right period of possible answer is passed.
-    Same way, if there are no CQ lines during period then old monitor lines will turn to silver gray 
-    indicating that right period of possible answer is passed.
-    This happens ONLY if "no history" is checked. If not, colors stay as they are.
-    CQ-lines turning to silver gray does not disable double click answering property. It is just informative
-    color change. 
-  - wsjt help files updated
-						                (2.2.0(117)
