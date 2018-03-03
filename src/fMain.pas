@@ -1659,7 +1659,6 @@ begin
   with TfrmFilter.Create(self) do
   try
     ShowModal;
-    writeln('-------------------------------in here------------------------------');
     if (ModalResult = mrOk) then
       if (tmp <> '') then
       begin
