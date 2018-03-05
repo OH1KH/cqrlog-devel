@@ -107,7 +107,7 @@ var
   EditedText         : string;                  //holds editAlert after finished (loose focus)
   Ssearch,Sfull      : String;
   Spos               : integer;
-  Sdelim             : char = ',';
+
 
 implementation
 {$R *.lfm}
@@ -583,6 +583,7 @@ procedure TfrmMonWsjtx.AddDecodedMessage(Message,band,Reply:string;Dfreq:integer
 const
   CountryLen = 15;     //length of printed country name in monitor
   CallLen    = 10;     //max len of callsign
+  Sdelim     = ',';    //separator of several text alerts
 var
   msgTime,
   msgMode,
@@ -887,6 +888,7 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
               begin
                 if (EditedText <>'') then
                  begin
+                     if dmData.DebugLevel>=1 then Writeln('Alert text search');
                      Sfull := EditedText;
                      Spos := pos(Sdelim,Sfull);       //delimiter for several search variants
                      if (Spos > 0) then //many variants

@@ -4,6 +4,9 @@
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 -------------------------------------------------------------------------------------------------- 
 
+05.03.2018
+   - Merged from master: LoTW upload uses now filter if "export all" is selected (by Petr)
+						                (2.2.0(120)
 03.03.2018
    - CQ-monitor/Follow:  Bugfix: dB was shown instead of delta frequency.
 						                (2.2.0(119)	
