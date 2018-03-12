@@ -2134,7 +2134,7 @@ object frmNewQSO: TfrmNewQSO
   OnKeyPress = FormKeyPress
   OnShow = FormShow
   OnWindowStateChange = FormWindowStateChange
-  LCLVersion = '1.8.0.6'
+  LCLVersion = '1.8.2.0'
   object sbNewQSO: TStatusBar
     Left = 0
     Height = 17
@@ -3826,15 +3826,15 @@ object frmNewQSO: TfrmNewQSO
     Interval = 2000
     OnTimer = tmrStartTimer
     OnStartTimer = tmrStartStartTimer
-    left = 728
-    top = 480
+    left = 712
+    top = 440
   end
   object tmrEnd: TTimer
     Enabled = False
     OnTimer = tmrEndTimer
     OnStartTimer = tmrEndStartTimer
-    left = 656
-    top = 480
+    left = 640
+    top = 440
   end
   object tmrRadio: TTimer
     Enabled = False
@@ -6030,7 +6030,14 @@ object frmNewQSO: TfrmNewQSO
   object tmrWsjtx: TTimer
     Enabled = False
     OnTimer = tmrWsjtxTimer
-    left = 584
-    top = 480
+    left = 576
+    top = 440
+  end
+  object tmrWsjtSpd: TTimer
+    Enabled = False
+    Interval = 490
+    OnTimer = tmrWsjtSpdTimer
+    left = 576
+    top = 512
   end
 end
