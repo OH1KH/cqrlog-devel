@@ -752,7 +752,7 @@
     <Version Value="11"/>
     <SearchPaths>
       <Libraries Value="$(LazarusDir)/lcl;/usr/lib/gcc/x86_64-redhat-linux/7/"/>
-      <OtherUnitFiles Value="lnet/lib;synapse;richmemo"/>
+      <OtherUnitFiles Value="lnet/lib;synapse"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>

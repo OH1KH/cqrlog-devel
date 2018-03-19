@@ -3,10 +3,15 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 -------------------------------------------------------------------------------------------------- 
+19.03.2018
+   - CQmonitor/Follow: Now double click on follw line loads std messages to wsjtx (but does not fire TX).
+     You can work other stations and quickly load followed callsign to std messages when you feel it is time
+     to try qso. Works only with wsjt-x version 1.9.0-rc3 and up.
+						                (2.2.0(123)
 12.03.2018
    - wsjtx decode timer polling 1000/10(FT8)ms. FT8 mode selects hispeed and it is switched on 2sec
      before decode time and off 2sec after it. May help a bit on crowded bands .
-
+						                (2.2.0(122)
 09.03.2018
    - Bugfix: CWtype/letter mode: doubling a .. z removed.
 						                (2.2.0(121)
