@@ -1,7 +1,7 @@
 object frmMonWsjtx: TfrmMonWsjtx
-  Left = 508
+  Left = 660
   Height = 388
-  Top = 269
+  Top = 50
   Width = 590
   Caption = 'Wsjt-x CQ-monitor'
   ClientHeight = 388
@@ -12,29 +12,30 @@ object frmMonWsjtx: TfrmMonWsjtx
   OnShow = FormShow
   LCLVersion = '1.8.2.0'
   object lblBand: TLabel
-    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Control = WsjtxMemo
     AnchorSideTop.Control = Owner
-    Left = 50
+    Left = 32
     Height = 15
-    Top = 10
+    Top = 12
     Width = 33
-    BorderSpacing.Left = 50
-    BorderSpacing.Top = 10
+    BorderSpacing.Left = 30
+    BorderSpacing.Top = 12
     BorderSpacing.Bottom = 5
     Caption = 'Band'
     ParentColor = False
   end
   object lblMode: TLabel
+    AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
+    AnchorSideRight.Control = WsjtxMemo
     AnchorSideRight.Side = asrBottom
-    Left = 505
+    Left = 523
     Height = 15
-    Top = 10
+    Top = 12
     Width = 35
     Anchors = [akTop, akRight]
-    BorderSpacing.Top = 10
-    BorderSpacing.Right = 50
+    BorderSpacing.Top = 12
+    BorderSpacing.Right = 30
     BorderSpacing.Bottom = 5
     Caption = 'Mode'
     ParentColor = False
@@ -64,30 +65,31 @@ object frmMonWsjtx: TfrmMonWsjtx
     ZoomFactor = 1
   end
   object chkHistory: TCheckBox
-    AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 250
+    AnchorSideRight.Control = noTxt
+    Left = 211
     Height = 23
     Top = 6
-    Width = 91
+    Width = 56
+    Anchors = [akTop, akRight]
     BorderSpacing.Top = 6
-    Caption = 'no history'
+    BorderSpacing.Right = 1
+    Caption = 'nHst'
     OnChange = chkHistoryChange
     TabOrder = 1
   end
   object noTxt: TCheckBox
-    AnchorSideLeft.Control = chkHistory
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
-    Left = 345
+    AnchorSideRight.Side = asrCenter
+    Left = 268
     Height = 23
     Top = 6
-    Width = 63
-    BorderSpacing.Left = 4
+    Width = 55
     BorderSpacing.Top = 6
-    Caption = 'noTxt'
+    Caption = 'nTxt'
     OnChange = noTxtChange
     TabOrder = 2
   end
@@ -287,16 +289,30 @@ object frmMonWsjtx: TfrmMonWsjtx
   object cbflw: TCheckBox
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = chkHistory
-    Left = 199
+    Left = 161
     Height = 23
     Top = 6
-    Width = 45
+    Width = 48
     Anchors = [akTop, akRight]
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
-    Caption = 'flw'
+    BorderSpacing.Right = 2
+    Caption = 'Flw'
     OnChange = cbflwChange
     TabOrder = 5
+  end
+  object chkMap: TCheckBox
+    AnchorSideLeft.Control = noTxt
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 324
+    Height = 23
+    Top = 6
+    Width = 53
+    BorderSpacing.Left = 1
+    BorderSpacing.Top = 6
+    Caption = 'Map'
+    OnChange = chkMapChange
+    TabOrder = 6
   end
   object popColors: TPopupMenu
     left = 104

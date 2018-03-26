@@ -14,6 +14,7 @@ type
 
   TfrmMonWsjtx = class(TForm)
     cbflw: TCheckBox;
+    chkMap: TCheckBox;
     EditAlert: TEdit;
     edtFollow: TEdit;
     edtFollowCall: TEdit;
@@ -44,6 +45,7 @@ type
     WsjtxMemo: TRichMemo;
     procedure cbflwChange(Sender: TObject);
     procedure chkHistoryChange(Sender: TObject);
+    procedure chkMapChange(Sender: TObject);
     procedure cmAnyClick(Sender: TObject);
     procedure cmBandClick(Sender: TObject);
     procedure cmCqDxClick(Sender: TObject);
@@ -75,17 +77,29 @@ type
     procedure RunVA(Afile: String);
     procedure WsjtxMemoScroll;
     procedure decodetest(i:boolean);
+    procedure PrintCall(Pcall:string);  // prints colored call
+    procedure PrintLoc(PLoc,tTa,mT:string);  // prints colored loc
+    function  OkCall(Call:String):boolean ;
+    procedure SendReply(reply:String);
+    procedure TryCallAlert(S:string);
+    procedure TryAlerts;
+    procedure SaveFormPos(FormMode:string);
+    procedure LoadFormPos(FormMode:string);
    { private declarations }
   public
     procedure CleanWsjtxMemo;
     function NextElement(Message:string;var index:integer):String;
     procedure AddDecodedMessage(Message,Band,Reply:string;Dfreq:integer);
     procedure AddFollowedMessage(Message,Reply:string);
+    procedure AddOtherMessage(Message,Reply:string);
     procedure NewBandMode(Band,Mode:string);
     { public declarations }
   end;
 Const
-MaxLines :integer = 21;        //Max monitor lines text will show MaxLines-1 lines
+  MaxLines :integer = 31;        //Max monitor lines text will show MaxLines-1 lines
+  CountryLen = 15;               //length of printed country name in monitor
+  CallLen    = 10;               //max len of callsign
+  Sdelim     = ',';              //separator of several text alerts
 type
   TReplyArray     = array of string [255];
 
@@ -109,6 +123,15 @@ var
   Ssearch,Sfull      : String;
   Spos               : integer;
   RepFlw             : String [255];            //reply in case of follow line double click
+
+  msgCall            :String;
+  msgLoc             :String;
+  msgTime            :String;
+  isMyCall           :Boolean;
+  CurMode            :String = '';
+  CurBand            :String = '';
+  LockMap            :Boolean;
+  LockFlw            :Boolean;
 
 
 implementation
@@ -202,14 +225,8 @@ begin
          end;
   end;
 end;
-
-procedure TfrmMonWsjtx.WsjtxMemoDblClick(Sender: TObject);
-var
-   reply : string;
+procedure TfrmMonWsjtx.SendReply(reply:String);
 begin
-  if dmData.DebugLevel>=1 then Writeln('Clicked line no:',WsjtxMemo.Caretpos.Y,' Array gives:',RepArr[WsjtxMemo.Caretpos.Y]);
-  reply := RepArr[WsjtxMemo.Caretpos.Y];
-
   if (length(reply) > 11 ) and (reply[12] = #$02) then //we should have proper reply
                Begin
                 reply[12] := #$04;    //quick hack: change message type from 2 to 4
@@ -218,9 +235,17 @@ begin
                end;
 end;
 
+procedure TfrmMonWsjtx.WsjtxMemoDblClick(Sender: TObject);
+begin
+  if dmData.DebugLevel>=1 then Writeln('Clicked line no:',WsjtxMemo.Caretpos.Y,' Array gives:',RepArr[WsjtxMemo.Caretpos.Y]);
+  SendReply(RepArr[WsjtxMemo.Caretpos.Y]);
+end;
+
 procedure TfrmMonWsjtx.FormClose(Sender: TObject; var CloseAction: TCloseAction
   );
 begin
+   LockMap := true;
+   if chkMap.Checked then SaveFormPos('Map') else SaveFormPos('Cq');  //to be same as intial save
    dmUtils.SaveWindowPos(frmMonWsjtx);
 end;
 
@@ -260,18 +285,9 @@ begin
 end;
 
 procedure TfrmMonWsjtx.edtFollowDblClick(Sender: TObject);
-var
-   reply : string;
 begin
   if dmData.DebugLevel>=1 then Writeln('Clicked follow line gives: ',RepFlw);
-  reply := RepFlw;
-
-  if (length(reply) > 11 ) and (reply[12] = #$02) then //we should have proper reply
-               Begin
-                reply[12] := #$04;    //quick hack: change message type from 2 to 4
-                if dmData.DebugLevel>=1 then Writeln('Changed message type from 2 to 4. Sending...');
-                frmNewQSO.Wsjtxsock.SendString(reply);
-               end;
+  SendReply(RepFlw);
 end;
 
 procedure TfrmMonWsjtx.cmBandClick(Sender: TObject);
@@ -313,9 +329,78 @@ begin
   cqrini.WriteBool('MonWsjtx','NoHistory',chkHistory.Checked);
 end;
 
+procedure TfrmMonWsjtx.SaveFormPos(FormMode:string);
+
+begin
+  if dmData.DebugLevel>=1 then Writeln('---------------------------------------SaveFormPos:',FormMode);
+  if frmMonWsjtx.WindowState = wsMaximized then
+    cqrini.WriteBool('MonWsjtx', FormMode+'Max',True)
+  else
+  begin
+    cqrini.WriteInteger('MonWsjtx', FormMode+'Height', frmMonWsjtx.Height);
+    cqrini.WriteInteger('MonWsjtx', FormMode+'Width', frmMonWsjtx.Width);
+    cqrini.WriteInteger('MonWsjtx', FormMode+'Top', frmMonWsjtx.Top);
+    cqrini.WriteInteger('MonWsjtx', FormMode+'Left', frmMonWsjtx.Left);
+    cqrini.WriteBool('MonWsjtx', FormMode+'Max', False);
+  end;
+end;
+
+procedure TfrmMonWsjtx.LoadFormPos(FormMode:string);
+begin
+  if dmData.DebugLevel>=1 then Writeln('---------------------------------------LoadFormPos:',FormMode);
+  if cqrini.ReadBool('MonWsjtx', FormMode+'Max', False) then
+    frmMonWsjtx.WindowState := wsMaximized
+  else
+  begin
+      frmMonWsjtx.Height := cqrini.ReadInteger('MonWsjtx', FormMode+'Height', 100);
+      frmMonWsjtx.Width := cqrini.ReadInteger('MonWsjtx', FormMode+'Width', 100);
+      frmMonWsjtx.Top := cqrini.ReadInteger('MonWsjtx', FormMode+'Top', 20);
+      frmMonWsjtx.Left := cqrini.ReadInteger('MonWsjtx', FormMode+'Left', 20);
+  end;
+end;
+procedure TfrmMonWsjtx.chkMapChange(Sender: TObject);
+var i : integer;
+begin
+  if not LockMap then    //do not run autaomaticly on init or leave form
+   Begin
+   cqrini.WriteBool('MonWsjtx','MapMode',chkMap.Checked);
+   if chkMap.Checked then
+    Begin   //Map
+      //write width/height CQ read width Map
+      if sender <> frmMonWsjtx then SaveFormPos('Cq');  //no save from init
+      LoadFormPos('Map');
+      LockFlw := true;
+      cbflw.Checked := false; //drops panel size reservation. Map drops "follow" it does not return ON  when back to monitor mode
+      LockFlw := false;
+      frmMonWsjtx.Caption := 'Wsjt-x map';
+      pnlFollow.Visible:=false;
+      pnlAlert.Visible:=false;
+      cbflw.Visible:=false;
+      noTxt.Visible:=false;
+      noTxt.Checked:= false; //map mode allows text, no mind without printing. Printing stays on return to monitor mode.
+      chkHistory.Visible:=false;
+    end
+   else
+    Begin   //Cq
+       //write width/height Map read width CQ
+      if sender <> frmMonWsjtx then SaveFormPos('Map');   //no save from init
+      LoadFormPos('Cq');
+      cbflw.Checked := cqrini.ReadBool('MonWsjtx','FollowShow',False);
+      tbFollow.Checked := cqrini.ReadBool('MonWsjtx','Follow',False);
+      frmMonWsjtx.Caption := 'Wsjt-x CQ-monitor';
+      pnlAlert.Visible:=true;
+      cbflw.Visible:=true;
+      noTxt.Visible:=true;
+      chkHistory.Visible:=true;
+    end;
+   CleanWsjtxMemo;
+  end;
+end;
+
+
 procedure TfrmMonWsjtx.cbflwChange(Sender: TObject);
 begin
-  cqrini.WriteBool('MonWsjtx','FollowShow',cbflw.Checked);
+   if not LockFlw then cqrini.WriteBool('MonWsjtx','FollowShow',cbflw.Checked);
   if cbflw.Checked then
   begin
      WsjtxMemo.BorderSpacing.Bottom:=96;
@@ -357,7 +442,7 @@ end;
 
 procedure TfrmMonWsjtx.tbFollowChange(Sender: TObject);
 begin
-  cqrini.WriteBool('MonWsjtx','Follow',tbFollow.Checked);
+  if not LockFlw then cqrini.WriteBool('MonWsjtx','Follow',tbFollow.Checked);
   if tbFollow.Checked then
   begin
       tbFollow.Font.Color := clGreen;
@@ -476,6 +561,7 @@ end;
 
 procedure TfrmMonWsjtx.FormCreate(Sender: TObject);
 begin
+  LockMap:=true;
   SetLength(RepArr, MaxLines); //set reply buffer to maxlines
   EditAlert.Text := '';
   EditedText := '';
@@ -486,12 +572,18 @@ procedure TfrmMonWsjtx.FormHide(Sender: TObject);
 begin
    //decodetest(true);  //release these for decode tests
    //decodetest(false);
+   LockMap :=true;
+   if chkMap.Checked then SaveFormPos('Map') else SaveFormPos('Cq');  //to be same as intial save
    dmUtils.SaveWindowPos(frmMonWsjtx);
    frmMonWsjtx.hide;
   end;
 
 procedure TfrmMonWsjtx.FormShow(Sender: TObject);
 begin
+   WsjtxMemo.Font.Name := cqrini.ReadString('MonWsjtx','Font','Monospace');
+   WsjtxMemo.Font.Size := cqrini.ReadInteger('MonWsjtx','FontSize',10);
+   dmUtils.LoadWindowPos(frmMonWsjtx);
+   dmUtils.LoadFontSettings(frmMonWsjtx);
    chkHistory.Checked := cqrini.ReadBool('MonWsjtx','NoHistory',False);
    noTxt.Checked := cqrini.ReadBool('MonWsjtx','NoTxt',False);
    tbmyAlrt.Checked := cqrini.ReadBool('MonWsjtx','MyAlert',False);
@@ -501,10 +593,6 @@ begin
    EditedText :=  EditAlert.Text;
    tbAlert.Checked := cqrini.ReadBool('MonWsjtx','TextAlertSet',False);
    tbTCAlert.Checked := cqrini.ReadBool('MonWsjtx','TextAlertCall',False);
-   dmUtils.LoadWindowPos(frmMonWsjtx);
-   dmUtils.LoadFontSettings(frmMonWsjtx);
-   WsjtxMemo.Font.Name := cqrini.ReadString('MonWsjtx','Font','Monospace');
-   WsjtxMemo.Font.Size := cqrini.ReadInteger('MonWsjtx','FontSize',10);
    wkdhere := StringToColor(cqrini.ReadString('MonWsjtx','wkdhere','clRed'));
    wkdband := StringToColor(cqrini.ReadString('MonWsjtx','wkdband','clFuchsia'));
    wkdany := StringToColor(cqrini.ReadString('MonWsjtx','wkdany','clMaroon'));
@@ -515,10 +603,11 @@ begin
    cbflw.Checked := cqrini.ReadBool('MonWsjtx','FollowShow',False);
    tbFollow.Checked := cqrini.ReadBool('MonWsjtx','Follow',False);
    edtFollowCall.Text := uppercase( cqrini.ReadString('MonWsjtx','FollowCall',''));
-
-   CleanWsjtxMemo;
+   chkMap.Checked := cqrini.ReadBool('MonWsjtx','MapMode',false);
    if ((trim(edtFollowCall.Text) = '') and tbFollow.Checked ) then tbFollow.Checked := false; //should not happen, chk it here
-
+   LockFlw := false;
+   LockMap := false; //last thing to do
+   chkMapChange(frmMonWsjtx);
 end;
 
 procedure TfrmMonWsjtx.NewBandMode(Band,Mode:string);
@@ -526,6 +615,8 @@ procedure TfrmMonWsjtx.NewBandMode(Band,Mode:string);
 Begin
      lblBand.Caption := Band;
      lblMode.Caption := Mode;
+     CurBand := Band;
+     CurMode := Mode;
      CleanWsjtxMemo;
      edtFollow.Text := '';
 end;
@@ -581,6 +672,67 @@ Begin
        '201045 ~ CQ WHO EVER');  // for dbg
      end;
 end;
+procedure TfrmMonWsjtx.AddOtherMessage(Message,Reply:string);
+var
+    List1: TStringList;
+Begin
+   if (frmMonWsjtx.tbFollow.Checked
+    and (pos(edtFollowCall.Text,Message) > 10 ) ) then  //not first word
+        AddFollowedMessage(Message,Reply)
+   else
+     if chkMap.Checked then
+     Begin
+      if dmData.DebugLevel>=1 then Writeln('Other line:',Message);
+      msgCall:='';
+      msgLoc :='';
+      isMyCall := false;
+      List1 := TStringList.Create;
+      try
+         List1.Delimiter := ' ';
+         List1.DelimitedText := Message;
+         //without IFs you get easily out of bounds when unexpected decode results happen
+         if (List1.Count > 0) then msgTime := List1[0] ;
+         // if (List1.Count > 1) then deltafreq:=List1[1]
+         if (List1.Count > 2) then isMyCall := pos( List1[2],UpperCase(cqrini.ReadString('Station', 'Call', ''))) > 0 ;
+         if (List1.Count > 3) then msgCall := List1[3] ;
+         if dmData.DebugLevel>=1 then Writeln('List index:',List1.Count);
+         if (List1.Count > 4) then msgLoc  := List1[4] //avoid out of index in certain compound call lines
+      finally
+         List1.Free;
+      end;
+       if dmData.DebugLevel>=1 then Writeln('Other call:',msgCall,'    loc:',msgLoc);
+       if (not frmWorkedGrids.GridOK(msgLoc)) or (msgLoc = 'RR73') then //disble false used "RR73" being a loc
+               msgLoc:='';
+
+       if OkCall(msgCall) then
+         Begin
+           myAlert:='';
+           MonitorLine :='';
+
+           if (msgTime <> LastWsjtLineTime) then CleanWsjtxMemo;
+           LastWsjtLineTime := msgTime;
+           if dmData.DebugLevel>=1 then Writeln('Add reply array:',WsjtxMemo.lines.count);
+           RepArr[WsjtxMemo.lines.count] := Reply;  //corresponding reply string to array
+           //start printing
+           AddColorStr(#40,clDefault);  //make not-CQ indicator start
+           if dmData.DebugLevel>=1 then Writeln('Start Other printing');
+           PrintCall(msgCall);
+           if msgLoc = '' then
+             Begin
+               AddColorStr(#32#32#32#32#41#13#10,clDefault);  //make not-CQ indicator stop + new line
+             end
+             else
+              Begin
+               PrintLoc(msgLoc,'','');
+               AddColorStr(#41#13#10,clDefault);  //make not-CQ indicator stop + new line
+              end;
+           if dmData.DebugLevel>=1 then Writeln('NL written and scroll if needed+alerts');
+           WsjtxMemoScroll; // if neeeded
+           TryAlerts;
+         end;
+     end;
+
+end;
 
 procedure TfrmMonWsjtx.AddFollowedMessage(Message,Reply:string);
 Begin
@@ -589,46 +741,61 @@ Begin
   edtFollow.Font.Color := clDefault;
   edtFollow.Text := Message;
   RepFlw := Reply;
-   if ((lblMode.Caption ='FT8') or (lblMode.Caption ='MSK144')) then
-    tmrFollow.Interval:= 15500
-   else
-    tmrFollow.Interval:= 60500;
+  tmrFollow.Enabled:=true;
+   if CurMode ='FT8'  then tmrFollow.Interval:= 15500
+                      else tmrFollow.Interval:= 60500;
   tmrFollow.Enabled:=true;
 end;
+procedure TfrmMonWsjtx.PrintCall(Pcall:string);
+Begin
+      case frmWorkedGrids.WkdCall(msgCall,CurBand,CurMode) of
+               0  :  AddColorStr(PadRight(UpperCase(msgCall),CallLen)+' ',wkdnever);
+               1  :  AddColorStr(PadRight(LowerCase(msgCall),CallLen)+' ',wkdhere);
+               2  :  AddColorStr(PadRight(UpperCase(msgCall),CallLen)+' ',wkdband);
+               3  :  AddColorStr(PadRight(UpperCase(msgCall),CallLen)+' ',wkdany);
+               else
+                 AddColorStr(PadRight(LowerCase(msgCall),CallLen)+' ',clDefault);  //should not happen
+              end;
 
-procedure TfrmMonWsjtx.AddDecodedMessage(Message,band,Reply:string;Dfreq:integer);
-const
-  CountryLen = 15;     //length of printed country name in monitor
-  CallLen    = 10;     //max len of callsign
-  Sdelim     = ',';    //separator of several text alerts
+end;
+procedure TfrmMonWsjtx.PrintLoc(PLoc,tTa,mT:string);
+Begin
+      case frmWorkedGrids.WkdGrid(msgLoc,CurBand,CurMode)  of
+      //returns 0=not wkd
+      //        1=full grid this band and mode
+      //        2=full grid this band but NOT this mode
+      //        3=full grid any other band/mode
+      //        4=main grid this band and mode
+      //        5=main grid this band but NOT this mode
+      //        6=main grid any other band/mode
+       0  : Begin
+             AddColorStr(UpperCase(msgLoc),wkdnever); //not wkd
+             if tbLocAlert.Checked and (tTa<>mT) then myAlert := 'loc';    //locator alert
+            end;
+       1  : AddColorStr(lowerCase(msgLoc),wkdhere); //grid wkd
+       2  : AddColorStr(UpperCase(msgLoc),wkdband); //grid wkd band
+       3  : AddColorStr(UpperCase(msgLoc),wkdany); //grid wkd any
+       4  : Begin
+             AddColorStr(lowerCase(copy(msgLoc,1,2)),wkdhere); //maingrid wkd
+             AddColorStr(copy(msgLoc,3,2),wkdnever);
+            end;
+       5  : Begin
+             AddColorStr(UpperCase(copy(msgLoc,1,2)),wkdband); //maingrid wkd band
+             AddColorStr(copy(msgLoc,3,2),wkdnever);
+            end;
+       6  : Begin
+             AddColorStr(UpperCase(copy(msgLoc,1,2)),wkdany); //maingrid wkd any
+             AddColorStr(copy(msgLoc,3,2),wkdnever);
+            end;
+       else
+         AddColorStr(lowerCase(msgLoc),clDefault); //should not happen
+      end;
+end;
+function TfrmMonWsjtx.OkCall(Call:String):boolean ;
 var
-  msgTime,
-  msgMode,
-  msgCQ1,
-  msgCQ2,
-  msgCall,
-  msgLoc,
-  msgRes,
-  mode,
-  freq,
-  CqDir: string;
-
-  mycont, cont, country, waz, posun, itu, pfx,lat,long  : string;
-
-  i,index   :integer;
-  adif       :Word;
-
-  CallCqDir,            //CQ caller calling directed call
-  isMyCall    :Boolean;
   HasNum,
   HasChr     :Boolean;
-
-
-//-----------------------------------------------------------------------------------------
-function OkCall(Call:String):boolean ;        //this is used 2 times below
-var
-  HasNum,
-  HasChr     :Boolean;
+  i          :integer;
 Begin
             i:=0;
             HasNum:=false;
@@ -647,16 +814,7 @@ Begin
      OkCall :=  HasNum and HasChr and (i > 2);
      if dmData.DebugLevel>=1 then Writeln('Call ',call,' valid: ',OkCall);
 end;
-//-----------------------------------------------------------------------------------------
-procedure extcqprint;  //this is used 3 times below
-begin
- AddColorStr(' '+copy(PadRight(msgRes,CountryLen),1,CountryLen-6),extCqCall);
- AddColorStr(' CQ:',clBlack);
- AddColorStr(CqDir+' ',extCqCall);
-end;
-
-//-----------------------------------------------------------------------------------------
-procedure TryCallAlert(S:string);      //this is used 2 times below
+procedure TfrmMonWsjtx.TryCallAlert(S:string);
 
 Begin
   //if no asterisk, compare as is
@@ -686,10 +844,75 @@ Begin
    if dmData.DebugLevel>=1 then Writeln('compare with:',S,':results:',myAlert);
 end;
 
+procedure TfrmMonWsjtx.TryAlerts;
+var
+  a: TExplodeArray;
+  i: integer;
+Begin
+      if tbAlert.Checked then
+           begin
+           if tbTCAlert.Checked then
+              begin
+                if (EditedText <>'') then
+                 begin
+                     if dmData.DebugLevel>=1 then Writeln('Alert text search');
+                     if ( pos(Sdelim,EditedText)>0 ) then //many variants
+                      begin
+                        SetLength(a, 0);
+                        a := dmUtils.Explode(',',EditedText);
+                        for i := 0 to Length(a) - 1 do
+                          Begin
+                            a[i]:=trim(a[i]);
+                            if dmData.DebugLevel>=1 then Writeln('Split text search >',Sfull,'[',i,']=',a[i]);
+                            TryCallAlert(a[i]);
+                          end;
+                      end
+                     else  TryCallAlert(EditedText);
+                end;
+              end
+             else if ( (EditedText <>'') and (pos(EditedText,MonitorLine) > 0 )) then  myAlert := 'text'; // overrides locator
+           end; // tbAlert
+           if ( tbmyAlrt.Checked and isMyCall ) then myAlert :='my'; //overrides anything else
+
+           if (myAlert <>'') and (timeToAlert<>msgTime) then
+              Begin
+                timeToAlert := msgTime;
+                RunVA(myAlert); //play bash script
+              end;
+end;
+procedure TfrmMonWsjtx.AddDecodedMessage(Message,band,Reply:string;Dfreq:integer);
+
+var
+  msgMode,
+  msgCQ1,
+  msgCQ2,
+  msgRes,
+  freq,
+  CqDir: string;
+
+  mycont, cont, country, waz, posun, itu, pfx,lat,long  : string;
+
+  i,index   :integer;
+  adif       :Word;
+
+  CallCqDir,            //CQ caller calling directed call
+  HasNum,
+  HasChr     :Boolean;
+//-----------------------------------------------------------------------------------------
+procedure extcqprint;  //this is used 3 times below
+begin
+ AddColorStr(' '+copy(PadRight(msgRes,CountryLen),1,CountryLen-6),extCqCall);
+ AddColorStr(' CQ:',clBlack);
+ AddColorStr(CqDir+' ',extCqCall);
+end;
+
 //-----------------------------------------------------------------------------------------
 Begin   //TfrmMonWsjtx.AddDecodedMessage
 
       tmrCqPeriod.Enabled:=false;
+      if CurMode ='FT8' then tmrCqPeriod.Interval:= 15500
+                        else tmrCqPeriod.Interval:= 60500;
+      tmrCqPeriod.Enabled:=true;
 
       mycont  := '';
       cont    := '';
@@ -718,17 +941,18 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
       msgMode := NextElement(Message,index);
 
       case msgMode of
-      chr(36) : mode := 'JT4';
-      '#'  : mode := 'JT65';
-      '@'  : mode := 'JT9';
-      '&'  : mode := 'MSK144';
-      ':'  : mode := 'QRA64';
-      chr(126): mode := 'FT8';
+      chr(36) : CurMode := 'JT4';
+      '#'  : CurMode := 'JT65';
+      '@'  : CurMode := 'JT9';
+      '&'  : CurMode := 'MSK144';
+      ':'  : CurMode := 'QRA64';
+      '+'  : CurMode := 'T10';
+      chr(126): CurMode := 'FT8';
 
-      else mode :='';
+      else CurMode :='';
       end;
 
-      if mode <>'' then //mode is clear; we can continue
+      if CurMode <>'' then //mode is known; we can continue
         Begin
          if dmData.DebugLevel>=1 then Write('Cq1-'); //this is checked by newQSO to be MYCall or CQ
          msgCQ1 := NextElement(Message,index);
@@ -796,63 +1020,31 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
          if not ( (msgLoc='----') and isMyCall ) then //if mycall: line must have locator to print(I.E. Answer to my CQ)
          Begin                                        //and other combinations (CQs) will print, too
 
-           if chkHistory.Checked and (msgTime <> LastWsjtLineTime) then CleanWsjtxMemo;
+           if ( chkHistory.Checked or chkMap.Checked ) and (msgTime <> LastWsjtLineTime) then CleanWsjtxMemo;
            LastWsjtLineTime := msgTime;
            RepArr[WsjtxMemo.lines.count] := Reply;  //corresponding reply string to array
+
            //start printing
            if dmData.DebugLevel>=1 then Writeln('Start adding richmemo lines');
-           if (chkHistory.Checked ) then
+
+           if (not chkMap.Checked) then
+            begin
+             if (chkHistory.Checked ) then
                   AddColorStr(PadLeft(IntToStr(Dfreq),6))
              else AddColorStr(msgTime,clDefault); //time
-           AddColorStr('  '+msgMode+' ',clDefault); //mode
+              AddColorStr('  '+msgMode+' ',clDefault); //mode
+            end;
 
            if isMyCall then AddColorStr('=',wkdnever) else AddColorStr(' ',wkdnever);  //answer to me
+           PrintCall(msgCall);
 
-                  case frmWorkedGrids.WkdCall(msgCall,band,mode) of
-                   0  :  AddColorStr(PadRight(UpperCase(msgCall),CallLen)+' ',wkdnever);
-                   1  :  AddColorStr(PadRight(LowerCase(msgCall),CallLen)+' ',wkdhere);
-                   2  :  AddColorStr(PadRight(UpperCase(msgCall),CallLen)+' ',wkdband);
-                   3  :  AddColorStr(PadRight(UpperCase(msgCall),CallLen)+' ',wkdany);
-                   else
-                     AddColorStr(PadRight(LowerCase(msgCall),CallLen)+' ',clDefault);  //should not happen
-                  end;
-
-           if msgLoc='----' then
+             if msgLoc='----' then
                   AddColorStr(msgLoc,clDefault) //no loc
               else
-               Begin
-                  case frmWorkedGrids.WkdGrid(msgLoc,band,mode)  of
-                  //returns 0=not wkd
-                  //        1=full grid this band and mode
-                  //        2=full grid this band but NOT this mode
-                  //        3=full grid any other band/mode
-                  //        4=main grid this band and mode
-                  //        5=main grid this band but NOT this mode
-                  //        6=main grid any other band/mode
-                   0  : Begin
-                         AddColorStr(UpperCase(msgLoc),wkdnever); //not wkd
-                         if tbLocAlert.Checked and (timeToAlert<>msgTime) then myAlert := 'loc';    //locator alert
-                        end;
-                   1  : AddColorStr(lowerCase(msgLoc),wkdhere); //grid wkd
-                   2  : AddColorStr(UpperCase(msgLoc),wkdband); //grid wkd band
-                   3  : AddColorStr(UpperCase(msgLoc),wkdany); //grid wkd any
-                   4  : Begin
-                         AddColorStr(lowerCase(copy(msgLoc,1,2)),wkdhere); //maingrid wkd
-                         AddColorStr(copy(msgLoc,3,2),wkdnever);
-                        end;
-                   5  : Begin
-                         AddColorStr(UpperCase(copy(msgLoc,1,2)),wkdband); //maingrid wkd band
-                         AddColorStr(copy(msgLoc,3,2),wkdnever);
-                        end;
-                   6  : Begin
-                         AddColorStr(UpperCase(copy(msgLoc,1,2)),wkdany); //maingrid wkd any
-                         AddColorStr(copy(msgLoc,3,2),wkdnever);
-                        end;
-                   else
-                     AddColorStr(lowerCase(msgLoc),clDefault); //should not happen
-                  end;
-               end;
+                  PrintLoc(msgLoc,timeToAlert,msgTime);
 
+         if (not chkMap.Checked) then
+          begin
            adif := dmDXCC.id_country(msgCall,'',Now(),pfx, cont, msgRes, WAZ, posun, ITU, lat, long);
            if (pos(',',msgRes)) > 0 then msgRes := copy (msgRes,1,pos(',',msgRes)-1);
 
@@ -883,8 +1075,8 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
               // should be ok to answer this is not directed cq
               AddColorStr(' '+copy(PadRight(msgRes,CountryLen),1,CountryLen)+' ',clBlack);
 
-           freq := dmUtils.FreqFromBand(band, mode);
-           msgRes:= dmDXCC.DXCCInfo(adif,freq,mode,i);    //wkd info
+           freq := dmUtils.FreqFromBand(CurBand, CurMode);
+           msgRes:= dmDXCC.DXCCInfo(adif,freq,CurMode,i);    //wkd info
 
            if dmData.DebugLevel>=1 then Writeln('Looking this>',msgRes[1],'< from:',msgRes);
            case msgRes[1] of
@@ -895,51 +1087,15 @@ Begin   //TfrmMonWsjtx.AddDecodedMessage
 
             else    AddColorStr(msgRes,clDefault);     //something else...can't be
            end;
+          end; //Map mode
 
-           AddColorStr(#13#10,clDefault);  //make new line
-           WsjtxMemoScroll; // if neeeded
+          AddColorStr(#13#10,clDefault);  //make new line
+          WsjtxMemoScroll; // if neeeded
 
-           if tbAlert.Checked then
-           begin
-           if tbTCAlert.Checked then
-              begin
-                if (EditedText <>'') then
-                 begin
-                     if dmData.DebugLevel>=1 then Writeln('Alert text search');
-                     Sfull := EditedText;
-                     Spos := pos(Sdelim,Sfull);       //delimiter for several search variants
-                     if (Spos > 0) then //many variants
-                      repeat
-                        begin
-                          if (Spos > 0 ) then Ssearch := copy(Sfull,1,Spos-1) else Ssearch := Sfull;
-                          Ssearch := trim(Ssearch);
-                          if dmData.DebugLevel>=1 then Writeln('Split text search >',Sfull,'[',Spos,']=',Ssearch);
-                          TryCallAlert(Ssearch);
-                          if (Spos > 0 ) then Sfull := copy(Sfull,Spos+1,length(Sfull)-1) else Sfull:='';
-                          Spos := pos(Sdelim,Sfull);
-                         end
-                       until  ((Spos = 0 ) and (Sfull = ''))
-                     else  TryCallAlert(EditedText);
-                end;
-              end
-             else if ( (EditedText <>'') and (pos(EditedText,MonitorLine) > 0 )) then  myAlert := 'text'; // overrides locator
-           end; // tbAlert
-           if ( tbmyAlrt.Checked and isMyCall ) then myAlert :='my'; //overrides anything else
-
-           if (myAlert <>'') and (timeToAlert<>msgTime) then
-              Begin
-                timeToAlert := msgTime;
-                RunVA(myAlert); //play bash script
-              end;
+          TryAlerts;
 
          end;//printing out  line
         end;  //continued
-
-   if ((lblMode.Caption ='FT8') or (lblMode.Caption ='MSK144')) then
-    tmrCqPeriod.Interval:= 15500
-   else
-    tmrCqPeriod.Interval:= 60500;
-  tmrCqPeriod.Enabled:=true;
 end;
 
 

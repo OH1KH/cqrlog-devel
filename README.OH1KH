@@ -3,6 +3,13 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 -------------------------------------------------------------------------------------------------- 
+26.03.2018
+    -BugFix: Worked grids map: Mode selector did not load user's additions (digi modes) (Saku, OH1KH)
+    -CQ-monitor: Mode T10 (jtdx) added as mode char "+". Should now show T10 CQs. Can't debug at the moment!!
+    -New property: Wsjt-x Map. BandMap style display shows all trafic and double clicks work on all lines.
+     For that needs Wsjt-x 1.9.0-rc3 or up.
+     For more information about Wsjt-x Map, see updated help files: "Digital modes: wsjt-x" (wsjtx.html)
+						                (2.2.0(124)   
 19.03.2018
    - CQmonitor/Follow: Now double click on follw line loads std messages to wsjtx (but does not fire TX).
      You can work other stations and quickly load followed callsign to std messages when you feel it is time

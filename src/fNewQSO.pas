@@ -2313,9 +2313,8 @@ begin
                 end
                else  //if followed call
                Begin
-                  if dmData.DebugLevel>=1 then Writeln('++++++in Follow!');
-                  if (frmMonWsjtx.tbFollow.Checked and (pos(frmMonWsjtx.edtFollowCall.Text,ParStr) > pos(' ',ParStr)) ) then  //not first word
-                     frmMonWsjtx.AddFollowedMessage(Timeline+' '+intToStr(Dfreq)+' '+ParStr,Repbuf);
+                  if dmData.DebugLevel>=1 then Writeln('Other Decode');
+                  frmMonWsjtx.AddOtherMessage(Timeline+' '+intToStr(Dfreq)+' '+ParStr,Repbuf);
                end;
              end;
 
