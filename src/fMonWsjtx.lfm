@@ -266,6 +266,7 @@ object frmMonWsjtx: TfrmMonWsjtx
       BorderSpacing.Left = 3
       OnEnter = edtFollowCallEnter
       OnExit = edtFollowCallExit
+      OnKeyDown = edtFollowCallKeyDown
       TabOrder = 0
     end
     object tbFollow: TToggleBox
@@ -372,26 +373,26 @@ object frmMonWsjtx: TfrmMonWsjtx
       'ColorS=F0FBFF'
       'ColorT=A4A0A0'
     )
-    left = 296
-    top = 133
+    left = 160
+    top = 88
   end
   object popFontDlg: TFontDialog
     Title = 'Choose font'
     MinFontSize = 0
     MaxFontSize = 0
-    left = 387
-    top = 106
-  end
-  object tmrFollow: TTimer
-    Enabled = False
-    OnTimer = tmrFollowTimer
-    left = 200
-    top = 120
+    left = 224
+    top = 88
   end
   object tmrCqPeriod: TTimer
     Enabled = False
     OnTimer = tmrCqPeriodTimer
-    left = 184
+    left = 160
+    top = 176
+  end
+  object tmrFollow: TTimer
+    Enabled = False
+    OnTimer = tmrFollowTimer
+    left = 224
     top = 176
   end
 end

@@ -1967,24 +1967,24 @@ begin
    if (WsjtxMode='FT8') then
     begin
      DecodeTime(Time,Hour,Min,Sec,HSec);
-     //if dmData.DebugLevel>=1 then Writeln('>>>>>>>>>>>>>>>>>FT8 mode - Sec is: ',Sec);
+     if dmData.DebugLevel>=1 then Writeln(' Timer FT8 mode - Sec is: ',Sec);
      case Sec of
        13,28,43,58 :
                      begin  //set hispeed  decode time is coming
                         if ( tmrWsjtx.Interval = wLoSpeed ) then
                           begin
-                           if dmData.DebugLevel>=1 then Writeln('>>>>>>>>>>>>>>>>>Sec is: ',Sec,' ',tmrWsjtx.Interval,'=',wLoSpeed );
+                           if dmData.DebugLevel>=1 then Writeln ('Timer >> Sec is: ',Sec,' ',tmrWsjtx.Interval,'=',wLoSpeed );
                            tmrWsjtx.Interval := wHiSpeed;
-                           if dmData.DebugLevel>=1 then Writeln('>>>>>>>>>>>>>>>>>Setting UDP decode to FT8 HiSpeed ', tmrWsjtx.Interval);
+                           if dmData.DebugLevel>=1 then Writeln(' Timer >> Setting UDP decode to FT8 HiSpeed ', tmrWsjtx.Interval);
                           end;
                      end;
        2,17,32,47  :
                      begin //set lospeed  decode time is over
                          if ( tmrWsjtx.Interval = wHiSpeed ) then  //we did not have UFT8-mode. Is HiSpeed still on?
                           Begin
-                           if dmData.DebugLevel>=1 then Writeln('>>>>>>>>>>>>>>>>>Sec is: ',Sec,' ',tmrWsjtx.Interval,'=',wLoSpeed );
+                           if dmData.DebugLevel>=1 then Writeln(' Timer << Sec is: ',Sec,' ',tmrWsjtx.Interval,'=',wLoSpeed );
                            tmrWsjtx.Interval := wLoSpeed;
-                           if dmData.DebugLevel>=1 then Writeln('<<<<<<<<<<<<<<<<<<Setting UDP decode to FT8 LoSpeed ', tmrWsjtx.Interval);
+                           if dmData.DebugLevel>=1 then Writeln(' Timer << Setting UDP decode to FT8 LoSpeed ', tmrWsjtx.Interval);
                           end;
                       end;
        end;
@@ -6302,12 +6302,12 @@ begin
 
                   // start UDP server  http://synapse.ararat.cz/doc/help/blcksock.TBlockSocket.html
                   WsjtxSock := TUDPBlockSocket.Create;
-                  {if dmData.DebugLevel>=1 then} Writeln('Socket created!');
+                  if dmData.DebugLevel>=1 then Writeln('Socket created!');
                   WsjtxSock.EnableReuse(true);
-                  {if dmData.DebugLevel>=1 then} Writeln('Reuse enabled!');
+                  if dmData.DebugLevel>=1 then Writeln('Reuse enabled!');
                   try
                     WsjtxSock.bind(cqrini.ReadString('wsjt','ip','127.0.0.1'),cqrini.ReadString('wsjt','port','2237'));
-                    {if dmData.DebugLevel>=1 then }Writeln('Bind issued '+cqrini.ReadString('wsjt','ip','127.0.0.1')+
+                    if dmData.DebugLevel>=1 then Writeln('Bind issued '+cqrini.ReadString('wsjt','ip','127.0.0.1')+
                                                                         ':'+cqrini.ReadString('wsjt','port','2237'));
                      // On bind failure try to rebind every second
                      while ((WsjtxSock.LastError <> 0) and (tries > 0 )) do

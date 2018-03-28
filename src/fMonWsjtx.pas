@@ -56,7 +56,9 @@ type
     procedure EditAlertExit(Sender: TObject);
     procedure edtFollowCallEnter(Sender: TObject);
     procedure edtFollowCallExit(Sender: TObject);
-    procedure edtFollowDblClick(Sender: TObject);
+    procedure edtFollowCallKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+   procedure edtFollowDblClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
@@ -85,6 +87,7 @@ type
     procedure TryAlerts;
     procedure SaveFormPos(FormMode:string);
     procedure LoadFormPos(FormMode:string);
+    procedure CqPeriodTimerStart;
    { private declarations }
   public
     procedure CleanWsjtxMemo;
@@ -93,10 +96,11 @@ type
     procedure AddFollowedMessage(Message,Reply:string);
     procedure AddOtherMessage(Message,Reply:string);
     procedure NewBandMode(Band,Mode:string);
+
     { public declarations }
   end;
 Const
-  MaxLines :integer = 31;        //Max monitor lines text will show MaxLines-1 lines
+  MaxLines :integer = 41;        //Max monitor lines text will show MaxLines-1 lines
   CountryLen = 15;               //length of printed country name in monitor
   CallLen    = 10;               //max len of callsign
   Sdelim     = ',';              //separator of several text alerts
@@ -132,7 +136,6 @@ var
   CurBand            :String = '';
   LockMap            :Boolean;
   LockFlw            :Boolean;
-
 
 implementation
 {$R *.lfm}
@@ -273,9 +276,11 @@ begin
       EditedText := EditAlert.Text;
 end;
 
+
 procedure TfrmMonWsjtx.edtFollowCallEnter(Sender: TObject);
 begin
   tbFollow.Checked := false;
+  edtFollowCall.Clear;
 end;
 
 procedure TfrmMonWsjtx.edtFollowCallExit(Sender: TObject);
@@ -283,6 +288,19 @@ begin
   edtFollowCall.Text := trim(UpperCase(edtFollowCall.Text));   //sure upcase-trimmed
   cqrini.WriteString('MonWsjtx','FollowCall',edtFollowCall.Text);
 end;
+
+procedure TfrmMonWsjtx.edtFollowCallKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if key = 13 then
+     Begin
+      key :=0;
+      tbFollow.SetFocus;
+      tbFollow.Checked:= True;
+     end;
+end;
+
+
 
 procedure TfrmMonWsjtx.edtFollowDblClick(Sender: TObject);
 begin
@@ -521,16 +539,22 @@ begin
   tmrCqPeriod.Enabled := false;
   if (chkHistory.Checked ) then
                   WsjtxMemo.SetRangeColor(0,length(WsjtxMemo.Text),clSilver);
+
 end;
 
 procedure TfrmMonWsjtx.tmrFollowTimer(Sender: TObject);
-
 begin
-   tmrFollow.Enabled := false;
-   if (tbFollow.Checked ) then
-                  edtFollow.Font.Color := clSilver;
-  end;
+     tmrFollow.Enabled:=false;
+     if tbFollow.Checked  then edtFollow.Font.Color := clSilver;
+end;
 
+procedure TfrmMonWsjtx.CqPeriodTimerStart;
+begin
+        tmrCqPeriod.Enabled:=false;
+        if CurMode ='FT8' then tmrCqPeriod.Interval:= 16000
+                          else tmrCqPeriod.Interval:= 61000;
+        tmrCqPeriod.Enabled:=true;
+end;
 
 procedure TfrmMonWsjtx.cmCqDxClick(Sender: TObject);
 begin
@@ -676,8 +700,9 @@ procedure TfrmMonWsjtx.AddOtherMessage(Message,Reply:string);
 var
     List1: TStringList;
 Begin
+   CqPeriodTimerStart;
    if (frmMonWsjtx.tbFollow.Checked
-    and (pos(edtFollowCall.Text,Message) > 10 ) ) then  //not first word
+    and (pos(edtFollowCall.Text,Message) > 0 ) ) then  //first check
         AddFollowedMessage(Message,Reply)
    else
      if chkMap.Checked then
@@ -735,17 +760,32 @@ Begin
 end;
 
 procedure TfrmMonWsjtx.AddFollowedMessage(Message,Reply:string);
+var
+  a: TExplodeArray;
+  i,b: integer;
+  ok: Boolean;
 Begin
-  if dmData.DebugLevel>=1 then Writeln('Follow line:',Message);
-  tmrFollow.Enabled:=false;
-  edtFollow.Font.Color := clDefault;
-  edtFollow.Text := Message;
-  RepFlw := Reply;
-  tmrFollow.Enabled:=true;
-   if CurMode ='FT8'  then tmrFollow.Interval:= 15500
-                      else tmrFollow.Interval:= 60500;
-  tmrFollow.Enabled:=true;
+    if dmData.DebugLevel>=1 then writeln('Follow stage#1 passed:',Message);
+    b:= 0;
+    SetLength(a, 0);
+    a := dmUtils.Explode(' ',Message);
+    for i:=0 to (Length(a) - 1)  do
+         if (edtFollowCall.Text = a[i] ) then b:=i;
+    writeln('Follow stage#2 result. Found at:',b+1,'  LastItem:',i+1);
+    if ((i = 2) and (b = 2 )   //message is just time[0] dfreq[1] and followcall[2]
+     or (i > 2) and (b > 2 ))   //message is time[0] dfreq[1] and call[2] followcall[3]..[or up]
+      then
+        begin
+          tmrFollow.Enabled:=false;
+          if CurMode ='FT8' then tmrFollow.Interval:= 16000
+                            else tmrFollow.Interval:= 61000;
+          tmrFollow.Enabled:=true;
+          edtFollow.Font.Color := clDefault;
+          edtFollow.Text := Message;
+          RepFlw := Reply;
+        end;
 end;
+
 procedure TfrmMonWsjtx.PrintCall(Pcall:string);
 Begin
       case frmWorkedGrids.WkdCall(msgCall,CurBand,CurMode) of
@@ -909,10 +949,7 @@ end;
 //-----------------------------------------------------------------------------------------
 Begin   //TfrmMonWsjtx.AddDecodedMessage
 
-      tmrCqPeriod.Enabled:=false;
-      if CurMode ='FT8' then tmrCqPeriod.Interval:= 15500
-                        else tmrCqPeriod.Interval:= 60500;
-      tmrCqPeriod.Enabled:=true;
+      CqPeriodTimerStart;
 
       mycont  := '';
       cont    := '';

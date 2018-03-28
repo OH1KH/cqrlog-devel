@@ -3,6 +3,14 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 -------------------------------------------------------------------------------------------------- 
+28.03.2018
+    -BugFix:CQ-monitor&Follow: Text graying timers unstabile. Tried to get them in sync better
+    -BugFix:CQ-monitor/Follow: choosed both destination and origin lines if call match. 
+     Fixed to be only if origin (2nd) call matches.
+    -CQ-monitor&Follow: Entering cursor to followed call fied clears it's contents. Pressing enter
+     after typing a new followed call enables (button) "Follow" 
+    -Help file fix. Tnx Andreas DL7OAP.
+						                (2.2.0(125)   
 26.03.2018
     -BugFix: Worked grids map: Mode selector did not load user's additions (digi modes) (Saku, OH1KH)
     -CQ-monitor: Mode T10 (jtdx) added as mode char "+". Should now show T10 CQs. Can't debug at the moment!!
