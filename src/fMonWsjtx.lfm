@@ -249,7 +249,6 @@ object frmMonWsjtx: TfrmMonWsjtx
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 3
       BorderSpacing.Right = 3
-      OnDblClick = edtFollowDblClick
       ReadOnly = True
       TabOrder = 1
     end

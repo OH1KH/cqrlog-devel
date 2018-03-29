@@ -3,6 +3,10 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 -------------------------------------------------------------------------------------------------- 
+29.03.2018
+    -BugFix:Follow: Text graying had still one bug. Fixed.
+    -QSO list/Filter: GroupBox QSL controls tighter placing. Flowed over on some window managers.
+						                (2.2.0(126)  
 28.03.2018
     -BugFix:CQ-monitor&Follow: Text graying timers unstabile. Tried to get them in sync better
     -BugFix:CQ-monitor/Follow: choosed both destination and origin lines if call match. 

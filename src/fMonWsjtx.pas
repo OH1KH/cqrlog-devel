@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, maskedit, ColorBox, Menus, ExtCtrls, RichMemo, strutils, process;
+  StdCtrls, maskedit, ColorBox, Menus, ExtCtrls, RichMemo, strutils, process, Types;
 
 type
 
@@ -58,7 +58,7 @@ type
     procedure edtFollowCallExit(Sender: TObject);
     procedure edtFollowCallKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-   procedure edtFollowDblClick(Sender: TObject);
+    procedure edtFollowDblClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
@@ -299,6 +299,8 @@ begin
       tbFollow.Checked:= True;
      end;
 end;
+
+
 
 
 
@@ -700,13 +702,13 @@ procedure TfrmMonWsjtx.AddOtherMessage(Message,Reply:string);
 var
     List1: TStringList;
 Begin
-   CqPeriodTimerStart;
    if (frmMonWsjtx.tbFollow.Checked
     and (pos(edtFollowCall.Text,Message) > 0 ) ) then  //first check
         AddFollowedMessage(Message,Reply)
    else
      if chkMap.Checked then
      Begin
+      CqPeriodTimerStart;
       if dmData.DebugLevel>=1 then Writeln('Other line:',Message);
       msgCall:='';
       msgLoc :='';
