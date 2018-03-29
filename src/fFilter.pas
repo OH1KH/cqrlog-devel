@@ -82,7 +82,6 @@ type
     gbQsl: TGroupBox;
     gbContinent: TGroupBox;
     Label1: TLabel;
-    lblCard: TLabel;
     lblProf: TLabel;
     lblMember: TLabel;
     lblGrpBy: TLabel;

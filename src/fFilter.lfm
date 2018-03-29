@@ -571,7 +571,6 @@ object frmFilter: TfrmFilter
     end
     object lblRcvdC: TLabel
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = lblCard
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = cmbQSL_R
       AnchorSideBottom.Side = asrBottom
@@ -587,7 +586,6 @@ object frmFilter: TfrmFilter
     end
     object lblLoTW: TLabel
       AnchorSideLeft.Side = asrCenter
-      AnchorSideTop.Control = lblCard
       AnchorSideRight.Control = cmbLoTW_qsls
       AnchorSideRight.Side = asrBottom
       Left = 360
@@ -721,7 +719,6 @@ object frmFilter: TfrmFilter
       TabOrder = 6
     end
     object lblEqsl: TLabel
-      AnchorSideTop.Control = lblCard
       AnchorSideRight.Control = cmbeQSL_qsls
       AnchorSideRight.Side = asrBottom
       Left = 247
@@ -736,7 +733,6 @@ object frmFilter: TfrmFilter
     object lblSentC: TLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cmbQSL_S
-      AnchorSideRight.Control = lblCard
       AnchorSideRight.Side = asrBottom
       Left = 156
       Height = 15
@@ -748,19 +744,6 @@ object frmFilter: TfrmFilter
       ParentBidiMode = False
       ParentColor = False
       ParentFont = False
-    end
-    object lblCard: TLabel
-      AnchorSideTop.Control = lblVia
-      AnchorSideRight.Control = cmbQSL_S
-      AnchorSideRight.Side = asrBottom
-      Left = 134
-      Height = 15
-      Top = 45
-      Width = 30
-      Anchors = [akTop, akRight]
-      BorderSpacing.Right = 70
-      Caption = 'Card'
-      ParentColor = False
     end
     object lblSentE: TLabel
       AnchorSideLeft.Side = asrBottom
