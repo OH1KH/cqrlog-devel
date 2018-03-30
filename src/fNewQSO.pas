@@ -619,8 +619,10 @@ type
 
     FldigiXmlRpc          : Boolean;
 
-    ClearAfterFreqChange : Boolean;
-    ChangeFreqLimit : Double;
+    ClearAfterFreqChange  : Boolean;
+    ChangeFreqLimit       : Double;
+    RepHead                :String;                //the heading for possible reply commands created
+                                                  //includes message type #0 (change it)
 
     property EditQSO : Boolean read fEditQSO write fEditQSO default False;
     property ViewQSO : Boolean read fViewQSO write fViewQSO default False;
@@ -2005,6 +2007,7 @@ var
   TimeLine : String;
   Repbuf   : String;
   index    : Integer;
+  tmpindex : Integer;
   ParNum   : Integer;
   MsgType  : Integer;
   Sec      : Integer;
@@ -2049,7 +2052,7 @@ var
   var
     P : uint32;
   begin
-    P := UiFBuf(index);                 //string length;
+    P := UiFBuf(index);                 //string length;   4bytes
     if P = $FFFFFFFF then               //exeption: empty Qstring len: $FFFF FFFF content: empty
     begin
       Result := ''
@@ -2104,6 +2107,7 @@ var
     Result := ord(Buf[index]) = 1;
     inc(index)
   end;
+//-------------------------------------------------------------------
 
 begin
   if WsjtxDecodeRunning then
@@ -2127,6 +2131,7 @@ begin
 
     index := pos(#$ad+#$bc+#$cb+#$da,Buf); //QTheader: magic number 0xadbccbda
     RepStart := index; //for possibly reply creation
+
     if dmData.DebugLevel>=1 then Write('Header position:',index);
     index:=index+4;  // skip QT header
 
@@ -2136,6 +2141,13 @@ begin
     MsgType :=  UiFBuf(index);
     if dmData.DebugLevel>=1 then Write(' Message type:', MsgType,' ');
     lblCall.Caption       := 'Wsjt-x remote #'+intToStr(MsgType);   //changed to see last received msgtype
+
+    tmpindex := index;
+    ParStr := StFBuf(index);       //read ID to get index point to RepHead end
+    RepHead := copy(Buf,1,index-1);
+    RepHead[12] := #0;             //Ready made reply header with #0 command (lobyte of uint32)
+    index := tmpindex;             //return pointer back
+
     case MsgType of
 
 

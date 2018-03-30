@@ -79,7 +79,8 @@ Top line will show band and mode that is in use, Checking <b>"no history”</b> 
 <p ><img src="img/wsjt20.png" name="20" width="353" height="83">
 </img>
 <img src="img/wsjt30.png" name="30" width="353" height="83">
-</img></p>
+</img>
+</p>
 If you do not want any information texts, just alerts, you can check “<b>noTxt”</b> to prevent richmemo text updates and minimize window or drop it completely down with (<b>_</b>) while alerts and follow are still working.</p>
 <p ><img src="img/wsjt21.png" name="21" width="363" height="282">
 </img></p>
@@ -190,7 +191,8 @@ cd ~/.config/cqrlog/ctyfiles
 </pre></p>
 <p><img src="img/wsjt29.png" name="29" width="144" height="383">
 </img>
-</br>CQ-monitor can be turned to "Band map"- type Wsjt-x map by checking "<strong>Map</strong>". It hides all other controls.
+</p>
+<p>CQ-monitor can be turned to "Band map"- type Wsjt-x map by checking "<strong>Map</strong>". It hides all other controls.
 How ever if alerts were <strong>on</strong> they stay <strong>on</strong>. Exception is that <strong>Text alert</strong> does not find continents and comments like "New country","QSL needed" etc.
 </br>Map-mode shows all traffic on band. Colors of callsigns and locators are same than in CQ-monitor. If call is not in parentheses it is a CQ-call.
  Calls in parentheses have qso if there is no locator shown. If locator is shown they are answering to someones CQ.
@@ -200,6 +202,15 @@ How ever if alerts were <strong>on</strong> they stay <strong>on</strong>. Excep
 </br></br>You can initiate qso same way as in CQ-monitor by double click on line  <strong>without </strong> parentheses.
  Double click on line  <strong>with </strong> parentheses loads call to Std messages of Wsjt-x and sets frequency, but  <strong>does not initiate TX</strong>.
 </br>This is a new property of Wsjt-x 1.9.0-rc3 and up. With previous versions this does not make any action.</p>
+<p><img src="img/wsjt31.png" name="31" width="453" height="383">
+</img><img src="img/wsjt32.png" name="32" width="253" height="283">
+</img></p>
+<p>Button <strong>Name73</strong> becomes visible when at least one decoded UDP message from WSJT-X is received and <strong>Name</srtong> field of NewQSO</strong> has content.
+</br>Pressing this button will send a FreeTextMessage to WSJT-X containing "TU HISNAME 73" Where HISNAME is text from NewQSO/Name field. This will not start TX.
+</br>FreeTextMessage length is limited to 13 characters. "Tu " and " 73" will take 6 of them. So name can be only 7 char long. If it is longer it is not sent to WSJT-X and button disappears after pressing to indicate that name is too long.
+</br>Button disappears also on next decode when NewQSO/Name becomes empty. If you do not like to use generated FreeTextMessage you can double click WSJT-X's button <strong>TX5</strong> to get back  standard "CALL MYCALL 73" message.
+</br>This button is made just for testing reply-UDP messages as new WSJT-X will use more of these kind of messages, like callsing coloring in Band activity window by external request.
+</p>
 <h3><a name="w2"></a>Colors &amp; fonts</h3>
 <p>
 CQ-monitor has a new design. Window is adjustable and font + size can be changed.<br/>

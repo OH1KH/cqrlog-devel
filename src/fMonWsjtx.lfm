@@ -167,10 +167,10 @@ object frmMonWsjtx: TfrmMonWsjtx
       AnchorSideRight.Control = pnlAlert
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 537
-      Height = 32
-      Top = 6
-      Width = 45
+      Left = 532
+      Height = 31
+      Top = 7
+      Width = 50
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 3
       Caption = 'Loc'
@@ -214,6 +214,20 @@ object frmMonWsjtx: TfrmMonWsjtx
       ParentFont = False
       TabOrder = 5
     end
+    object btFTxtN: TButton
+      AnchorSideTop.Control = tbLocAlert
+      AnchorSideRight.Control = tbLocAlert
+      Left = 459
+      Height = 31
+      Top = 7
+      Width = 70
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 3
+      Caption = 'Name73'
+      OnClick = btFTxtNClick
+      TabOrder = 6
+      Visible = False
+    end
   end
   object pnlFollow: TPanel
     AnchorSideLeft.Control = Owner
@@ -249,6 +263,7 @@ object frmMonWsjtx: TfrmMonWsjtx
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 3
       BorderSpacing.Right = 3
+      OnDblClick = edtFollowDblClick
       ReadOnly = True
       TabOrder = 1
     end
