@@ -12,7 +12,6 @@ object frmMonWsjtx: TfrmMonWsjtx
   OnShow = FormShow
   LCLVersion = '1.8.2.0'
   object lblBand: TLabel
-    AnchorSideLeft.Control = WsjtxMemo
     AnchorSideTop.Control = Owner
     Left = 32
     Height = 15
@@ -27,7 +26,6 @@ object frmMonWsjtx: TfrmMonWsjtx
   object lblMode: TLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = WsjtxMemo
     AnchorSideRight.Side = asrBottom
     Left = 523
     Height = 15
@@ -40,34 +38,10 @@ object frmMonWsjtx: TfrmMonWsjtx
     Caption = 'Mode'
     ParentColor = False
   end
-  object WsjtxMemo: TRichMemo
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    Left = 2
-    Height = 307
-    Top = 30
-    Width = 586
-    Align = alClient
-    BorderSpacing.Left = 2
-    BorderSpacing.Top = 30
-    BorderSpacing.Right = 2
-    BorderSpacing.Bottom = 51
-    Font.Height = -13
-    Font.Name = 'Monospace'
-    HideSelection = False
-    OnDblClick = WsjtxMemoDblClick
-    ParentFont = False
-    PopupMenu = popColors
-    ReadOnly = True
-    ScrollBars = ssAutoBoth
-    TabOrder = 0
-    WordWrap = False
-    ZoomFactor = 1
-  end
   object chkHistory: TCheckBox
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = noTxt
+    AnchorSideRight.Control = chknoTxt
     Left = 211
     Height = 23
     Top = 6
@@ -77,9 +51,9 @@ object frmMonWsjtx: TfrmMonWsjtx
     BorderSpacing.Right = 1
     Caption = 'nHst'
     OnChange = chkHistoryChange
-    TabOrder = 1
+    TabOrder = 0
   end
-  object noTxt: TCheckBox
+  object chknoTxt: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
@@ -90,8 +64,8 @@ object frmMonWsjtx: TfrmMonWsjtx
     Width = 55
     BorderSpacing.Top = 6
     Caption = 'nTxt'
-    OnChange = noTxtChange
-    TabOrder = 2
+    OnChange = chknoTxtChange
+    TabOrder = 1
   end
   object pnlAlert: TPanel
     AnchorSideLeft.Control = Owner
@@ -109,7 +83,7 @@ object frmMonWsjtx: TfrmMonWsjtx
     BorderSpacing.Bottom = 2
     ClientHeight = 45
     ClientWidth = 586
-    TabOrder = 3
+    TabOrder = 2
     object tbmyAll: TToggleBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = pnlAlert
@@ -246,7 +220,7 @@ object frmMonWsjtx: TfrmMonWsjtx
     BorderSpacing.Bottom = 2
     ClientHeight = 45
     ClientWidth = 586
-    TabOrder = 4
+    TabOrder = 3
     Visible = False
     object edtFollow: TEdit
       AnchorSideLeft.Control = edtFollowCall
@@ -313,10 +287,10 @@ object frmMonWsjtx: TfrmMonWsjtx
     BorderSpacing.Right = 2
     Caption = 'Flw'
     OnChange = cbflwChange
-    TabOrder = 5
+    TabOrder = 4
   end
   object chkMap: TCheckBox
-    AnchorSideLeft.Control = noTxt
+    AnchorSideLeft.Control = chknoTxt
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
     Left = 324
@@ -327,7 +301,47 @@ object frmMonWsjtx: TfrmMonWsjtx
     BorderSpacing.Top = 6
     Caption = 'Map'
     OnChange = chkMapChange
+    TabOrder = 5
+  end
+  object WsjtxMemo: TRichMemo
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 2
+    Height = 307
+    Top = 30
+    Width = 586
+    Align = alClient
+    BorderSpacing.Left = 2
+    BorderSpacing.Top = 30
+    BorderSpacing.Right = 2
+    BorderSpacing.Bottom = 51
+    Font.Height = -13
+    Font.Name = 'Monospace'
+    HideSelection = False
+    OnDblClick = WsjtxMemoDblClick
+    ParentFont = False
+    PopupMenu = popColors
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
     TabOrder = 6
+    WordWrap = False
+    ZoomFactor = 1
+  end
+  object lblInfo: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    AnchorSideTop.Side = asrCenter
+    Left = 56
+    Height = 15
+    Top = 187
+    Width = 479
+    Caption = 'You may minimize this window now. Printing back to Wsjt-x Band Activity'
+    ParentColor = False
+    Visible = False
+    WordWrap = True
   end
   object popColors: TPopupMenu
     left = 104

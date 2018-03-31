@@ -19,10 +19,11 @@ type
     EditAlert: TEdit;
     edtFollow: TEdit;
     edtFollowCall: TEdit;
+    lblInfo: TLabel;
     pnlFollow: TPanel;
     pnlAlert: TPanel;
     tbAlert: TToggleBox;
-    noTxt: TCheckBox;
+    chknoTxt: TCheckBox;
     chkHistory: TCheckBox;
     cmCqDx: TMenuItem;
     cmFont: TMenuItem;
@@ -65,7 +66,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure noTxtChange(Sender: TObject);
+    procedure chknoTxtChange(Sender: TObject);
     procedure tbAlertChange(Sender: TObject);
     procedure tbFollowChange(Sender: TObject);
     procedure tbLocAlertChange(Sender: TObject);
@@ -106,7 +107,7 @@ type
 const
   MaxLines: integer = 41;        //Max monitor lines text will show MaxLines-1 lines
   CountryLen = 15;               //length of printed country name in monitor
-  CallLen = 10;               //max len of callsign
+  CallFieldLen = 10;               //max len of callsign
   Sdelim = ',';              //separator of several text alerts
 
 type
@@ -124,7 +125,7 @@ var
   timeToAlert: string;                  //only once per event per minute
   MonitorLine: string;                  // complete line as printed to monitor
 
-  extCqCall: Tcolor = $000055FF;    // extended cq (cq dx, cq na etc.) color
+  extCqCall: Tcolor;    // extended cq (cq dx, cq na etc.) color
   wkdhere: Tcolor;
   wkdband: Tcolor;
   wkdany: Tcolor;
@@ -183,7 +184,7 @@ begin
     if ((Ord(s[i]) >= 32) and (Ord(s[i]) <= 122)) then   //from space to z accepted
       MonitorLine := MonitorLine + s[i];
   end;
-  if not frmMonWsjtx.noTxt.Checked then
+  if not chknoTxt.Checked then
     with WsjtxMemo do
     begin
       if s <> '' then
@@ -453,6 +454,8 @@ procedure TfrmMonWsjtx.chkMapChange(Sender: TObject);
 var
   i: integer;
 begin
+  WsjtxMemo.Visible:= not(chknoTxt.Checked and not chkMap.Checked);
+  lblInfo.Visible := not WsjtxMemo.Visible;
   if not LockMap then    //do not run autaomaticly on init or leave form
   begin
     cqrini.WriteBool('MonWsjtx', 'MapMode', chkMap.Checked);
@@ -470,9 +473,9 @@ begin
       pnlFollow.Visible := False;
       pnlAlert.Visible := False;
       cbflw.Visible := False;
-      noTxt.Visible := False;
-      noTxt.Checked := False;
-      //map mode allows text, no mind without printing. Printing stays on return to monitor mode.
+      chknoTxt.Visible := False;
+      chknoTxt.Checked := False;
+      //map mode allows text printing. Printing stays on when return to monitor mode.
       chkHistory.Visible := False;
     end
     else
@@ -486,7 +489,7 @@ begin
       frmMonWsjtx.Caption := 'Wsjt-x CQ-monitor';
       pnlAlert.Visible := True;
       cbflw.Visible := True;
-      noTxt.Visible := True;
+      chknoTxt.Visible := True;
       chkHistory.Visible := True;
     end;
     CleanWsjtxMemo;
@@ -531,9 +534,11 @@ begin
   end;
 end;
 
-procedure TfrmMonWsjtx.noTxtChange(Sender: TObject);
+procedure TfrmMonWsjtx.chknoTxtChange(Sender: TObject);
 begin
-  cqrini.WriteBool('MonWsjtx', 'NoTxt', noTxt.Checked);
+  cqrini.WriteBool('MonWsjtx', 'NoTxt', chknoTxt.Checked);
+  WsjtxMemo.Visible:= not(chknoTxt.Checked and not chkMap.Checked);
+  lblInfo.Visible := not WsjtxMemo.Visible;
 end;
 
 procedure TfrmMonWsjtx.tbAlertChange(Sender: TObject);
@@ -715,7 +720,7 @@ begin
   dmUtils.LoadWindowPos(frmMonWsjtx);
   dmUtils.LoadFontSettings(frmMonWsjtx);
   chkHistory.Checked := cqrini.ReadBool('MonWsjtx', 'NoHistory', False);
-  noTxt.Checked := cqrini.ReadBool('MonWsjtx', 'NoTxt', False);
+  chknoTxt.Checked := cqrini.ReadBool('MonWsjtx', 'NoTxt', False);
   tbmyAlrt.Checked := cqrini.ReadBool('MonWsjtx', 'MyAlert', False);
   tbmyAll.Checked := cqrini.ReadBool('MonWsjtx', 'MyAll', False);
   tbLocAlert.Checked := cqrini.ReadBool('MonWsjtx', 'LocAlert', False);
@@ -723,11 +728,11 @@ begin
   EditedText := EditAlert.Text;
   tbAlert.Checked := cqrini.ReadBool('MonWsjtx', 'TextAlertSet', False);
   tbTCAlert.Checked := cqrini.ReadBool('MonWsjtx', 'TextAlertCall', False);
-  wkdhere := StringToColor(cqrini.ReadString('MonWsjtx', 'wkdhere', 'clRed'));
-  wkdband := StringToColor(cqrini.ReadString('MonWsjtx', 'wkdband', 'clFuchsia'));
-  wkdany := StringToColor(cqrini.ReadString('MonWsjtx', 'wkdany', 'clMaroon'));
-  wkdnever := StringToColor(cqrini.ReadString('MonWsjtx', 'wkdnever', 'clGreen'));
-  extCqCall := StringToColor(cqrini.ReadString('MonWsjtx', 'extCqCall', '$000055FF'));
+  wkdhere := StringToColor(cqrini.ReadString('MonWsjtx', 'wkdhere', '$000A07E1'));
+  wkdband := StringToColor(cqrini.ReadString('MonWsjtx', 'wkdband', '$00FF00FF'));
+  wkdany := StringToColor(cqrini.ReadString('MonWsjtx', 'wkdany', '$00000080'));
+  wkdnever := StringToColor(cqrini.ReadString('MonWsjtx', 'wkdnever', '$00008000'));
+  extCqCall := StringToColor(cqrini.ReadString('MonWsjtx', 'extCqCall', '$00FF6B00'));
   edtFollow.Font.Name := WsjtxMemo.Font.Name;
   edtFollow.Font.Size := WsjtxMemo.Font.Size;
   cbflw.Checked := cqrini.ReadBool('MonWsjtx', 'FollowShow', False);
@@ -922,22 +927,92 @@ begin
 end;
 
 procedure TfrmMonWsjtx.PrintCall(Pcall: string);
+var Sbuf:String;
+       i:integer;
+Mycolor :Tcolor;
+
 begin
-  case frmWorkedGrids.WkdCall(msgCall, CurBand, CurMode) of
-    0: AddColorStr(PadRight(UpperCase(msgCall), CallLen) + ' ', wkdnever);
-    1: AddColorStr(PadRight(LowerCase(msgCall), CallLen) + ' ', wkdhere);
-    2: AddColorStr(PadRight(UpperCase(msgCall), CallLen) + ' ', wkdband);
-    3: AddColorStr(PadRight(UpperCase(msgCall), CallLen) + ' ', wkdany);
+  Sbuf := PadRight(UpperCase(Pcall), CallFieldLen);
+  case frmWorkedGrids.WkdCall(Pcall, CurBand, CurMode) of
+    0: Begin
+        Mycolor :=wkdnever;
+       end;
+    1: Begin
+        Sbuf := LowerCase(Sbuf);
+        Mycolor :=wkdhere;
+       end;
+    2: Begin
+        Mycolor :=wkdband;
+       end;
+    3: Begin
+         Mycolor :=wkdany;
+       end;
     else
-      AddColorStr(PadRight(LowerCase(msgCall), CallLen) + ' ', clDefault);
+      Begin
+        Mycolor :=clDefault;
+      end;
       //should not happen
   end;
 
+ if chknoTxt.Checked then    //returns color to wsjtx Band activity window
+  Begin
+   SBuf := frmNewQSO.RepHead
+          +#0+#0+#0+chr(length(Pcall))+Pcall
+          //background
+          +#1           //spec
+          +#255+#0      //alpha
+          +#255+#0        //r
+          +#255+#0        //g
+          +#255+#0        //b
+          +#0+#0        //pad
+
+          //foreground
+          +#1           //spec
+          +#255+#0      //alpha
+          +chr(Red(Mycolor))+#0      //r
+          +chr(Green(Mycolor))+#0    //g
+          +chr(Blue(Mycolor))+#0      //b
+          +#0+#0        //pad
+
+          +#1;          //highl-last
+
+    SBuf[12] := #13;
+    frmNewQSO.Wsjtxsock.SendString(Sbuf);
+  end
+ else   AddColorStr(Sbuf + ' ', Mycolor);
+
+  {
+   if dmData.DebugLevel >= 1 then
+    begin
+      Write('color buffer contains:');
+      for i := 1 to length(SBuf) do
+       Begin
+        Write('x', HexStr(Ord(SBuf[i]), 2));
+        if ((SBuf[i] > #32) and (Sbuf[i]< #127)) then
+           write('/',SBuf[i]) else write('/_');
+       end;
+      writeln();
+    end;
+  }
+    {
+    QColor
+    Color spec (qint8)      1 (rgb)    * Highlight Callsign In   13                     quint32
+    Alpha value (quint16)   255 0(opaq) *                         Id (unique key)        utf8
+    Red value (quint16)                *                         Callsign               utf8
+    Green value (quint16)              *                         Background Color       QColor
+    Blue value (quint16)               *                         Foreground Color       QColor
+    Pad value (quint16)       0        *                         Highlight last         bool
+    }
 end;
 
 procedure TfrmMonWsjtx.PrintLoc(PLoc, tTa, mT: string);
+var Sbuf:String;
+       i:integer;
+Mycolor1,
+Mycolor2:Tcolor;
+
 begin
-  case frmWorkedGrids.WkdGrid(msgLoc, CurBand, CurMode) of
+  case frmWorkedGrids.WkdGrid(PLoc, CurBand, CurMode) of
     //returns 0=not wkd
     //        1=full grid this band and mode
     //        2=full grid this band but NOT this mode
@@ -945,34 +1020,57 @@ begin
     //        4=main grid this band and mode
     //        5=main grid this band but NOT this mode
     //        6=main grid any other band/mode
-    0:
-    begin
-      AddColorStr(UpperCase(msgLoc), wkdnever); //not wkd
-      if tbLocAlert.Checked and (tTa <> mT) then
-        myAlert := 'loc';    //locator alert
-    end;
-    1: AddColorStr(lowerCase(msgLoc), wkdhere); //grid wkd
-    2: AddColorStr(UpperCase(msgLoc), wkdband); //grid wkd band
-    3: AddColorStr(UpperCase(msgLoc), wkdany); //grid wkd any
-    4:
-    begin
-      AddColorStr(lowerCase(copy(msgLoc, 1, 2)), wkdhere); //maingrid wkd
-      AddColorStr(copy(msgLoc, 3, 2), wkdnever);
-    end;
-    5:
-    begin
-      AddColorStr(UpperCase(copy(msgLoc, 1, 2)), wkdband); //maingrid wkd band
-      AddColorStr(copy(msgLoc, 3, 2), wkdnever);
-    end;
-    6:
-    begin
-      AddColorStr(UpperCase(copy(msgLoc, 1, 2)), wkdany); //maingrid wkd any
-      AddColorStr(copy(msgLoc, 3, 2), wkdnever);
-    end;
+    0:Begin
+        AddColorStr(UpperCase(PLoc), wkdnever); //not wkd
+        Mycolor1 := wkdhere;
+        Mycolor2 := Mycolor1;
+        if tbLocAlert.Checked and (tTa <> mT) then
+          myAlert := 'loc';    //locator alert
+      end;
+    1:Begin
+        AddColorStr(lowerCase(PLoc), wkdhere); //grid wkd
+        Mycolor1 := wkdhere;
+        Mycolor2 := Mycolor1;
+      end;
+    2:Begin
+        AddColorStr(UpperCase(PLoc), wkdband); //grid wkd band
+        Mycolor1 := wkdband;
+        Mycolor2 := Mycolor1;
+      end;
+    3:Begin
+        AddColorStr(UpperCase(PLoc), wkdany); //grid wkd any
+        Mycolor1 := wkdany;
+        Mycolor2 := Mycolor1;
+      end;
+    4:Begin
+        AddColorStr(lowerCase(copy(PLoc, 1, 2)), wkdhere); //maingrid wkd
+        AddColorStr(copy(PLoc, 3, 2), wkdnever);
+        Mycolor1 := wkdhere;
+        Mycolor2 := wkdnever;
+       end;
+    5:Begin
+        AddColorStr(UpperCase(copy(PLoc, 1, 2)), wkdband); //maingrid wkd band
+        AddColorStr(copy(PLoc, 3, 2), wkdnever);
+        Mycolor1 := wkdband;
+        Mycolor2 := wkdnever;
+      end;
+    6:Begin
+        AddColorStr(UpperCase(copy(PLoc, 1, 2)), wkdany); //maingrid wkd any
+        AddColorStr(copy(PLoc, 3, 2), wkdnever);
+        Mycolor1 := wkdany;
+        Mycolor2 := wkdnever;
+      end;
     else
-      AddColorStr(lowerCase(msgLoc), clDefault); //should not happen
-  end;
+      Begin
+        AddColorStr(lowerCase(PLoc), clDefault); //should not happen
+        Mycolor1 := clDefault;
+        Mycolor2 := Mycolor1;
+      end;
+  end; //case
+      //this needs return to wsjtx routine when locator highlighting is implemented in wsjtx
+
 end;
+
 
 function TfrmMonWsjtx.OkCall(Call: string): boolean;
 var

@@ -3,6 +3,11 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 -------------------------------------------------------------------------------------------------- 
+31.03.2018
+    -CQ-monitor: New feature. If "nTxt" selected CQ-monitor sends callsign colring back to Wsjt-x
+     see updated help files: "Digital modes: wsjt-x" (wsjtx.html)
+     Needs Wsjt-x 1.9.0-rc3 r8592 or newer
+						                (2.2.0(128)  
 29.03.2018
     -BugFix:Follow: Double click on follow-line did not load Std messages of WSJT-X Fixed.
     -CQ-monitor: New button "Name73" loads FreeTextMessage with name and 73.
