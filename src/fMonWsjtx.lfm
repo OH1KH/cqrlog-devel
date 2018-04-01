@@ -330,18 +330,18 @@ object frmMonWsjtx: TfrmMonWsjtx
     ZoomFactor = 1
   end
   object lblInfo: TLabel
-    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Control = WsjtxMemo
     AnchorSideLeft.Side = asrCenter
-    AnchorSideTop.Control = Owner
-    AnchorSideTop.Side = asrCenter
+    AnchorSideTop.Control = chknoTxt
+    AnchorSideTop.Side = asrBottom
     Left = 56
     Height = 15
-    Top = 187
+    Top = 34
     Width = 479
-    Caption = 'You may minimize this window now. Printing back to Wsjt-x Band Activity'
+    BorderSpacing.Top = 5
+    Caption = 'Yoy may now minimize this window. Printing back to Wsjt-x Band Activity'
     ParentColor = False
     Visible = False
-    WordWrap = True
   end
   object popColors: TPopupMenu
     left = 104

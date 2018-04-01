@@ -100,7 +100,8 @@ type
     procedure AddOtherMessage(Message, Reply: string);
     procedure NewBandMode(Band, Mode: string);
     procedure SendFreeText(MyText: string);
-
+    procedure ColorBack(Myitem:string;Mycolor:Tcolor;bkg:Boolean=false);
+    procedure BufDebug(MyHeader,MyBuf:string);
     { public declarations }
   end;
 
@@ -135,6 +136,7 @@ var
   Ssearch, Sfull: string;
   Spos: integer;
   RepFlw: string [255];
+  RepBuf: string;  //for sending UDP to wsjt-x
   //reply in case of follow line double click
 
   msgCall: string;
@@ -345,28 +347,17 @@ end;
 
 procedure TfrmMonWsjtx.SendFreeText(MyText: string);
 var
-  Sbuf: string;
   i: byte;
 begin
   if (length(MyText) > 13) then
     MyText := copy(MyText, 1, 13); //free text max len 13
   if frmNewQSO.RepHead <> '' then
   begin
-    Sbuf := frmNewQSO.RepHead;
-    Sbuf[12] := #9; //Free Text command
-    Sbuf := Sbuf + #0 + #0 +#0 + chr(length(MyText)) + MyText + #0;
-   { if dmData.DebugLevel >= 1 then
-    begin
-      Write('Free text buffer contains:');
-      for i := 1 to length(SBuf) do
-       Begin
-        Write('x', HexStr(Ord(SBuf[i]), 2));
-        if ((SBuf[i] > #32) and (Sbuf[i]< #127)) then
-           write('/',SBuf[i]) else write('/_');
-       end;
-      writeln();
-    end;}
-    frmNewQSO.Wsjtxsock.SendString(Sbuf);
+    RepBuf := frmNewQSO.RepHead;
+    RepBuf[12] := #9; //Free Text command
+    RepBuf := RepBuf + #0 + #0 +#0 + chr(length(MyText)) + MyText + #0;
+    //if dmData.DebugLevel >= 1 then BufDebug('Free text buffer contains:',RepBuf
+    frmNewQSO.Wsjtxsock.SendString(RepBuf);
   end;
 end;
 
@@ -925,20 +916,80 @@ begin
     RepFlw := Reply;
   end;
 end;
+procedure TfrmMonWsjtx.BufDebug(MyHeader,MyBuf:string);
+var i: integer;
+Begin
+   begin
+      Write(MyHeader);
+      for i := 1 to length(MyBuf) do
+       Begin
+        Write('x', HexStr(Ord(MyBuf[i]), 2));
+        if ((MyBuf[i] > #32) and (Mybuf[i]< #127)) then
+           write('/',MyBuf[i]) else write('/_');
+       end;
+      writeln();
+    end;
+end;
+
+procedure TfrmMonWsjtx.ColorBack(Myitem:string;Mycolor:Tcolor;bkg:Boolean=false);
+var r,g,b : char;
+
+Begin     //"print" back to wsjt-x Band activity (color line there)
+    r:=chr(Red(Mycolor));
+    g:=chr(Green(Mycolor));
+    b:=chr(Blue(Mycolor));
+    RepBuf := frmNewQSO.RepHead
+          +#0+#0+#0+chr(length(Myitem))+Myitem;
+   if bkg then
+    Begin
+      //background when 2color loc is needed
+      RepBuf := RepBuf
+      +#1               // format spec
+      +#255+#255        //alpha
+      +#255+#255        //r
+      +#245+#245        //g
+      +#100+#100        //b
+      +#0+#0;           //pad
+    end
+   else
+    Begin
+      //background       white
+      RepBuf := RepBuf
+      +#1             //format spec
+      +#255+#255      //alpha
+      +#255+#255      //r
+      +#255+#255      //g
+      +#255+#255      //b
+      +#0+#0;         //pad
+    end;
+
+      //foreground
+      RepBuf := RepBuf
+      +#1             //format spec
+      +#255+#255      //alpha
+      +r+r
+      +g+g
+      +b+b
+      +#0+#0          //pad
+
+      +#1;           //highlight only last line
+
+    RepBuf[12] := #13;
+    frmNewQSO.Wsjtxsock.SendString(RepBuf);
+end;
 
 procedure TfrmMonWsjtx.PrintCall(Pcall: string);
-var Sbuf:String;
-       i:integer;
+var    i:integer;
 Mycolor :Tcolor;
 
 begin
-  Sbuf := PadRight(UpperCase(Pcall), CallFieldLen);
+  RepBuf := PadRight(UpperCase(Pcall), CallFieldLen);
   case frmWorkedGrids.WkdCall(Pcall, CurBand, CurMode) of
     0: Begin
         Mycolor :=wkdnever;
        end;
     1: Begin
-        Sbuf := LowerCase(Sbuf);
+        RepBuf := LowerCase(RepBuf);
         Mycolor :=wkdhere;
        end;
     2: Begin
@@ -955,45 +1006,10 @@ begin
   end;
 
  if chknoTxt.Checked then    //returns color to wsjtx Band activity window
-  Begin
-   SBuf := frmNewQSO.RepHead
-          +#0+#0+#0+chr(length(Pcall))+Pcall
-          //background
-          +#1           //spec
-          +#255+#0      //alpha
-          +#255+#0        //r
-          +#255+#0        //g
-          +#255+#0        //b
-          +#0+#0        //pad
+        ColorBack(Pcall,Mycolor)             //non paded
+ else   AddColorStr(RepBuf + ' ', Mycolor);    //padded
 
-          //foreground
-          +#1           //spec
-          +#255+#0      //alpha
-          +chr(Red(Mycolor))+#0      //r
-          +chr(Green(Mycolor))+#0    //g
-          +chr(Blue(Mycolor))+#0      //b
-          +#0+#0        //pad
-
-          +#1;          //highl-last
-
-    SBuf[12] := #13;
-    frmNewQSO.Wsjtxsock.SendString(Sbuf);
-  end
- else   AddColorStr(Sbuf + ' ', Mycolor);
-
-  {
-   if dmData.DebugLevel >= 1 then
-    begin
-      Write('color buffer contains:');
-      for i := 1 to length(SBuf) do
-       Begin
-        Write('x', HexStr(Ord(SBuf[i]), 2));
-        if ((SBuf[i] > #32) and (Sbuf[i]< #127)) then
-           write('/',SBuf[i]) else write('/_');
-       end;
-      writeln();
-    end;
-  }
+   //if dmData.DebugLevel >= 1 then BufDebug('color buffer contains:',RepBuf);
     {
     QColor
     Color spec (qint8)      1 (rgb)    * Highlight Callsign In   13                     quint32
@@ -1006,12 +1022,13 @@ begin
 end;
 
 procedure TfrmMonWsjtx.PrintLoc(PLoc, tTa, mT: string);
-var Sbuf:String;
-       i:integer;
-Mycolor1,
-Mycolor2:Tcolor;
+var L1,L2:String;     //locator main
+       p :integer;    //locator sub
+Mycolor  :Tcolor;     //color main. color sub sub is same, or else wkdnever
 
-begin
+Begin
+  L1:= UpperCase(copy(PLoc, 1, 2));
+  L2:= copy(PLoc, 3, 2);
   case frmWorkedGrids.WkdGrid(PLoc, CurBand, CurMode) of
     //returns 0=not wkd
     //        1=full grid this band and mode
@@ -1021,56 +1038,69 @@ begin
     //        5=main grid this band but NOT this mode
     //        6=main grid any other band/mode
     0:Begin
-        AddColorStr(UpperCase(PLoc), wkdnever); //not wkd
-        Mycolor1 := wkdhere;
-        Mycolor2 := Mycolor1;
+        //not wkd
+        p:=1;
+        Mycolor := wkdnever;
         if tbLocAlert.Checked and (tTa <> mT) then
-          myAlert := 'loc';    //locator alert
+        myAlert := 'loc';    //locator alert
       end;
     1:Begin
-        AddColorStr(lowerCase(PLoc), wkdhere); //grid wkd
-        Mycolor1 := wkdhere;
-        Mycolor2 := Mycolor1;
+        //grid wkd
+        p:=1;
+        L1:= lowerCase(L1);
+        Mycolor := wkdhere;
       end;
     2:Begin
-        AddColorStr(UpperCase(PLoc), wkdband); //grid wkd band
-        Mycolor1 := wkdband;
-        Mycolor2 := Mycolor1;
+        //grid wkd band
+        p:=1;
+        Mycolor := wkdband;
       end;
     3:Begin
-        AddColorStr(UpperCase(PLoc), wkdany); //grid wkd any
-        Mycolor1 := wkdany;
-        Mycolor2 := Mycolor1;
+        //grid wkd any
+        p:=1;
+        Mycolor := wkdany;
       end;
     4:Begin
-        AddColorStr(lowerCase(copy(PLoc, 1, 2)), wkdhere); //maingrid wkd
-        AddColorStr(copy(PLoc, 3, 2), wkdnever);
-        Mycolor1 := wkdhere;
-        Mycolor2 := wkdnever;
+        //maingrid wkd
+        p:=2;
+        L1:= lowerCase(L1);
+        Mycolor := wkdhere;
        end;
     5:Begin
-        AddColorStr(UpperCase(copy(PLoc, 1, 2)), wkdband); //maingrid wkd band
-        AddColorStr(copy(PLoc, 3, 2), wkdnever);
-        Mycolor1 := wkdband;
-        Mycolor2 := wkdnever;
+        //maingrid wkd band
+        p:=2;
+        Mycolor := wkdband;
       end;
     6:Begin
-        AddColorStr(UpperCase(copy(PLoc, 1, 2)), wkdany); //maingrid wkd any
-        AddColorStr(copy(PLoc, 3, 2), wkdnever);
-        Mycolor1 := wkdany;
-        Mycolor2 := wkdnever;
+        //maingrid wkd any
+        p:=2;
+        Mycolor := wkdany;
       end;
     else
       Begin
-        AddColorStr(lowerCase(PLoc), clDefault); //should not happen
-        Mycolor1 := clDefault;
-        Mycolor2 := Mycolor1;
+        L1:= lowerCase(L1);//should not happen
+        p:=1;
+        Mycolor := clDefault;
       end;
   end; //case
-      //this needs return to wsjtx routine when locator highlighting is implemented in wsjtx
 
+ if p=1 then  //print one go
+  Begin
+    if  chknoTxt.Checked then
+          ColorBack(L1+L2,Mycolor)
+    else  AddColorStr(L1+L2, Mycolor);
+  end
+    else   //print 2 parts
+     if  chknoTxt.Checked then
+       Begin
+         ColorBack(UpperCase(L1+L2),Mycolor,True);
+       end
+     else
+       Begin
+         AddColorStr(L1, Mycolor);
+         AddColorStr(L2, wkdnever);
+       end;
 end;
-
 
 function TfrmMonWsjtx.OkCall(Call: string): boolean;
 var
@@ -1192,9 +1222,14 @@ var
   //-----------------------------------------------------------------------------------------
   procedure extcqprint;  //this is used 3 times below
   begin
-    AddColorStr(' ' + copy(PadRight(msgRes, CountryLen), 1, CountryLen - 6), extCqCall);
-    AddColorStr(' CQ:', clBlack);
-    AddColorStr(CqDir + ' ', extCqCall);
+    if chknoTxt.Checked then
+      ColorBack('CQ '+CqDir, extCqCall)
+    else
+    Begin
+      AddColorStr(' ' + copy(PadRight(msgRes, CountryLen), 1, CountryLen - 6), extCqCall);
+      AddColorStr(' CQ:', clBlack);
+      AddColorStr(CqDir + ' ', extCqCall);
+    end;
   end;
 
   //-----------------------------------------------------------------------------------------

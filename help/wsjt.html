@@ -82,14 +82,19 @@ Top line will show band and mode that is in use, Checking <b>"no history”</b> 
 </img></p><p>
 If you do not want any information texts, just alerts, you can check <b>nTxt</b> to prevent richmemo text updates and minimize window size horizontal or drop it completely down with (<b>_</b>) while alerts and follow are still working.
 </br>
-If you have Wsjt-x devel version 1.9.0-rc3 r8592 (or higher) callsign coloring is sent back to Wsjt-x with same choosed colurs as CQ-monitor uses. With older versions of wsjt-x this causes unkonwn command error and then <b>nTxt</b> should not be checked until you get newer version of Wsjt-x.
+If you have Wsjt-x devel version 1.9.0-rc3 r8592 (or higher) <strong>color</strong>ing is sent <strong>back</strong> to Wsjt-x with same choosed colours as CQ-monitor uses. 
+How ever there are some limitations compared to CQ-monitor:
+</br><li><strong>color back</strong> can not change lower case letters of Band Activity line in case call or locator is worked. Just font color is changed</li>
+<li><strong>color back</strong> can not print locator with 2 colors in case main grid is worked, but subgrid(numerical part) is not. In that case locator will have maingrid color and yellow background.</li>
+<li><strong>color back</strong> will paint both "CQ" and cq-direction with "CQ ext" color if CQ is not directed to you.</li>
+</br>
+With older versions of wsjt-x this causes unkonwn command error and then <b>nTxt</b> should not be checked until you get newer version of Wsjt-x.
 </br></p><p>
-<img src="img/wsjt34.png" name="34" width="353" height="353">
+<img src="img/wsjt34.png" name="34" width="353" height="282">
 </img>
-<img src="img/wsjt33.png" name="33" width="453" height="200">
+<img src="img/wsjt33.png" name="33" width="353" height="282">
 </img></p><p>
-If you are able to use "color back" feature you may want to change some Wsjt-x color settings and also check "CQ only" checbox at Main window.
-</br>Coloring back locators will be added later if Wsjt-x develop team decides to make that kind of command.</p>
+If you are able to use <strong>color back</strong> feature you may want to change some Wsjt-x color settings and maybe check "CQ only" checbox at Main window.</p>
 <p><img src="img/wsjt21.png" name="21" width="363" height="282">
 </img></p>
 Checking <b>“flw”</b> new part of monitor opens. This will make easier to follow a DX who does not stay on same frequency, but jumps around answering to callers.

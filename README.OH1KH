@@ -3,8 +3,13 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 -------------------------------------------------------------------------------------------------- 
+01.04.2018
+    -CQ-monitor: New feature. Now also extended CQ and locator coloring is sent back to Wsjt-x
+     see updated help files: "Digital modes: wsjt-x" (wsjtx.html)
+    -Rewrite of locator color setting routine.
+						                (2.2.0(129)  
 31.03.2018
-    -CQ-monitor: New feature. If "nTxt" selected CQ-monitor sends callsign colring back to Wsjt-x
+    -CQ-monitor: New feature. If "nTxt" selected CQ-monitor sends callsign coloring back to Wsjt-x
      see updated help files: "Digital modes: wsjt-x" (wsjtx.html)
      Needs Wsjt-x 1.9.0-rc3 r8592 or newer
 						                (2.2.0(128)  
