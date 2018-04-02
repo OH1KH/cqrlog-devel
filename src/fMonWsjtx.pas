@@ -14,6 +14,7 @@ type
 
   TfrmMonWsjtx = class(TForm)
     btFTxtN: TButton;
+    chkCbCQ: TCheckBox;
     cbflw: TCheckBox;
     chkMap: TCheckBox;
     EditAlert: TEdit;
@@ -46,6 +47,7 @@ type
     tmrCqPeriod: TTimer;
     WsjtxMemo: TRichMemo;
     procedure btFTxtNClick(Sender: TObject);
+    procedure chkCbCQChange(Sender: TObject);
     procedure cbflwChange(Sender: TObject);
     procedure chkHistoryChange(Sender: TObject);
     procedure chkMapChange(Sender: TObject);
@@ -82,8 +84,8 @@ type
     procedure RunVA(Afile: string);
     procedure WsjtxMemoScroll;
     procedure decodetest(i: boolean);
-    procedure PrintCall(Pcall: string);  // prints colored call
-    procedure PrintLoc(PLoc, tTa, mT: string);  // prints colored loc
+    procedure PrintCall(Pcall: string;PCB:Boolean=false);  // prints colored call
+    procedure PrintLoc(PLoc, tTa, mT: string;PCB:Boolean=false);  // prints colored loc
     function OkCall(Call: string): boolean;
     procedure SendReply(reply: string);
     procedure TryCallAlert(S: string);
@@ -259,17 +261,7 @@ begin
     if dmData.DebugLevel >= 1 then
       Writeln('Changed message type from 2 to 4. Sending...');
     frmNewQSO.Wsjtxsock.SendString(reply);
-    {if dmData.DebugLevel >= 1 then
-    begin
-      Write('Send data buffer contains:');
-      for i := 1 to length(reply) do
-       Begin
-        Write('x', HexStr(Ord(reply[i]), 2));
-        if ((reply[i] > #32) and (reply[i]< #127)) then
-           write('/',reply[i]) else write('/_');
-       end;
-      writeln();
-    end;}
+    //if dmData.DebugLevel >= 1 then BufDebug('Send data buffer contains:',reply);
   end;
 end;
 
@@ -447,6 +439,9 @@ var
 begin
   WsjtxMemo.Visible:= not(chknoTxt.Checked and not chkMap.Checked);
   lblInfo.Visible := not WsjtxMemo.Visible;
+  chkCbCQ.Visible := chkMap.Checked;
+  if not chkMap.Checked then chkCbCQ.Checked:=false;
+
   if not LockMap then    //do not run autaomaticly on init or leave form
   begin
     cqrini.WriteBool('MonWsjtx', 'MapMode', chkMap.Checked);
@@ -466,6 +461,7 @@ begin
       cbflw.Visible := False;
       chknoTxt.Visible := False;
       chknoTxt.Checked := False;
+      chkCbCQ.Checked := cqrini.ReadBool('MonWsjtx', 'ColorBacCQkMap', False);
       //map mode allows text printing. Printing stays on when return to monitor mode.
       chkHistory.Visible := False;
     end
@@ -523,6 +519,11 @@ begin
     else
     btFTxtN.Visible:=false;
   end;
+end;
+
+procedure TfrmMonWsjtx.chkCbCQChange(Sender: TObject);
+begin
+  cqrini.WriteBool('MonWsjtx', 'ColorBacCQkMap', chkCbCQ.Checked);
 end;
 
 procedure TfrmMonWsjtx.chknoTxtChange(Sender: TObject);
@@ -690,6 +691,7 @@ begin
   EditedText := '';
   LastWsjtLineTime := '';
 end;
+
 
 procedure TfrmMonWsjtx.FormHide(Sender: TObject);
 begin
@@ -923,9 +925,14 @@ Begin
       Write(MyHeader);
       for i := 1 to length(MyBuf) do
        Begin
-        Write('x', HexStr(Ord(MyBuf[i]), 2));
+        Write('|', HexStr(Ord(MyBuf[i]), 2));
+       end;
+      writeln();
+      Write(MyHeader);
+       for i := 1 to length(MyBuf) do
+       Begin
         if ((MyBuf[i] > #32) and (Mybuf[i]< #127)) then
-           write('/',MyBuf[i]) else write('/_');
+           write('| ',MyBuf[i]) else write('| _');
        end;
       writeln();
     end;
@@ -978,7 +985,7 @@ Begin     //"print" back to wsjt-x Band activity (color line there)
     frmNewQSO.Wsjtxsock.SendString(RepBuf);
 end;
 
-procedure TfrmMonWsjtx.PrintCall(Pcall: string);
+procedure TfrmMonWsjtx.PrintCall(Pcall: string;PCB:Boolean=false);
 var    i:integer;
 Mycolor :Tcolor;
 
@@ -1005,7 +1012,7 @@ begin
       //should not happen
   end;
 
- if chknoTxt.Checked then    //returns color to wsjtx Band activity window
+ if chknoTxt.Checked or PCB then    //returns color to wsjtx Band activity window
         ColorBack(Pcall,Mycolor)             //non paded
  else   AddColorStr(RepBuf + ' ', Mycolor);    //padded
 
@@ -1021,7 +1028,7 @@ begin
     }
 end;
 
-procedure TfrmMonWsjtx.PrintLoc(PLoc, tTa, mT: string);
+procedure TfrmMonWsjtx.PrintLoc(PLoc, tTa, mT: string;PCB:Boolean=false);
 var L1,L2:String;     //locator main
        p :integer;    //locator sub
 Mycolor  :Tcolor;     //color main. color sub sub is same, or else wkdnever
@@ -1086,12 +1093,12 @@ Begin
 
  if p=1 then  //print one go
   Begin
-    if  chknoTxt.Checked then
+    if  chknoTxt.Checked or PCB then
           ColorBack(L1+L2,Mycolor)
     else  AddColorStr(L1+L2, Mycolor);
   end
     else   //print 2 parts
-     if  chknoTxt.Checked then
+     if  chknoTxt.Checked or PCB then
        Begin
          ColorBack(UpperCase(L1+L2),Mycolor,True);
        end
@@ -1222,7 +1229,8 @@ var
   //-----------------------------------------------------------------------------------------
   procedure extcqprint;  //this is used 3 times below
   begin
-    if chknoTxt.Checked then
+
+    if (chknoTxt.Checked or chkCbCQ.Checked) then
       ColorBack('CQ '+CqDir, extCqCall)
     else
     Begin
@@ -1373,9 +1381,9 @@ begin   //TfrmMonWsjtx.AddDecodedMessage
         (msgTime <> LastWsjtLineTime) then
         CleanWsjtxMemo;
       LastWsjtLineTime := msgTime;
-      RepArr[WsjtxMemo.Lines.Count] := Reply;  //corresponding reply string to array
+      if not chkCbCQ.Checked then RepArr[WsjtxMemo.Lines.Count] := Reply;  //corresponding reply string to array
 
-      //start printing
+      //++++++++++++++++++++++++++++start printing++++++++++++++++++++++++++++++++
       if dmData.DebugLevel >= 1 then
         Writeln('Start adding richmemo lines');
 
@@ -1389,18 +1397,21 @@ begin   //TfrmMonWsjtx.AddDecodedMessage
       end;
 
       if isMyCall then
-        AddColorStr('=', wkdnever)
+        begin
+         if not chkCbCQ.Checked then AddColorStr('=', wkdnever);
+        end
       else
-        AddColorStr(' ', wkdnever);  //answer to me
-      PrintCall(msgCall);
+         if not chkCbCQ.Checked then AddColorStr(' ', wkdnever);  //answer to me
+
+      PrintCall(msgCall,chkCbCQ.Checked);
 
       if msgLoc = '----' then
-        AddColorStr(msgLoc, clDefault) //no loc
+       Begin
+        if not chkCbCQ.Checked then AddColorStr(msgLoc, clDefault); //no loc
+       end
       else
-        PrintLoc(msgLoc, timeToAlert, msgTime);
+        PrintLoc(msgLoc, timeToAlert, msgTime,chkCbCQ.Checked);
 
-      if (not chkMap.Checked) then
-      begin
         adif := dmDXCC.id_country(msgCall, '', Now(), pfx, cont,
           msgRes, WAZ, posun, ITU, lat, long);
         if (pos(',', msgRes)) > 0 then
@@ -1424,19 +1435,21 @@ begin   //TfrmMonWsjtx.AddDecodedMessage
               extcqprint;
             end
             else  // should be ok to answer this directed cq
-              AddColorStr(
-                ' ' + copy(PadRight(msgRes, CountryLen), 1, CountryLen) + ' ', clBlack);
-          end
+             if ((not chkMap.Checked) and (not chkCbCQ.Checked))  then
+              AddColorStr(' ' + copy(PadRight(msgRes, CountryLen), 1, CountryLen) + ' ', clBlack);
+           end
           else
-          begin
+           begin
             // we can not compare continents, but it is directed cq. Best to warn with color anyway
             extcqprint;
-          end
+           end
         else
           // should be ok to answer this is not directed cq
-          AddColorStr(' ' + copy(PadRight(msgRes, CountryLen), 1, CountryLen) +
-            ' ', clBlack);
+            if ((not chkMap.Checked) and (not chkCbCQ.Checked))  then
+                 AddColorStr(' ' + copy(PadRight(msgRes, CountryLen), 1, CountryLen)+' ', clBlack);
 
+      if (not chkMap.Checked) then
+       begin
         freq := dmUtils.FreqFromBand(CurBand, CurMode);
         msgRes := dmDXCC.DXCCInfo(adif, freq, CurMode, i);    //wkd info
 
@@ -1453,8 +1466,11 @@ begin   //TfrmMonWsjtx.AddDecodedMessage
         end;
       end; //Map mode
 
-      AddColorStr(#13#10, clDefault);  //make new line
-      WsjtxMemoScroll; // if neeeded
+      if not chkCbCQ.Checked then
+        Begin
+           AddColorStr(#13#10, clDefault);  //make new line
+           WsjtxMemoScroll; // if needed
+        end;
 
       TryAlerts;
 

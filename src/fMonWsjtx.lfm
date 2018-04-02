@@ -343,6 +343,22 @@ object frmMonWsjtx: TfrmMonWsjtx
     ParentColor = False
     Visible = False
   end
+  object chkCbCQ: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 236
+    Height = 23
+    Top = 353
+    Width = 118
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 12
+    Caption = 'ColorBackCQs'
+    OnChange = chkCbCQChange
+    TabOrder = 7
+    Visible = False
+  end
   object popColors: TPopupMenu
     left = 104
     top = 88
