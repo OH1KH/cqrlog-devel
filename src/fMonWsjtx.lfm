@@ -3,11 +3,13 @@ object frmMonWsjtx: TfrmMonWsjtx
   Height = 388
   Top = 50
   Width = 590
+  AllowDropFiles = True
   Caption = 'Wsjt-x CQ-monitor'
   ClientHeight = 388
   ClientWidth = 590
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDropFiles = FormDropFiles
   OnHide = FormHide
   OnShow = FormShow
   LCLVersion = '1.8.2.0'
@@ -188,7 +190,7 @@ object frmMonWsjtx: TfrmMonWsjtx
       ParentFont = False
       TabOrder = 5
     end
-    object btFTxtN: TButton
+    object btFtxtName: TButton
       AnchorSideTop.Control = tbLocAlert
       AnchorSideRight.Control = tbLocAlert
       Left = 459
@@ -198,7 +200,7 @@ object frmMonWsjtx: TfrmMonWsjtx
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 3
       Caption = 'Name73'
-      OnClick = btFTxtNClick
+      OnClick = btFtxtNameClick
       TabOrder = 6
       Visible = False
     end
@@ -252,6 +254,7 @@ object frmMonWsjtx: TfrmMonWsjtx
       Top = 6
       Width = 80
       BorderSpacing.Left = 3
+      OnChange = edtFollowCallChange
       OnEnter = edtFollowCallEnter
       OnExit = edtFollowCallExit
       OnKeyDown = edtFollowCallKeyDown

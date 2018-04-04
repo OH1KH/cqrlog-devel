@@ -13,7 +13,7 @@ type
   { TfrmMonWsjtx }
 
   TfrmMonWsjtx = class(TForm)
-    btFTxtN: TButton;
+    btFtxtName: TButton;
     chkCbCQ: TCheckBox;
     cbflw: TCheckBox;
     chkMap: TCheckBox;
@@ -46,7 +46,7 @@ type
     tmrFollow: TTimer;
     tmrCqPeriod: TTimer;
     WsjtxMemo: TRichMemo;
-    procedure btFTxtNClick(Sender: TObject);
+    procedure btFtxtNameClick(Sender: TObject);
     procedure chkCbCQChange(Sender: TObject);
     procedure cbflwChange(Sender: TObject);
     procedure chkHistoryChange(Sender: TObject);
@@ -59,6 +59,7 @@ type
     procedure cmNeverClick(Sender: TObject);
     procedure EditAlertEnter(Sender: TObject);
     procedure EditAlertExit(Sender: TObject);
+    procedure edtFollowCallChange(Sender: TObject);
     procedure edtFollowCallEnter(Sender: TObject);
     procedure edtFollowCallExit(Sender: TObject);
     procedure edtFollowCallKeyDown(Sender: TObject; var Key: word;
@@ -66,6 +67,7 @@ type
     procedure edtFollowDblClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure chknoTxtChange(Sender: TObject);
@@ -108,17 +110,19 @@ type
   end;
 
 const
-  MaxLines: integer = 41;        //Max monitor lines text will show MaxLines-1 lines
+  //MaxLines: integer = 41;        //Max monitor lines text will show MaxLines-1 lines
   CountryLen = 15;               //length of printed country name in monitor
   CallFieldLen = 10;               //max len of callsign
   Sdelim = ',';              //separator of several text alerts
 
-type
-  TReplyArray = array of string [255];
+//type
+  //TReplyArray = array of string [255];
 
 var
   frmMonWsjtx: TfrmMonWsjtx;
-  RepArr: TReplyArray;  //static array for reply strings: set max same as MaxLines
+  MaxLines: integer = 41;        //Max monitor lines text will show MaxLines-1 lines
+  //RepArr: TReplyArray;  //static array for reply strings: set max same as MaxLines
+  RepArr : array [0 .. 41] of String [255];
   LastWsjtLineTime: string;                  //time of last printed line
   myAlert: string;
   //alert name moved to script as 1st parameter
@@ -313,6 +317,11 @@ begin
   EditedText := EditAlert.Text;
 end;
 
+procedure TfrmMonWsjtx.edtFollowCallChange(Sender: TObject);
+begin
+  edtFollowCall.Text:=trim(UpperCase(edtFollowCall.Text));        //no spaces  upcase
+end;
+
 
 procedure TfrmMonWsjtx.edtFollowCallEnter(Sender: TObject);
 begin
@@ -442,7 +451,7 @@ begin
   chkCbCQ.Visible := chkMap.Checked;
   if not chkMap.Checked then chkCbCQ.Checked:=false;
 
-  if not LockMap then    //do not run autaomaticly on init or leave form
+  if not LockMap then    //do not run automaticly on init or leave form
   begin
     cqrini.WriteBool('MonWsjtx', 'MapMode', chkMap.Checked);
     if chkMap.Checked then
@@ -503,7 +512,7 @@ begin
   end;
 end;
 
-procedure TfrmMonWsjtx.btFTxtNClick(Sender: TObject);
+procedure TfrmMonWsjtx.btFtxtNameClick(Sender: TObject);
 var
   My: string;
 begin
@@ -517,7 +526,7 @@ begin
         Writeln('Sent Free text>', My, '<');
     end
     else
-    btFTxtN.Visible:=false;
+    btFtxtName.Visible:=false;
   end;
 end;
 
@@ -686,10 +695,17 @@ end;
 procedure TfrmMonWsjtx.FormCreate(Sender: TObject);
 begin
   LockMap := True;
-  SetLength(RepArr, MaxLines); //set reply buffer to maxlines
+  //SetLength(RepArr, MaxLines); //set reply buffer to maxlines
   EditAlert.Text := '';
   EditedText := '';
   LastWsjtLineTime := '';
+end;
+
+procedure TfrmMonWsjtx.FormDropFiles(Sender: TObject;
+  const FileNames: array of String);
+begin
+  edtFollowCall.Clear;
+  tbFollow.Checked:=True;
 end;
 
 
@@ -737,7 +753,7 @@ begin
   LockFlw := False;
   LockMap := False; //last thing to do
   chkMapChange(frmMonWsjtx);
-  btFTxtN.Visible := False;
+  btFtxtName.Visible := False;
 end;
 
 procedure TfrmMonWsjtx.NewBandMode(Band, Mode: string);
@@ -814,16 +830,17 @@ procedure TfrmMonWsjtx.AddOtherMessage(Message, Reply: string);
 var
   List1: TStringList;
 begin
-  btFTxtN.Visible := ((frmNewQSO.RepHead <> '') and (frmNewQSO.edtName.Text <> ''));
-  if (frmMonWsjtx.tbFollow.Checked and (pos(edtFollowCall.Text, Message) > 0)) then
+  btFtxtName.Visible := ((frmNewQSO.RepHead <> '') and (frmNewQSO.edtName.Text <> ''));
+  if tbFollow.Checked and (trim(edtFollowCall.Text)='') then tbFollow.Checked:=false; //must have a call
+
+   if (frmMonWsjtx.tbFollow.Checked and (pos(edtFollowCall.Text, Message) > 0)) then
     //first check
     AddFollowedMessage(Message, Reply)
   else
   if chkMap.Checked then
   begin
     CqPeriodTimerStart;
-    if dmData.DebugLevel >= 1 then
-      Writeln('Other line:', Message);
+    if dmData.DebugLevel >= 1 then Writeln('Other line:', Message);
     msgCall := '';
     msgLoc := '';
     isMyCall := False;
@@ -1243,7 +1260,7 @@ var
   //-----------------------------------------------------------------------------------------
 begin   //TfrmMonWsjtx.AddDecodedMessage
 
-  btFTxtN.Visible := ((frmNewQSO.RepHead <> '') and (frmNewQSO.edtName.Text <> ''));
+  btFtxtName.Visible := ((frmNewQSO.RepHead <> '') and (frmNewQSO.edtName.Text <> ''));
   CqPeriodTimerStart;
 
   mycont := '';

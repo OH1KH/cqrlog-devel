@@ -3,6 +3,11 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 --------------------------------------------------------------------------------------------------
+04.04.2018
+    -Follow: Bugfix: Drag and drop works now with Followed call setting.
+     Bugfix: Button follow resets (on next decode) if followed call is empty.
+    -updated some help files.
+						                (2.2.0(131) 
 01.04.2018
     -Wsjtx-map: New feature. ColorBackCQs.CQ Call and locator coloring is sent back to Wsjt-x
      while other traffic gooes to Wsjt-x map.
