@@ -95,6 +95,7 @@ type
     procedure SaveFormPos(FormMode: string);
     procedure LoadFormPos(FormMode: string);
     procedure CqPeriodTimerStart;
+    procedure AddXpList(call,loc:string);
     { private declarations }
   public
     procedure CleanWsjtxMemo;
@@ -153,7 +154,7 @@ var
   CurBand: string = '';
   LockMap: boolean;
   LockFlw: boolean;
-
+  PCallColor :Tcolor;  //color that was last used fro callsign printing, will be used in xplanet
 
 implementation
 
@@ -161,7 +162,7 @@ implementation
 
 { TfrmMonWsjtx }
 
-uses fNewQSO, dData, dUtils, dDXCC, fWorkedGrids, uMyini;
+uses fNewQSO, dData, dUtils, dDXCC, fWorkedGrids, uMyini, dDXCluster;
 
 procedure TfrmMonWsjtx.RunVA(Afile: string);
 const
@@ -181,6 +182,23 @@ begin
   finally
     AProcess.Free
   end;
+end;
+
+procedure TfrmMonWsjtx.AddXpList(call,loc:string);
+var lat,lon :currency;
+   slat,slon:String;
+   BGRcolor,
+   RGBcolor: String;
+   i       : integer;
+Begin
+    if cqrini.ReadInteger('xplanet','ShowFrom',0) <> 2 then exit;  //dxclust =0, bandmap=1
+
+    dmUtils.CoordinateFromLocator(loc,lat,lon);
+    slat:= FloatToStrF(lat,ffFixed,4,2);
+    slon:= FloatToStrF(lon,ffFixed,4,2);
+    if dmData.DebugLevel >= 1 then
+       Writeln('For xplanet: ',slat,' ',slon,' "',call);
+    dmDXCluster.AddToMarkFile('',call,PCallColor,IntToStr(cqrini.ReadInteger('xplanet','LastSpots',20)),slat,slon);
 end;
 
 procedure TfrmMonWsjtx.AddColorStr(s: string; const col: TColor = clBlack);
@@ -894,6 +912,7 @@ begin
       begin
         PrintLoc(msgLoc, '', '');
         AddColorStr(#41#13#10, clDefault);  //make not-CQ indicator stop + new line
+        if frmWorkedGrids.GridOK(msgLoc) then  AddXpList(msgCall,msgLoc);
       end;
       if dmData.DebugLevel >= 1 then
         Writeln('NL written and scroll if needed+alerts');
@@ -1004,34 +1023,33 @@ end;
 
 procedure TfrmMonWsjtx.PrintCall(Pcall: string;PCB:Boolean=false);
 var    i:integer;
-Mycolor :Tcolor;
 
 begin
   RepBuf := PadRight(UpperCase(Pcall), CallFieldLen);
   case frmWorkedGrids.WkdCall(Pcall, CurBand, CurMode) of
     0: Begin
-        Mycolor :=wkdnever;
+        PCallColor :=wkdnever;
        end;
     1: Begin
         RepBuf := LowerCase(RepBuf);
-        Mycolor :=wkdhere;
+        PCallColor :=wkdhere;
        end;
     2: Begin
-        Mycolor :=wkdband;
+        PCallColor :=wkdband;
        end;
     3: Begin
-         Mycolor :=wkdany;
+         PCallColor :=wkdany;
        end;
     else
       Begin
-        Mycolor :=clDefault;
+        PCallColor :=clDefault;
       end;
       //should not happen
   end;
 
  if chknoTxt.Checked or PCB then    //returns color to wsjtx Band activity window
-        ColorBack(Pcall,Mycolor)             //non paded
- else   AddColorStr(RepBuf + ' ', Mycolor);    //padded
+        ColorBack(Pcall,PCallColor)             //non paded
+ else   AddColorStr(RepBuf + ' ', PCallColor);    //padded
 
    //if dmData.DebugLevel >= 1 then BufDebug('color buffer contains:',RepBuf);
     {
@@ -1428,6 +1446,8 @@ begin   //TfrmMonWsjtx.AddDecodedMessage
        end
       else
         PrintLoc(msgLoc, timeToAlert, msgTime,chkCbCQ.Checked);
+
+      if frmWorkedGrids.GridOK(msgLoc) then AddXpList(msgCall,msgLoc);
 
         adif := dmDXCC.id_country(msgCall, '', Now(), pfx, cont,
           msgRes, WAZ, posun, ITU, lat, long);

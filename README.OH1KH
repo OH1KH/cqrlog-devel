@@ -3,6 +3,10 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 --------------------------------------------------------------------------------------------------
+05.04.2018
+    -Bugfix: DXCluster/xplanet reverted colors RGB to BGR (red was blue etc.)
+    -Wsjt-x: added support for xplanet 
+						                (2.2.0(132) 
 04.04.2018
     -Follow: Bugfix: Drag and drop works now with Followed call setting.
      Bugfix: Button follow resets (on next decode) if followed call is empty.
