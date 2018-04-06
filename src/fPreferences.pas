@@ -1042,7 +1042,6 @@ type
     procedure edtPoll1Exit(Sender: TObject);
     procedure pgPreferencesChange(Sender: TObject);
     procedure pnlQSOColorClick(Sender : TObject);
-    procedure rgShowFromClick(Sender: TObject);
   private
     wasOnlineLogSupportEnabled : Boolean;
 
@@ -2959,10 +2958,6 @@ begin
   btnSelectQSOColor.Click
 end;
 
-procedure TfrmPreferences.rgShowFromClick(Sender: TObject);
-begin
-
-end;
 
 procedure TfrmPreferences.SaveClubSection;
 begin

@@ -5093,7 +5093,6 @@ object frmPreferences: TfrmPreferences
           'bandmap'
           'wsjtx'
         )
-        OnClick = rgShowFromClick
         TabOrder = 7
       end
       object cmbXplanetColor: TColorBox
