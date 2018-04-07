@@ -3,6 +3,12 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 --------------------------------------------------------------------------------------------------
+07.04.2018
+    -Bugfix: Grid map locator and qso counters fixed. Default save names fixed.
+    -Wsjt-x Map: added chackbox "dB" to show SNR values.
+    -Cq-monitor:when "no History" timestamp and mode letter are replaced by DeltaFrequency and SNR
+    -help files update
+						                (2.2.0(133) 
 05.04.2018
     -Bugfix: DXCluster/xplanet reverted colors RGB to BGR (red was blue etc.)
     -Wsjt-x: added support for xplanet 
