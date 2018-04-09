@@ -435,7 +435,7 @@ begin
 
   dmUtils.InsertBands(BandSelector);
   BandSelector.Items.Insert(0, 'all');
-  BandSelector.ItemIndex := 4;
+  BandSelector.ItemIndex := 0;
 
   frmWorkedGrids.Caption := Caption + ' ' + dmData.LogName + ' ' + LogBand;
 
@@ -720,12 +720,12 @@ begin
   FollowRig.Checked := cqrini.ReadBool('Worked_grids', 'FollowRig', False);
   ShoWkdOnly.Checked := cqrini.ReadBool('Worked_grids', 'ShowWkdOnly', False);
   AutoUpdate.Enabled := True;
-  BandSelectorChange(nil);
   //we need this here. Otherwise user digital modes are not shown
   dmUtils.InsertModes(WsMode);
   WsMode.Items.Insert(0, 'any');
   WsMode.Items.Insert(1, 'JT9+JT65');
   WsMode.ItemIndex := 0;
+  BandSelectorChange(nil);
 end;
 
 procedure TfrmWorkedGrids.LocMapClick(Sender: TObject);

@@ -103,7 +103,7 @@ type
     procedure CleanWsjtxMemo;
     function NextElement(Message: string; var index: integer): string;
     procedure AddDecodedMessage(Message, Band, Reply: string; Dfreq,Snr: integer);
-    procedure AddFollowedMessage(Message, Reply: string);
+    procedure AddFollowedMessage(Message, Reply: string;snr:integer);
     procedure AddOtherMessage(Message, Reply: string;Snr:integer);
     procedure NewBandMode(Band, Mode: string);
     procedure SendFreeText(MyText: string);
@@ -862,7 +862,7 @@ begin
 
    if (tbFollow.Checked and (pos(edtFollowCall.Text, Message) > 0)) then
     //first check
-    AddFollowedMessage(Message, Reply)
+    AddFollowedMessage(Message, Reply,Snr)
   else
   if chkMap.Checked then
   begin
@@ -936,7 +936,7 @@ begin
 
 end;
 
-procedure TfrmMonWsjtx.AddFollowedMessage(Message, Reply: string);
+procedure TfrmMonWsjtx.AddFollowedMessage(Message, Reply: string;snr:integer);
 var
   a: TExplodeArray;
   i, b: integer;
@@ -957,13 +957,11 @@ begin
   then
   begin
     tmrFollow.Enabled := False;
-    if CurMode = 'FT8' then
-      tmrFollow.Interval := 16000
-    else
-      tmrFollow.Interval := 61000;
+    if CurMode = 'FT8' then tmrFollow.Interval := 16000 else tmrFollow.Interval := 61000;
     tmrFollow.Enabled := True;
+
     edtFollow.Font.Color := clDefault;
-    edtFollow.Text := Message;
+    edtFollow.Text := copy(message,1,6)+' '+IntToStr(Snr)+copy(message,7,length(message));
     RepFlw := Reply;
   end;
 end;
