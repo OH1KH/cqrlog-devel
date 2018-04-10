@@ -3,6 +3,10 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 --------------------------------------------------------------------------------------------------
+10.04.2018
+    -Wsjt-x Map: directed CQ now shows only direction (=2chrs, DX, NA, etc) with ExtCQ color
+    - help file fixed
+						                (2.2.0(135) 
 08.04.2018
     -Cq-monitor/follow: show now also SNR value.
     -Grid map: Start with settings all(band)/any(mode) and populate map.

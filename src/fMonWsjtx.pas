@@ -1278,9 +1278,14 @@ var
       ColorBack('CQ '+CqDir, extCqCall)
     else
     Begin
-      AddColorStr(' ' + copy(PadRight(msgRes, CountryLen), 1, CountryLen - 6), extCqCall);
-      AddColorStr(' CQ:', clBlack);
-      AddColorStr(CqDir + ' ', extCqCall);
+      if not  chkMap.Checked then
+        Begin
+          AddColorStr(' ' + copy(PadRight(msgRes, CountryLen), 1, CountryLen - 6), extCqCall);
+          AddColorStr(' CQ:', clBlack);
+          AddColorStr(CqDir + ' ', extCqCall);
+        end
+       else
+          AddColorStr(' '+CqDir, extCqCall);
     end;
   end;
 
