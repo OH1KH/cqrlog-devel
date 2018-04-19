@@ -688,26 +688,32 @@ procedure TfrmTRXControl.btnMemWriClick(Sender: TObject);
   bandwidth : word = 0;
   mode      : String ='';
   freq      : String ='';
+  Dfreq     : Double ;
 
 begin
-  frmRadioMemories := TfrmRadioMemories.Create(frmTRXControl);
-  try
-    dmData.LoadFreqMemories(frmRadioMemories.sgrdMem);
-    bandwidth:= radio.GetPassOnly;
-    mode     := radio.GetRawMode;
-    freq     := FloatToStrF(radio.GetFreqkHz,ffFixed,15,0);
-    if (freq<>'') and (mode<>'') then
-     begin
-      frmRadioMemories.sgrdMem.RowCount := frmRadioMemories.sgrdMem.RowCount + 1;
-      frmRadioMemories.sgrdMem.Cells[0,frmRadioMemories.sgrdMem.RowCount-1] := freq;
-      frmRadioMemories.sgrdMem.Cells[1,frmRadioMemories.sgrdMem.RowCount-1] := mode;
-      frmRadioMemories.sgrdMem.Cells[2,frmRadioMemories.sgrdMem.RowCount-1] := IntToStr(bandwidth);
-      dmData.StoreFreqMemories(frmRadioMemories.sgrdMem);
-      lblFreq.Caption:='MemW OK';
-     end
-  finally
-    FreeAndNil(frmRadioMemories)
-  end
+  Dfreq := 0;
+  Dfreq := radio.GetFreqkHz;
+  if Dfreq > 0 then
+  begin
+      frmRadioMemories := TfrmRadioMemories.Create(frmTRXControl);
+      try
+        dmData.LoadFreqMemories(frmRadioMemories.sgrdMem);
+        bandwidth:= radio.GetPassOnly;
+        mode     := radio.GetRawMode;
+        freq     := FloatToStrF(Dfreq,ffFixed,15,0);
+        if (mode<>'') then
+         begin
+          frmRadioMemories.sgrdMem.RowCount := frmRadioMemories.sgrdMem.RowCount + 1;
+          frmRadioMemories.sgrdMem.Cells[0,frmRadioMemories.sgrdMem.RowCount-1] := freq;
+          frmRadioMemories.sgrdMem.Cells[1,frmRadioMemories.sgrdMem.RowCount-1] := mode;
+          frmRadioMemories.sgrdMem.Cells[2,frmRadioMemories.sgrdMem.RowCount-1] := IntToStr(bandwidth);
+          dmData.StoreFreqMemories(frmRadioMemories.sgrdMem);
+          lblFreq.Caption:='MemW OK';
+         end
+      finally
+        FreeAndNil(frmRadioMemories)
+      end
+  end;
 end;
 
 procedure TfrmTRXControl.btnMemDwnClick(Sender: TObject);
