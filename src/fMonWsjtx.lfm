@@ -1,7 +1,7 @@
 object frmMonWsjtx: TfrmMonWsjtx
-  Left = 660
+  Left = 138
   Height = 388
-  Top = 50
+  Top = 173
   Width = 590
   AllowDropFiles = True
   Caption = 'Wsjt-x CQ-monitor'
