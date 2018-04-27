@@ -117,7 +117,7 @@ object frmCWType: TfrmCWType
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '1.4.4.0'
   object Panel1: TPanel
     Left = 0
     Height = 88
@@ -130,23 +130,23 @@ object frmCWType: TfrmCWType
     TabOrder = 0
     object Label85: TLabel
       Left = 8
-      Height = 15
+      Height = 17
       Top = 30
-      Width = 65
+      Width = 67
       Caption = 'CW speed'
       ParentColor = False
     end
     object Label1: TLabel
       Left = 136
-      Height = 15
+      Height = 17
       Top = 30
-      Width = 32
+      Width = 33
       Caption = 'wpm'
       ParentColor = False
     end
     object edtSpeed: TSpinEdit
       Left = 80
-      Height = 32
+      Height = 27
       Top = 24
       Width = 50
       Increment = 2
@@ -170,8 +170,8 @@ object frmCWType: TfrmCWType
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 92
-      ClientWidth = 398
+      ClientHeight = 90
+      ClientWidth = 396
       ItemIndex = 0
       Items.Strings = (
         'letter mode'

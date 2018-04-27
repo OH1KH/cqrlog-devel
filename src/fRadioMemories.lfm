@@ -1,14 +1,14 @@
 object frmRadioMemories: TfrmRadioMemories
-  Left = 541
+  Left = 476
   Height = 510
-  Top = 104
+  Top = 232
   Width = 482
   Caption = 'Memories'
   ClientHeight = 510
   ClientWidth = 482
   OnClose = FormClose
   OnShow = FormShow
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '1.4.4.0'
   object sgrdMem: TStringGrid
     Left = 0
     Height = 510

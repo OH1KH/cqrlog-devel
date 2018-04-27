@@ -3,6 +3,11 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 --------------------------------------------------------------------------------------------------
+27.04.2018
+    -CQmonitor: color selection dialog upadate
+    - Help update
+    -Merged from master
+						                (2.2.0(138)
 19.04.2018
     -TRXcontrol: M_Wri-button.Bugfix: do not write if freq is 0.000
 						                (2.2.0(137) 
