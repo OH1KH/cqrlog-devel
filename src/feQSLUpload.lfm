@@ -1,10 +1,10 @@
 object frmeQSLUpload: TfrmeQSLUpload
-  Left = 509
-  Height = 481
-  Top = 265
+  Left = 621
+  Height = 513
+  Top = 204
   Width = 575
   Caption = 'Upload QSO to eQSL.cc'
-  ClientHeight = 481
+  ClientHeight = 513
   ClientWidth = 575
   Icon.Data = {
     BE1000000000010001002020000001002000A810000016000000280000002000
@@ -145,29 +145,29 @@ object frmeQSLUpload: TfrmeQSLUpload
   }
   OnClose = FormClose
   OnShow = FormShow
-  LCLVersion = '1.8.0.6'
+  LCLVersion = '1.8.2.0'
   object grbWebExport: TGroupBox
     Left = 0
     Height = 64
     Top = 0
     Width = 575
     Align = alTop
-    ClientHeight = 60
-    ClientWidth = 571
+    ClientHeight = 62
+    ClientWidth = 573
     TabOrder = 0
     object rbWebExportAll: TRadioButton
       Left = 14
-      Height = 24
+      Height = 23
       Top = 6
-      Width = 137
+      Width = 131
       Caption = ' Export all QSOs'
       TabOrder = 0
     end
     object rbWebExportNotExported: TRadioButton
       Left = 14
-      Height = 24
+      Height = 23
       Top = 31
-      Width = 374
+      Width = 358
       Caption = 'Export only QSOs which have never been uploaded'
       Checked = True
       TabOrder = 1
@@ -180,20 +180,20 @@ object frmeQSLUpload: TfrmeQSLUpload
     Top = 64
     Width = 575
     Align = alTop
-    ClientHeight = 52
-    ClientWidth = 571
+    ClientHeight = 54
+    ClientWidth = 573
     TabOrder = 1
     object Label1: TLabel
       Left = 14
-      Height = 17
+      Height = 15
       Top = 14
-      Width = 106
+      Width = 102
       Caption = 'QTH Nickname:'
       ParentColor = False
     end
     object edtQTH: TEdit
       Left = 174
-      Height = 27
+      Height = 32
       Top = 9
       Width = 174
       TabOrder = 0
@@ -201,19 +201,19 @@ object frmeQSLUpload: TfrmeQSLUpload
   end
   object GroupBox6: TGroupBox
     Left = 0
-    Height = 361
+    Height = 393
     Top = 120
     Width = 575
     Align = alClient
     Caption = ' Upload '
-    ClientHeight = 342
-    ClientWidth = 571
+    ClientHeight = 377
+    ClientWidth = 573
     TabOrder = 2
     object mStat: TMemo
       Left = 0
-      Height = 304
+      Height = 339
       Top = 0
-      Width = 571
+      Width = 573
       Align = alClient
       Lines.Strings = (
         ''
@@ -225,15 +225,15 @@ object frmeQSLUpload: TfrmeQSLUpload
     object pnlUpload: TPanel
       Left = 0
       Height = 38
-      Top = 304
-      Width = 571
+      Top = 339
+      Width = 573
       Align = alBottom
       BevelOuter = bvNone
       ClientHeight = 38
-      ClientWidth = 571
+      ClientWidth = 573
       TabOrder = 1
       object btnUpload: TButton
-        Left = 414
+        Left = 416
         Height = 25
         Top = 11
         Width = 70
@@ -251,7 +251,7 @@ object frmeQSLUpload: TfrmeQSLUpload
         ParentColor = False
       end
       object btnClose: TButton
-        Left = 494
+        Left = 496
         Height = 25
         Top = 11
         Width = 67
