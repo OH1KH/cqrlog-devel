@@ -2507,6 +2507,7 @@ begin
            if dmData.DebugLevel>=1 then Writeln(' WSJTX decode #5 logging: press save');
            SaveRemote;
            if dmData.DebugLevel>=1 then Writeln(' WSJTX decode #5 logging now ended');
+           frmMonWsjtx.DblClickCall :='';
          end; //QSO logged in
 
      6 : begin //Close

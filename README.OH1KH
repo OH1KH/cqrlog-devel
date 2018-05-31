@@ -3,6 +3,12 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 --------------------------------------------------------------------------------------------------
+31.05.2018
+    - Wsjt-x Map and CQ-monitor: New selection "sTx" (Stop TX) this corrects the deficiency of 
+      wsjt-x that it does not stop your TX if you answer to CQ using split frequency and the reply is
+      not directed to you. Requires that answering is initiated by doubleclicking a line of CQ-monitor
+      or Wsjt-x Map
+						                (2.2.0(139)
 04.05.2018
     -Bugfix: eQSL up&dnload preferences button did not open right tab
 						                (2.2.0(139)
