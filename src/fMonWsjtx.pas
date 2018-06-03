@@ -317,7 +317,7 @@ begin
           //call is 1st item in line
           DblClickCall := ExtractWord(1,s,[' '])
        else
-         //call in qso, TX not fired
+         //call in qso, TX not fired std messages only created
          DblClickCall :='';
     end
    else //if Cq-monitor
@@ -1548,6 +1548,7 @@ begin   //TfrmMonWsjtx.AddDecodedMessage
 
       if isMyCall then
         begin
+         DblClickCall := '';
          if not chkCbCQ.Checked then AddColorStr('=', wkdnever);
         end
       else
