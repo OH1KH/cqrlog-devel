@@ -2239,6 +2239,15 @@ begin
           //----------------------------------------------------
           if TXEna and TXOn then
           begin
+            if dmData.DebugLevel>=1 then Writeln('Status: TxEna, TxOn, DXCall is:',call);
+            if (frmMonWsjtx <> nil) then   //CQ-monitor exist
+               if (frmMonWsjtx.DblClickCall <> call) then   //this works now also when calling started from wsjt-x main screen 2click
+                                            begin    //we do not try to work same station any more as with 2click before
+                                              if frmMonWsjtx.chkStopTx.Checked then frmMonWsjtx.DblClickCall := call
+                                                else frmMonWsjtx.DblClickCall :='';
+                                              if dmData.DebugLevel>=1 then Writeln('Change 2click call to:',frmMonWsjtx.DblClickCall);
+                                            end;
+
             if  edtCall.Text <> call then  //call (and web info) maybe there already ok from pevious status packet
                            Begin
                              edtCall.Text := '';//clean grid like double ESC does
@@ -2511,7 +2520,11 @@ begin
            if dmData.DebugLevel>=1 then Writeln(' WSJTX decode #5 logging: press save');
            SaveRemote;
            if dmData.DebugLevel>=1 then Writeln(' WSJTX decode #5 logging now ended');
-           frmMonWsjtx.DblClickCall :='';
+           if ((frmMonWsjtx <> nil) and (frmMonWsjtx.DblClickCall <> '')) then //CQ-monitor exist
+                                    begin
+                                      if dmData.DebugLevel>=1 then Writeln('Reset 2click call:',frmMonWsjtx.DblClickCall,' QSO logged');
+                                      frmMonWsjtx.DblClickCall :='';
+                                    end;
          end; //QSO logged in
 
      6 : begin //Close
@@ -3360,7 +3373,7 @@ begin
   begin
     if cqrini.ReadBool('Backup','AskFirst',False) then
     begin
-      case Application.MessageBox('Do you want to backup your data?','Question ...',mb_YesNoCancel+mb_IconQuestion) of
+      case Application.MessageBox('Do you want to backup your data?'+#13+#13+'("Cancel" = Do not exit cqrlog)','Exit & backup',mb_YesNoCancel+mb_IconQuestion) of
         idCancel : begin
                      CloseAction := caNone;
                      exit

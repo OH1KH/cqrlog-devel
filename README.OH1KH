@@ -3,6 +3,14 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 --------------------------------------------------------------------------------------------------
+19.06.2018
+    - Test binaries: numbering starts now from 2.3.0-101
+    - Bugfix: Wsjt-x remote used nonexisting variable if CQ-monitor was closed.
+    - sTx routines improved with bugfix. Stops Tx now also if answering initatated from wsjt-x main screen.
+    - Fixed text: Auto backup: preferences/confirmation/help as it also can prevent accidental
+      closing of cqrlog (not clearly documented before).
+    - Help files fixed.
+						                (2.3.0(101)
 17.06.2017
     - Just merged new release master
 						                (2.3.0(001)
