@@ -8,7 +8,7 @@
     - Contest report delimiter is now | (pipe). It represents "halfspace" in CW macros, so macros will work 
       in same way as before. Just a half space shorter gaps in message (that may be good as used in contest).
     - ST(R)X_STRING (contest message) is now ended with . (dot) That shows up in log, but is removed when adif
-      export is done. Dot is added at qso save phase, so it does not affect CW macros that are seded while qso
+      export is done. Dot is added at qso save phase, so it does not affect CW macros that are sended while qso
       is going on.
     - Supports now adif import with ST(R)X/_SRTING) tags. Cqrlog did read them before, but did not use them anywhere.
       Now they are added to RST field in same format as when using contest form. 

@@ -456,7 +456,7 @@ begin
       dmData.Q.Open;
       if dmData.Q.Fields[0].AsInteger > 0 then
       begin
-        if Application.MessageBox('It looks like this QSOs are in the log.'#13'Do you really want to import it again?',
+        if Application.MessageBox('It looks like QSO(s) are in the log.'#13'Do you really want to import again?',
                                   'Question',MB_ICONQUESTION + MB_YESNO) = idNo then
         begin
           btnImport.Enabled := True;
