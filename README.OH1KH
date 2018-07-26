@@ -3,6 +3,22 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 --------------------------------------------------------------------------------------------------
+23.07.2018
+    - Fixed contest qso adif export. Now states right if question is serial_nr or message.
+    - Contest report delimiter is now | (pipe). It represents "halfspace" in CW macros, so macros will work 
+      in same way as before. Just a half space shorter gaps in message (that may be good as used in contest).
+    - ST(R)X_STRING (contest message) is now ended with . (dot) That shows up in log, but is removed when adif
+      export is done. Dot is added at qso save phase, so it does not affect CW macros that are seded while qso
+      is going on.
+    - Supports now adif import with ST(R)X/_SRTING) tags. Cqrlog did read them before, but did not use them anywhere.
+      Now they are added to RST field in same format as when using contest form. 
+      Now you can transfer contest logs between 2 cqrlogs and also restoring backups (that are done with this version)
+      will restore ccontest messages ok.
+    - Opening preferences from QSO list (main form) will now open "visible colums" tab.
+    - New debug feature: debug>=1 will show all as before, negative numbers will show just studied part's messages 
+      (used -1 for adif export debugging, other negative numbers may now be used for other routine specified debugs)
+    - Help files fixed
+						                (2.3.0(102)
 19.06.2018
     - Test binaries: numbering starts now from 2.3.0-101
     - Bugfix: Wsjt-x remote used nonexisting variable if CQ-monitor was closed.
