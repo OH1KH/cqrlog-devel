@@ -764,12 +764,6 @@
         <OptimizationLevel Value="2"/>
       </Optimizations>
     </CodeGeneration>
-    <Linking>
-      <Debugging>
-        <GenerateDebugInfo Value="False"/>
-        <DebugInfoType Value="dsDwarf3"/>
-      </Debugging>
-    </Linking>
     <Other>
       <Verbosity>
         <ShowNotes Value="False"/>

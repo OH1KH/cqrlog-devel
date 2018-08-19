@@ -1,13 +1,13 @@
 object frmMain: TfrmMain
-  Left = 272
+  Left = 612
   Height = 607
-  Top = 166
+  Top = 293
   Width = 925
   HelpType = htKeyword
   HelpKeyword = 'help/index.html'
   ActiveControl = Panel2
   Caption = 'CQRLOG for Linux'
-  ClientHeight = 582
+  ClientHeight = 607
   ClientWidth = 925
   Constraints.MinHeight = 148
   Constraints.MinWidth = 536
@@ -156,11 +156,11 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '1.8.0.6'
   object sbMain: TStatusBar
     Left = 0
-    Height = 19
-    Top = 563
+    Height = 21
+    Top = 586
     Width = 925
     Panels = <    
       item
@@ -186,7 +186,7 @@ object frmMain: TfrmMain
   object pnlButtons: TPanel
     Left = 0
     Height = 40
-    Top = 523
+    Top = 546
     Width = 925
     Align = alBottom
     ClientHeight = 40
@@ -260,7 +260,7 @@ object frmMain: TfrmMain
       Left = 8
       Height = 17
       Top = 8
-      Width = 72
+      Width = 77
       Alignment = taRightJustify
       Caption = 'QSO in log:'
       ParentColor = False
@@ -304,10 +304,10 @@ object frmMain: TfrmMain
       ParentFont = False
     end
     object Label3: TLabel
-      Left = 789
+      Left = 787
       Height = 17
       Top = 8
-      Width = 73
+      Width = 75
       Alignment = taRightJustify
       Anchors = [akTop, akRight]
       Caption = 'DXCC CFM:'
@@ -330,7 +330,7 @@ object frmMain: TfrmMain
   end
   object dbgrdMain: TDBGrid
     Left = 0
-    Height = 414
+    Height = 437
     Top = 56
     Width = 925
     Align = alClient
@@ -624,7 +624,7 @@ object frmMain: TfrmMain
   object pnlDetails: TPanel
     Left = 0
     Height = 53
-    Top = 470
+    Top = 493
     Width = 925
     Align = alBottom
     BevelOuter = bvNone
@@ -635,7 +635,7 @@ object frmMain: TfrmMain
       Left = 8
       Height = 17
       Top = 2
-      Width = 122
+      Width = 130
       Caption = 'Comment for QSO:'
       ParentColor = False
       ParentFont = False
@@ -644,7 +644,7 @@ object frmMain: TfrmMain
       Left = 8
       Height = 17
       Top = 29
-      Width = 44
+      Width = 49
       Caption = 'Award:'
       ParentColor = False
       ParentFont = False
@@ -653,14 +653,14 @@ object frmMain: TfrmMain
       Left = 141
       Height = 17
       Top = 2
-      Width = 85
+      Width = 91
       ParentColor = False
     end
     object dbtAward: TDBText
       Left = 58
       Height = 17
       Top = 29
-      Width = 61
+      Width = 69
       ParentColor = False
     end
     object Panel1: TPanel
@@ -677,7 +677,7 @@ object frmMain: TfrmMain
         Left = 7
         Height = 17
         Top = 2
-        Width = 70
+        Width = 73
         Caption = 'QS_S date:'
         ParentColor = False
         ParentFont = False
@@ -686,21 +686,21 @@ object frmMain: TfrmMain
         Left = 89
         Height = 17
         Top = 2
-        Width = 85
+        Width = 93
         ParentColor = False
       end
       object dbtQSLRDate: TDBText
         Left = 89
         Height = 17
         Top = 30
-        Width = 86
+        Width = 94
         ParentColor = False
       end
       object Label26: TLabel
         Left = 7
         Height = 17
         Top = 29
-        Width = 71
+        Width = 74
         Caption = 'QS_R date:'
         ParentColor = False
         ParentFont = False
@@ -720,7 +720,7 @@ object frmMain: TfrmMain
         Left = 7
         Height = 17
         Top = 3
-        Width = 110
+        Width = 115
         Caption = 'LoTW QS_S date:'
         ParentColor = False
         ParentFont = False
@@ -729,21 +729,21 @@ object frmMain: TfrmMain
         Left = 134
         Height = 17
         Top = 3
-        Width = 90
+        Width = 99
         ParentColor = False
       end
       object dbtLoTWQSLR: TDBText
         Left = 134
         Height = 17
         Top = 30
-        Width = 91
+        Width = 100
         ParentColor = False
       end
       object Label28: TLabel
         Left = 7
         Height = 17
         Top = 30
-        Width = 111
+        Width = 116
         Caption = 'LoTW QS_R date:'
         ParentColor = False
         ParentFont = False

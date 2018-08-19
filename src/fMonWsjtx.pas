@@ -1169,7 +1169,7 @@ begin
         ColorBack(Pcall,PCallColor)             //non paded
  else   AddColorStr(RepBuf + ' ', PCallColor);    //padded
 
-   if dmData.DebugLevel >= 1 then BufDebug('color buffer contains:',RepBuf);
+   //if dmData.DebugLevel >= 1 then BufDebug('color buffer contains:',RepBuf);
     {
     QColor
     Color spec (qint8)      1 (rgb)    * Highlight Callsign In   13                     quint32
