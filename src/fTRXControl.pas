@@ -55,6 +55,7 @@ type
     btPoff: TButton;
     btPon: TButton;
     btPstby: TButton;
+    edtMemNr: TEdit;
     gbBand: TGroupBox;
     gbVfo: TGroupBox;
     gbMode: TGroupBox;
@@ -450,7 +451,8 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(8,mode);
   SetModeFreq(mode,freq);
-  btn10m.Font.Color := clRed; 
+  btn10m.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btn12mClick(Sender: TObject);
@@ -462,7 +464,8 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(7,mode);
   SetModeFreq(mode,freq);
-  btn12m.Font.Color := clRed; 
+  btn12m.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btn15mClick(Sender: TObject);
@@ -474,7 +477,8 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(6,mode);
   SetModeFreq(mode,freq);
-  btn15m.Font.Color := clRed; 
+  btn15m.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btn160mClick(Sender: TObject);
@@ -486,7 +490,8 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(0,mode);
   SetModeFreq(mode,freq);
-  btn160m.Font.Color := clRed; 
+  btn160m.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btn17mClick(Sender: TObject);
@@ -498,7 +503,8 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(5,mode);
   SetModeFreq(mode,freq);
-  btn17m.Font.Color := clRed; 
+  btn17m.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btn20mClick(Sender: TObject);
@@ -510,7 +516,8 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(4,mode);
   SetModeFreq(mode,freq);
-  btn20m.Font.Color := clRed; 
+  btn20m.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btn2mClick(Sender: TObject);
@@ -522,7 +529,8 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(10,mode);
   SetModeFreq(mode,freq);
-  btn2m.Font.Color := clRed; 
+  btn2m.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btn30mClick(Sender: TObject);
@@ -534,7 +542,8 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(3,mode);
   SetModeFreq(mode,freq);
-  btn30m.Font.Color := clRed; 
+  btn30m.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btn40mClick(Sender: TObject);
@@ -546,7 +555,8 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(2,mode);
   SetModeFreq(mode,freq);
-  btn40m.Font.Color := clRed; 
+  btn40m.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btn6mClick(Sender: TObject);
@@ -558,7 +568,8 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(9,mode);
   SetModeFreq(mode,freq);
-  btn6m.Font.Color := clRed; 
+  btn6m.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btn70cmClick(Sender: TObject);
@@ -570,7 +581,8 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(11,mode);
   SetModeFreq(mode,freq);
-  btn70cm.Font.Color := clRed; 
+  btn70cm.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btn80mClick(Sender: TObject);
@@ -582,26 +594,31 @@ begin
   mode := GetActualMode; 
   freq := GetFreqFromModeBand(1,mode);
   SetModeFreq(mode,freq);
-  btn80m.Font.Color := clRed; 
+  btn80m.Font.Color := clRed;
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
 procedure TfrmTRXControl.btnAMClick(Sender: TObject);
 begin
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
   SetMode('AM',GetBandWidth('AM'))
 end;
 
 procedure TfrmTRXControl.btnCWClick(Sender: TObject);
 begin
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
   SetMode('CW',GetBandWidth('CW'))
 end;
 
 procedure TfrmTRXControl.btnFMClick(Sender: TObject);
 begin
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
   SetMode('FM',GetBandWidth('FM'))
 end;
 
 procedure TfrmTRXControl.btnRTTYClick(Sender: TObject);
 begin
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
   SetMode('RTTY',GetBandWidth('RTTY'))
 end;
 
@@ -609,6 +626,7 @@ procedure TfrmTRXControl.btnSSBClick(Sender: TObject);
 var
   tmp : Currency;
 begin
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
   if not TryStrToCurr(lblFreq.Caption,tmp) then
     SetMode('LSB',GetBandWidth('SSB'))
   else begin
@@ -822,6 +840,7 @@ var
   port   : Integer;
   poll   : Integer;
 begin
+
   if Assigned(radio) then
   begin
     FreeAndNil(radio);
@@ -1146,7 +1165,8 @@ begin
   btn10m.Font.Color   := COLOR_WINDOWTEXT; 
   btn6m.Font.Color    := COLOR_WINDOWTEXT; 
   btn2m.Font.Color    := COLOR_WINDOWTEXT; 
-  btn70cm.Font.Color  := COLOR_WINDOWTEXT
+  btn70cm.Font.Color  := COLOR_WINDOWTEXT;
+
 end;
 
 function TfrmTRXControl.GetModeBand(var mode,band : String) : Boolean;
@@ -1193,7 +1213,8 @@ begin
            btnAM.Font.Color := clRed
          else
            if mode = 'FM' then
-             btnFM.Font.Color := clRed
+             btnFM.Font.Color := clRed;
+
 end;
 
 procedure TfrmTRXControl.Split(Up : Integer);

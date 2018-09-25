@@ -3,6 +3,17 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 --------------------------------------------------------------------------------------------------
+25.09.2018
+    - Merged from master.
+    - TRXcontrol:  "M Wri" button text is now red to indicate wrte operation of thi button.
+       A new field under "M Wri" indicates last pressed ("M up", "M dn") memory. "M x" where x refers 
+      to line number in Add/Modify memory list.
+      "M 0" (in red) indicates that there is no memory lines, "M x" (in blue) indicates the last line in
+      Add/Modify memory list.
+      NOTE!! Cqrlog TRXcontrol memories are categorized by mode (groups). CW, SSB(=AM+USB+LSB+FM), RTTY, 
+             DATA(=PKTLSB+PKTUSB)[no mode selector for this but you may "M wri" it anyway]. 
+             So do not wonder if you get "M 0" and think you should have entries in Add/Modify memory list.
+						                (2.3.0(104)
 19.08.2018
     - Merged from master. This includes CD skimmer addition from DH2WQ
 						                (2.3.0(103)
