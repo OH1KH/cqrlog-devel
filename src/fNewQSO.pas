@@ -387,6 +387,7 @@ type
     procedure edtQSL_VIAEnter(Sender: TObject);
     procedure edtQTHEnter(Sender: TObject);
     procedure edtRemQSOEnter(Sender: TObject);
+    procedure edtRXFreqExit(Sender: TObject);
     procedure edtStartTimeEnter(Sender: TObject);
     procedure edtStateEnter(Sender: TObject);
     procedure edtWAZEnter(Sender: TObject);
@@ -4131,6 +4132,11 @@ begin
   edtRemQSO.SelectAll
 end;
 
+procedure TfrmNewQSO.edtRXFreqExit(Sender: TObject);
+begin
+  edtRXFreq.Text := CheckFreq(edtRXFreq.Text);
+end;
+
 procedure TfrmNewQSO.edtStartTimeEnter(Sender: TObject);
 begin
   edtStartTime.SelectAll
@@ -6262,12 +6268,8 @@ end;
 
 function TfrmNewQSO.CheckFreq(freq : String) : String;
 begin
-  if (Pos(',',cmbFreq.Text) > 0) then
-  begin
-    freq := cmbFreq.Text;
-    freq[Pos(',',cmbFreq.Text)] := FormatSettings.DecimalSeparator;
-    Result := freq
-  end;
+  if (Pos(',',freq) > 0) then
+    freq[Pos(',',freq)] := FormatSettings.DecimalSeparator;
   Result := freq
 end;
 
