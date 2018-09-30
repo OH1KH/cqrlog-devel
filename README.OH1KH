@@ -3,6 +3,11 @@
        !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
      !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
 --------------------------------------------------------------------------------------------------
+30.09.2018
+    - Double click on TRXControl/add/Modify mem list row sets rig with values in row
+    - Help files fixed
+						                (2.3.0(106)
+
 27.09.2018
     - Fixed satellite mode bug with frequency entered with comma, not dot as expected. Thanks to Andreas, DL7OSP
     - Added small explanation to help files (Quick start/NewQSO & Operation/NewQso(online logging))how to get

@@ -4021,6 +4021,7 @@ begin
   frmTRXControl.AutoMode := chkAutoMode.Checked
 end;
 
+
 procedure TfrmNewQSO.cmbFreqExit(Sender: TObject);
 begin
   if (not (fViewQSO or fEditQSO)) then
@@ -6270,7 +6271,7 @@ function TfrmNewQSO.CheckFreq(freq : String) : String;
 begin
   if (Pos(',',freq) > 0) then
     freq[Pos(',',freq)] := FormatSettings.DecimalSeparator;
-  Result := freq
+  Result := freq;
 end;
 
 procedure TfrmNewQSO.ReturnToNewQSO;

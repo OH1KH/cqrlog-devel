@@ -4,6 +4,7 @@ Legend:
   - bugfix
 --------------------
 2.3.0
+  + Double click on TRXControl/add/Modify mem list row sets rig with values in row  (Saku, OH1KH)
   - satellite RXfreq comma bug, (Andreas, DL7OSP & Saku, OH1KH)
   + TRXControl memory number indicator (Saku, OH1KH)
   - Fixed contest qso adif export / import. (Saku, OH1KH)

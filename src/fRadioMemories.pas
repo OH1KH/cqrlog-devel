@@ -48,8 +48,13 @@ type
     procedure FormShow(Sender: TObject);
     procedure sgrdMemCompareCells(Sender: TObject; ACol, ARow, BCol,
       BRow: Integer; var Result: integer);
+    procedure sgrdMemDblClick(Sender: TObject);
+    procedure sgrdMemSelectCell(Sender: TObject; aCol, aRow: Integer;
+      var CanSelect: Boolean);
   private
+
     procedure AddToGrid(freq,mode,bandwidth : String);
+
   public
     { public declarations }
   end;
@@ -57,11 +62,13 @@ type
 var
   frmRadioMemories: TfrmRadioMemories;
 
+  dcRow : integer;
+  dcRowOk : boolean ;
 implementation
 {$R *.lfm}
 { TfrmRadioMemories }
 
-uses dUtils, fAddRadioMemory;
+uses dUtils, fAddRadioMemory, fTRXControl;
 
 procedure TfrmRadioMemories.AddToGrid(freq,mode,bandwidth : String);
 begin
@@ -237,6 +244,31 @@ begin
   result := round(StrToFloat(sgrdMem.Cells[ACol,ARow])*1000-StrToFloat(sgrdMem.Cells[BCol,BRow])*1000);
   if sgrdMem.SortOrder = soDescending then
     result := -result
+end;
+
+procedure TfrmRadioMemories.sgrdMemDblClick(Sender: TObject);
+var       //set rig frequeny from memory table with doubleclick
+    freq      :Double;
+    mode      :String;
+    bandwidth :Integer;
+begin
+  if dcRowOk then
+   begin
+    freq      := StrToFloat(sgrdMem.Cells[0,dcRow]);
+    mode      := sgrdMem.Cells[1,dcRow];;
+    bandwidth := StrToInt(sgrdMem.Cells[2,dcRow]);
+    if freq > 0 then
+         frmTRXControl.SetFreqModeBandWidth(freq,mode,bandwidth);
+
+    dcRowOk :=false; //we handeld this one
+   end;
+end;
+
+procedure TfrmRadioMemories.sgrdMemSelectCell(Sender: TObject; aCol,
+  aRow: Integer; var CanSelect: Boolean);
+begin
+  dcRow:=aRow; //remember clicked row and handle it with ondblclick
+  dcRowOk :=true;
 end;
 
 end.
