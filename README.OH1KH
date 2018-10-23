@@ -1,13 +1,24 @@
 
 --------------------------------------------------------------------------------------------------
-       !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!
-     !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!
+       !!!! NOW YOU WILL FIND LATEST UPDATES COMMENTED AT THE START OF THIS FILE !!!!     oh1kh
+                                                                                           at
+     !!!!!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!!!!  sral.fi
 --------------------------------------------------------------------------------------------------
+23.10.2018
+    - Test fix to qso list scrolling problem by Andreas , DL7OAP. This may fail with large logs BE WARNED!!
+      I like to take this in to test as with my logs (<10000 qsos), as well as Andreas reported, this seems
+      to work ok.
+      We need more testers for this. if it fails I'll remove it from next test version.
+
+    - TRXConrol "M Wri" now stores frequency with decimals
+    - Closing TRXControl window does not close rig connection
+    - CW keys macros added/changed, see help.
+    - Help files fixed
+						                (2.3.0(107)
 30.09.2018
     - Double click on TRXControl/add/Modify mem list row sets rig with values in row
     - Help files fixed
 						                (2.3.0(106)
-
 27.09.2018
     - Fixed satellite mode bug with frequency entered with comma, not dot as expected. Thanks to Andreas, DL7OSP
     - Added small explanation to help files (Quick start/NewQSO & Operation/NewQso(online logging))how to get

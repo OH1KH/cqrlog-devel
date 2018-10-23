@@ -19,7 +19,7 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Dialogs, StdCtrls, iniFiles,
   DBGrids, aziloc, azidis3, process, DB, sqldb, Grids, Buttons, spin, colorbox,
   Menus, Graphics, Math, LazHelpHTML, lNet, DateUtils, fileutil, httpsend,
-  XMLRead, DOM, sqlscript, BaseUnix, Unix, LazFileUtils;
+  XMLRead, DOM, sqlscript, BaseUnix, Unix, LazFileUtils, strutils;
 
 type
   TExplodeArray = array of string;
@@ -227,7 +227,7 @@ type
     function  ExtractZipCode(qth : String; Position : Integer) : String;
     function  GetLabelBand(freq : String) : String;
     function  GetAdifBandFromFreq(MHz : string): String;
-    function  GetCWMessage(Key,call,rst_s,HisName,HelloMsg, text : String; QSONR : String = '') : String;
+    function  GetCWMessage(Key,call,rst_s,HisName,HelloMsg, text : String ) : String;
     function  RigGetcmd(r : String): String;
     function  GetLastQSLUpgradeDate : TDateTime;
     function  CallTrim(call : String) : String;
@@ -2582,17 +2582,19 @@ begin
   Result := LowerCase(GetBandFromFreq(freq));
 end;
 
-function TdmUtils.GetCWMessage(Key,call,rst_s,HisName,HelloMsg, text : String; QSONR : String = '') : String;
+function TdmUtils.GetCWMessage(Key,call,rst_s,HisName,HelloMsg, text : String ) : String;
 {
  %mc - my callsign
  %mn - my name
  %mq - my qth
- %nr - qso number
-
+ %ml - my locator
+ %rm - qso message #from contest report:   599|001|message
+ %rn - qso number  #from contest report:   599|001|message
+ %ro - qso number  #from contest report:   599|001|message   sends N instead of 9  and T instead of 0
  %r  - rst send
- %rs - rst send sends N instead of 9
- %n  - name
- %c  - callsign
+ %rs - rst send sends N instead of 9  and T instead of 0
+ %n  - his/her name
+ %c  - his/her callsign
 
  %h - greeting GM/GA/GE calculated from the station location time
 
@@ -2604,30 +2606,59 @@ var
   mycall : String = '';
   myname : String = '';
   myqth  : String = '';
-  rst_sh : String = '';
+  myloc  : String = '';
+  CWstr  : String = '';
+  QSONR  : String = '';
+  QSOMSG : String = '';
+  s      : integer;
+
+function ToShort(textin:string):String;
+  begin
+    textin := StringReplace(textin,'9','N',[rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(textin,'0','T',[rfReplaceAll, rfIgnoreCase]);//replace zeros, too
+  end;
+
 begin
   mycall := cqrini.ReadString('Station', 'Call', '');
   myname := cqrini.ReadString('Station', 'Name', '');
-  myqth := cqrini.ReadString('Station', 'QTH', '');
+  myqth  := cqrini.ReadString('Station', 'QTH', '');
+  myloc  := cqrini.ReadString('Station', 'LOC', '');
+  QSOMSG := ExtractDelimited(3,rst_s,['|']);
+  QSONR  := ExtractDelimited(2,rst_s,['|']);
+
+  if (QSONR <> '') then
+  begin
+   Try
+    s:= StrToInt(QSONR);
+   except
+    On E : EConvertError do
+      Begin
+        // only one item that is not serial nr, so it must be message
+         QSOMSG:=QSONR;
+         QSONR:='';
+      end;
+   end;
+  end;
+
   if key <> '' then
-    Result := LowerCase(cqrini.ReadString('CW', key, ''))
+    CWstr := LowerCase(cqrini.ReadString('CW', key, ''))
   else
-    Result := text;
+    CWstr := text;
 
-  rst_sh := StringReplace(rst_s,'9','N',[rfReplaceAll, rfIgnoreCase]);
-  rst_sh := StringReplace(rst_sh,'0','T',[rfReplaceAll, rfIgnoreCase]);//replace zeros, too
+  CWstr := StringReplace(CWstr,'%mc',mycall,[rfReplaceAll, rfIgnoreCase]);
+  CWstr := StringReplace(CWstr,'%mn',myname,[rfReplaceAll, rfIgnoreCase]);
+  CWstr := StringReplace(CWstr,'%mq',myqth,[rfReplaceAll, rfIgnoreCase]);
+  CWstr := StringReplace(CWstr,'%ml',myloc,[rfReplaceAll, rfIgnoreCase]);
+  CWstr := StringReplace(CWstr,'%rm',QSOMSG,[rfReplaceAll, rfIgnoreCase]);
+  CWstr := StringReplace(CWstr,'%rn',QSONR,[rfReplaceAll, rfIgnoreCase]);
+  CWstr := StringReplace(CWstr,'%ro',ToShort(QSONR),[rfReplaceAll, rfIgnoreCase]);
+  CWstr := StringReplace(CWstr,'%rs',ToShort(rst_s),[rfReplaceAll, rfIgnoreCase]);
+  CWstr := StringReplace(CWstr,'%r',rst_s,[rfReplaceAll, rfIgnoreCase]);
+  CWstr := StringReplace(CWstr,'%n',HisName,[rfReplaceAll, rfIgnoreCase]);
+  CWstr := StringReplace(CWstr,'%c',call,[rfReplaceAll, rfIgnoreCase]);
+  CWstr := StringReplace(CWstr,'%h',HelloMsg,[rfReplaceAll, rfIgnoreCase]);
 
-  Result := StringReplace(Result,'%mc',mycall,[rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result,'%mn',myname,[rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result,'%mq',myqth,[rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result,'%nr',QSONR,[rfReplaceAll, rfIgnoreCase]);
-
-  Result := StringReplace(Result,'%rs',rst_sh,[rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result,'%r',rst_s,[rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result,'%n',HisName,[rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result,'%c',call,[rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result,'%h',HelloMsg,[rfReplaceAll, rfIgnoreCase]);
-
+  Result := CWstr;
   if dmData.DebugLevel>=1 then Writeln('Sending:',Result)
 end;
 

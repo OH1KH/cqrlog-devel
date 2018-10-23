@@ -1,13 +1,13 @@
 object frmMain: TfrmMain
-  Left = 639
+  Left = 402
   Height = 642
-  Top = 231
+  Top = 131
   Width = 874
   HelpType = htKeyword
   HelpKeyword = 'help/index.html'
   ActiveControl = Panel2
   Caption = 'CQRLOG for Linux'
-  ClientHeight = 619
+  ClientHeight = 617
   ClientWidth = 874
   Constraints.MinHeight = 148
   Constraints.MinWidth = 536
@@ -159,7 +159,7 @@ object frmMain: TfrmMain
   LCLVersion = '1.8.2.0'
   object sbMain: TStatusBar
     Left = 0
-    Height = 21
+    Height = 19
     Top = 598
     Width = 874
     Panels = <    
@@ -196,7 +196,7 @@ object frmMain: TfrmMain
     OnClick = pnlButtonsClick
     object btnNewQSO: TBitBtn
       Left = 8
-      Height = 29
+      Height = 33
       Top = 5
       Width = 130
       Action = acNewQSO
@@ -208,7 +208,7 @@ object frmMain: TfrmMain
       AnchorSideLeft.Control = btnNewQSO
       AnchorSideLeft.Side = asrBottom
       Left = 148
-      Height = 29
+      Height = 33
       Top = 5
       Width = 130
       Action = acView
@@ -219,7 +219,7 @@ object frmMain: TfrmMain
     end
     object btnClose: TBitBtn
       Left = 733
-      Height = 29
+      Height = 33
       Top = 5
       Width = 130
       Action = acClose
@@ -231,7 +231,7 @@ object frmMain: TfrmMain
     object btnDeleteQSO: TBitBtn
       AnchorSideRight.Control = btnClose
       Left = 593
-      Height = 29
+      Height = 33
       Top = 5
       Width = 130
       Action = acDeleteQSO
@@ -244,7 +244,7 @@ object frmMain: TfrmMain
     object btnSort: TBitBtn
       AnchorSideRight.Control = btnDeleteQSO
       Left = 453
-      Height = 29
+      Height = 33
       Top = 5
       Width = 130
       Action = acSort
@@ -258,7 +258,7 @@ object frmMain: TfrmMain
       AnchorSideLeft.Control = btnViewQSO
       AnchorSideLeft.Side = asrBottom
       Left = 288
-      Height = 29
+      Height = 33
       Top = 5
       Width = 130
       Action = acEditQSO
@@ -285,7 +285,7 @@ object frmMain: TfrmMain
       Left = 0
       Height = 17
       Top = 0
-      Width = 73
+      Width = 72
       Alignment = taRightJustify
       Caption = 'QSO in log:'
       ParentColor = False
@@ -294,10 +294,10 @@ object frmMain: TfrmMain
     object lblQSOCount: TLabel
       AnchorSideLeft.Control = lblQSOInLog
       AnchorSideLeft.Side = asrBottom
-      Left = 83
+      Left = 82
       Height = 17
       Top = 0
-      Width = 40
+      Width = 45
       BorderSpacing.Left = 10
       Caption = '10000'
       Font.Color = clBlack
@@ -311,7 +311,7 @@ object frmMain: TfrmMain
       Left = 344
       Height = 17
       Top = 0
-      Width = 41
+      Width = 40
       Anchors = [akBottom]
       Caption = 'DXCC:'
       ParentColor = False
@@ -320,10 +320,10 @@ object frmMain: TfrmMain
     object lblDXCC: TLabel
       AnchorSideLeft.Control = lblDXCCWorked
       AnchorSideLeft.Side = asrBottom
-      Left = 395
+      Left = 394
       Height = 21
       Top = 0
-      Width = 58
+      Width = 59
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 10
       Caption = '238'
@@ -332,10 +332,10 @@ object frmMain: TfrmMain
       ParentFont = False
     end
     object lblDXCCConfirmed: TLabel
-      Left = 737
+      Left = 738
       Height = 17
       Top = 0
-      Width = 74
+      Width = 73
       Alignment = taRightJustify
       Anchors = [akTop, akRight]
       Caption = 'DXCC CFM:'
@@ -668,7 +668,7 @@ object frmMain: TfrmMain
       Left = 8
       Height = 17
       Top = 8
-      Width = 127
+      Width = 122
       BorderSpacing.Top = 10
       Caption = 'Comment for QSO:'
       ParentColor = False
@@ -680,7 +680,7 @@ object frmMain: TfrmMain
       Left = 9
       Height = 17
       Top = 35
-      Width = 48
+      Width = 44
       BorderSpacing.Top = 10
       Caption = 'Award:'
       ParentColor = False
@@ -689,10 +689,10 @@ object frmMain: TfrmMain
     object dbtComment: TDBText
       AnchorSideLeft.Control = lblCommentForQSO
       AnchorSideLeft.Side = asrBottom
-      Left = 145
+      Left = 140
       Height = 17
       Top = 8
-      Width = 90
+      Width = 85
       BorderSpacing.Left = 10
       ParentColor = False
     end
@@ -701,10 +701,10 @@ object frmMain: TfrmMain
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = lblCommentForQSO
       AnchorSideTop.Side = asrBottom
-      Left = 67
+      Left = 63
       Height = 17
       Top = 35
-      Width = 68
+      Width = 61
       BorderSpacing.Left = 10
       BorderSpacing.Top = 10
       ParentColor = False
@@ -723,7 +723,7 @@ object frmMain: TfrmMain
         Left = 7
         Height = 17
         Top = 12
-        Width = 72
+        Width = 70
         Caption = 'QS_S date:'
         ParentColor = False
         ParentFont = False
@@ -732,7 +732,7 @@ object frmMain: TfrmMain
         Left = 89
         Height = 17
         Top = 12
-        Width = 91
+        Width = 85
         ParentColor = False
       end
       object dbtQSLRDate: TDBText
@@ -741,7 +741,7 @@ object frmMain: TfrmMain
         Left = 89
         Height = 17
         Top = 39
-        Width = 92
+        Width = 86
         BorderSpacing.Top = 10
         ParentColor = False
       end
@@ -751,7 +751,7 @@ object frmMain: TfrmMain
         Left = 7
         Height = 17
         Top = 39
-        Width = 73
+        Width = 71
         BorderSpacing.Top = 10
         Caption = 'QS_R date:'
         ParentColor = False
@@ -772,7 +772,7 @@ object frmMain: TfrmMain
         Left = 7
         Height = 17
         Top = 13
-        Width = 114
+        Width = 110
         Caption = 'LoTW QS_S date:'
         ParentColor = False
         ParentFont = False
@@ -781,7 +781,7 @@ object frmMain: TfrmMain
         Left = 134
         Height = 17
         Top = 13
-        Width = 98
+        Width = 90
         ParentColor = False
       end
       object dbtLoTWQSLR: TDBText
@@ -790,7 +790,7 @@ object frmMain: TfrmMain
         Left = 134
         Height = 17
         Top = 40
-        Width = 99
+        Width = 91
         BorderSpacing.Top = 10
         ParentColor = False
       end
@@ -800,7 +800,7 @@ object frmMain: TfrmMain
         Left = 7
         Height = 17
         Top = 40
-        Width = 115
+        Width = 111
         BorderSpacing.Top = 10
         Caption = 'LoTW QS_R date:'
         ParentColor = False

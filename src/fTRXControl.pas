@@ -718,7 +718,7 @@ begin
         dmData.LoadFreqMemories(frmRadioMemories.sgrdMem);
         bandwidth:= radio.GetPassOnly;
         mode     := radio.GetRawMode;
-        freq     := FloatToStrF(Dfreq,ffFixed,15,0);
+        freq     := FloatToStrF(Dfreq,ffGeneral,15,0);
         if (mode<>'') then
          begin
           frmRadioMemories.sgrdMem.RowCount := frmRadioMemories.sgrdMem.RowCount + 1;
@@ -792,8 +792,8 @@ end;
 procedure TfrmTRXControl.FormCloseQuery(Sender : TObject; var CanClose : boolean
   );
 begin
-  if Assigned(radio) then
-    FreeAndNil(radio)
+  //closing this causes rig control fade if only TRXControl window is closed while program still running
+    // if Assigned(radio) then  FreeAndNil(radio)
 end;
 
 procedure TfrmTRXControl.FormCreate(Sender: TObject);

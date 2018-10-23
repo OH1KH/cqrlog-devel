@@ -1429,6 +1429,8 @@ var
   id1     : Integer = 0;
   call    : String = '';
 begin
+  //HACKHACK
+  {
   if ((key = VK_END) and (Shift = [ssCtrl])) and (not dmData.IsFilter) then
   begin
     if StrToInt(lblQSOCount.Caption) = 0 then
@@ -1584,6 +1586,7 @@ begin
       dmData.qCQRLOG.EnableControls
     end
   end;
+  }
   CheckAttachment
 end;
 
@@ -1874,7 +1877,9 @@ begin
   sbMain.Visible := True;   // and after resize windows was visible again
 
   dmData.qCQRLOG.Close;
-  dmData.qCQRLOG.SQL.Text := 'select * from view_cqrlog_main_by_qsodate LIMIT '+IntToStr(cDB_LIMIT)+' OFFSET 0';
+// HACKHACK
+//  dmData.qCQRLOG.SQL.Text := 'select * from view_cqrlog_main_by_qsodate LIMIT '+IntToStr(cDB_LIMIT)+' OFFSET 0';
+  dmData.qCQRLOG.SQL.Text := 'select * from view_cqrlog_main_by_qsodate';
   dmData.qCQRLOG.Open;
 
   sbMain.Panels[2].Text := '';
