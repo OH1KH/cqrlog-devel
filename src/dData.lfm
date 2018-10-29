@@ -3,8 +3,8 @@ object dmData: TdmData
   OnDestroy = DataModuleDestroy
   OldCreateOrder = False
   Height = 606
-  HorizontalOffset = 406
-  VerticalOffset = 62
+  HorizontalOffset = 413
+  VerticalOffset = 52
   Width = 822
   PPI = 96
   object dsrMain: TDataSource

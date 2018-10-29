@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, lclintf, ComCtrls, Types;
+  StdCtrls, lclintf, ComCtrls;
 
 type
 
@@ -31,8 +31,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure lblLinkClick(Sender: TObject);
     procedure lblLinkMouseEnter(Sender: TObject);
-    procedure tabAboutContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: Boolean);
   private
     { private declarations }
   public
@@ -52,12 +50,6 @@ uses fChangelog, uVersion;
 procedure TfrmAbout.lblLinkMouseEnter(Sender: TObject);
 begin
   lblLink.Cursor := crHandPoint
-end;
-
-procedure TfrmAbout.tabAboutContextPopup(Sender: TObject; MousePos: TPoint;
-  var Handled: Boolean);
-begin
-
 end;
 
 procedure TfrmAbout.lblLinkClick(Sender: TObject);
