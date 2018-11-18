@@ -61,10 +61,11 @@ type
     gbMode: TGroupBox;
     GroupBox4: TGroupBox;
     lblFreq: TLabel;
-    MenuItem1: TMenuItem;
-    MenuItem2: TMenuItem;
-    MenuItem3: TMenuItem;
-    MenuItem4: TMenuItem;
+    mnuOpenMem: TMenuItem;
+    mnuPref: TMenuItem;
+    mnuAddMod: TMenuItem;
+    mnuShowPwr: TMenuItem;
+    mnuProgPref: TMenuItem;
     mnuMem: TMainMenu;
     pnlRig: TPanel;
     pnlMain: TPanel;
@@ -103,8 +104,8 @@ type
     procedure btnFMClick(Sender: TObject);
     procedure btnRTTYClick(Sender: TObject);
     procedure btnSSBClick(Sender: TObject);
-    procedure MenuItem3Click(Sender: TObject);
-    procedure MenuItem4Click(Sender: TObject);
+    procedure mnuShowPwrClick(Sender: TObject);
+    procedure mnuProgPrefClick(Sender: TObject);
     procedure rbRadio1Click(Sender: TObject);
     procedure rbRadio2Click(Sender: TObject);
     procedure tmrRadioTimer(Sender : TObject);
@@ -641,23 +642,23 @@ begin
   end
 end;
 
-procedure TfrmTRXControl.MenuItem3Click(Sender: TObject);
+procedure TfrmTRXControl.mnuShowPwrClick(Sender: TObject);
 begin
       if pnlPower.Visible then
         Begin
          pnlPower.Visible:= false;
-         Menuitem3.Checked:= false;
+         mnuShowPwr.Checked:= false;
         end
        else
         Begin
          pnlPower.Visible:= true;
          btPonClick(nil); //setting buttons visible sends PwrOn to sync button colors
-         Menuitem3.Checked:= true;
+         mnuShowPwr.Checked:= true;
         end;
       cqrini.WriteBool('TRX','PowerButtons',pnlPower.Visible);
 end;
 
-procedure TfrmTRXControl.MenuItem4Click(Sender: TObject);
+procedure TfrmTRXControl.mnuProgPrefClick(Sender: TObject);
 begin
   cqrini.WriteInteger('Pref', 'ActPageIdx', 5);  //set DXCuster tab active. Number may change if preferences page change
   frmNewQSO.acPreferences.Execute
@@ -688,17 +689,41 @@ end;
 
 procedure TfrmTRXControl.acAddModMemExecute(Sender: TObject);
 begin
-  frmRadioMemories := TfrmRadioMemories.Create(frmTRXControl);
-  try
-    dmData.LoadFreqMemories(frmRadioMemories.sgrdMem);
-    frmRadioMemories.ShowModal;
-    if frmRadioMemories.ModalResult = mrOK then
-    begin
-      dmData.StoreFreqMemories(frmRadioMemories.sgrdMem)
-    end
-  finally
-    FreeAndNil(frmRadioMemories)
-  end
+  if frmRadioMemories <> nil then
+    Begin
+      if  frmRadioMemories.ShowMode then   //is open in show list mode
+          frmRadioMemories.Width:=frmRadioMemories.Width +100; //panel restore width
+       frmRadioMemories.Close;
+       FreeAndNil(frmRadioMemories);
+    end;
+    frmRadioMemories := TfrmRadioMemories.Create(frmTRXControl);
+     if Sender = mnuOpenMem then     //show only
+      Begin
+         frmRadioMemories.Show;
+         frmRadioMemories.Panel1.Visible:=false;
+         frmRadioMemories.Width:=frmRadioMemories.Width -100; //panel cut width
+         frmRadioMemories.ShowMode := True;
+         try
+          dmData.LoadFreqMemories(frmRadioMemories.sgrdMem);
+         except
+          on E: Exception do
+          ShowMessage( 'Could not load memories: '+ E.ClassName + #13#10 + E.Message );
+         end;
+      end
+    else
+     begin
+      try
+         dmData.LoadFreqMemories(frmRadioMemories.sgrdMem);
+         frmRadioMemories.ShowModal;
+         if frmRadioMemories.ModalResult = mrOK then
+          begin
+            dmData.StoreFreqMemories(frmRadioMemories.sgrdMem)
+          end
+      finally
+       FreeAndNil(frmRadioMemories)
+      end;
+     end;
+
 end;
 
 procedure TfrmTRXControl.btnMemWriClick(Sender: TObject);
@@ -739,8 +764,9 @@ var
   freq      : Double;
   mode      : String;
   bandwidth : Integer;
+  info      : String;
 begin
-  dmData.GetNextFreqFromMem(freq,mode,bandwidth);
+  dmData.GetNextFreqFromMem(freq,mode,bandwidth,info);
   if freq > 0 then
     SetFreqModeBandWidth(freq,mode,bandwidth)
 end;
@@ -750,8 +776,9 @@ var
   freq      : Double;
   mode      : String;
   bandwidth : Integer;
+  info      : String;
 begin
-  dmData.GetPreviousFreqFromMem(freq,mode,bandwidth);
+  dmData.GetPreviousFreqFromMem(freq,mode,bandwidth,info);
   if freq > 0 then
     SetFreqModeBandWidth(freq,mode,bandwidth)
 end;
@@ -889,7 +916,7 @@ begin
   Result := True;
 
   pnlPower.Visible  := cqrini.ReadBool('TRX','PowerButtons',False);
-  Menuitem3.Checked := pnlPower.Visible;
+  mnuShowPwr.Checked := pnlPower.Visible;
   if pnlPower.Visible then btPonClick(nil);
                             // all rigs do not support rigctld power switching
                             //so we just put pwr button ON and send rigctld PWR ON cmd

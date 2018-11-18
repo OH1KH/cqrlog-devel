@@ -3,7 +3,29 @@
   +  DMR  +                                                                                +   @    +
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
-
+18.11.2018
+    - Modified radio memories database. Running WILL ALTER DATABASE TABLE FREQMEM ADDING COLUMN INFO (Do your backups!)
+      You can now add 25char description of radio memory. Logs are backward compatible, but opening log with 
+      older cqrlog version and opening add/modify memory from TRXcontrol wipes out contents of info columns.
+      Staring part if info string (5chrs) will show up in field under "M Wri" when pressing "M up", "M dn".
+      If no info string exist field will show memory line number (M #) as before (see version 104).
+    - added menu item "Open memory list" to TRXControl/Preferences. You can now open memory list window
+      (withhout edit) and double click lines to set radio frequency. When this list is open you can do logging etc.
+      that is not possible when "Add/Modify memories window is open. To close this window use "x" in top right of window.
+      (See updated help "Operation/"TRXControl")   
+    - added rectangular selection to Prferences/xplanet. (Code from Andreas, DL7OAP. Thanks !)
+    - the new fix for qso list scrolling. It works like following: 
+	When open the qsolist it starts always reading with Max 500 last qso lines (like before).
+	When using arrow up and down or page up and down nothing happen, still using those Max 500 qsos.
+	When you are using CTRL-END, CTRL-Home or you are switching over 500 with "page down" or "arrow down" then
+	the whole log is loaded and shown in the qso list. After this switch the qsolist will remain to have 
+	the whole log open. Of course you can close qsolist window and reopen it... then you start again with first 500 qsos.
+	I think this will help people who have PC with small CPU and memory to be able to work with this, too.
+	Because most of the time when I'm using the qsolist, I only want to see the last 20-50 qsos. There are only
+	very few days I am searching in the whole log file. So cqrlog only loads the whole log, when some one wnts to
+	scroll far down, or jumps with Ctrl-END to the end of the log.
+								(Code from Andreas, DL7OAP. Thanks ! )
+						                (2.3.0(109)
 29.10.2018
     - just changed the changelog splash. You do not see difference unless you FIRST install new help files from zip.
 						                (2.3.0(108)
@@ -23,7 +45,7 @@
     - Help files fixed
 						                (2.3.0(106)
 27.09.2018
-    - Fixed satellite mode bug with frequency entered with comma, not dot as expected. Thanks to Andreas, DL7OSP
+    - Fixed satellite mode bug with frequency entered with comma, not dot as expected. Thanks to Andreas, DL7OAP
     - Added small explanation to help files (Quick start/NewQSO & Operation/NewQso(online logging))how to get
       satellite mode in use
 						                (2.3.0(105)

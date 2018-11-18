@@ -294,7 +294,6 @@ object frmTRXControl: TfrmTRXControl
       BorderSpacing.Left = 6
       BorderSpacing.Top = 1
       DragCursor = crNone
-      Font.Style = [fsBold]
       ParentFont = False
       ReadOnly = True
       TabOrder = 8
@@ -675,19 +674,24 @@ object frmTRXControl: TfrmTRXControl
   object mnuMem: TMainMenu
     left = 104
     top = 48
-    object MenuItem1: TMenuItem
+    object mnuPref: TMenuItem
       Caption = 'Preferences'
-      object MenuItem2: TMenuItem
-        Action = acAddModMem
+      object mnuOpenMem: TMenuItem
+        Caption = 'Open memory list'
+        OnClick = acAddModMemExecute
       end
-      object MenuItem3: TMenuItem
+      object mnuAddMod: TMenuItem
+        Action = acAddModMem
+        Caption = 'Add/Modify memories'
+      end
+      object mnuShowPwr: TMenuItem
         Caption = 'Show Pwr buttons'
         Checked = True
-        OnClick = MenuItem3Click
+        OnClick = mnuShowPwrClick
       end
-      object MenuItem4: TMenuItem
+      object mnuProgPref: TMenuItem
         Caption = 'Preferences'
-        OnClick = MenuItem4Click
+        OnClick = mnuProgPrefClick
       end
     end
   end

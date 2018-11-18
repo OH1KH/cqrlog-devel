@@ -1,21 +1,40 @@
 object frmRadioMemories: TfrmRadioMemories
-  Left = 476
-  Height = 510
-  Top = 232
-  Width = 482
+  Left = 296
+  Height = 415
+  Top = 184
+  Width = 578
   Caption = 'Memories'
-  ClientHeight = 510
-  ClientWidth = 482
+  ClientHeight = 415
+  ClientWidth = 578
   OnClose = FormClose
   OnShow = FormShow
   LCLVersion = '1.8.2.0'
   object sgrdMem: TStringGrid
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
     Left = 0
-    Height = 510
+    Height = 415
     Top = 0
-    Width = 379
+    Width = 478
     Align = alClient
-    ColCount = 3
+    ColCount = 4
+    Columns = <    
+      item
+        Title.Caption = 'Freq (kHz)'
+        Width = 81
+      end    
+      item
+        Title.Caption = 'Mode'
+        Width = 74
+      end    
+      item
+        Title.Caption = 'Bandwidth (Hz)'
+        Width = 109
+      end    
+      item
+        Title.Caption = 'Info'
+        Width = 211
+      end>
     FixedCols = 0
     RowCount = 1
     TabOrder = 0
@@ -23,34 +42,28 @@ object frmRadioMemories: TfrmRadioMemories
     OnDblClick = sgrdMemDblClick
     OnSelectCell = sgrdMemSelectCell
     ColWidths = (
-      132
-      104
-      115
-    )
-    Cells = (
-      3
-      0
-      0
-      'Freq (kHz)'
-      1
-      0
-      'Mode'
-      2
-      0
-      'Bandwidth (Hz)'
+      81
+      74
+      109
+      211
     )
   end
   object Panel1: TPanel
-    Left = 379
-    Height = 510
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = sgrdMem
+    Left = 478
+    Height = 415
     Top = 0
-    Width = 103
+    Width = 100
     Align = alRight
+    Anchors = [akTop, akRight]
     BevelOuter = bvNone
-    ClientHeight = 510
-    ClientWidth = 103
+    ClientHeight = 415
+    ClientWidth = 100
     TabOrder = 1
-    object Button1: TButton
+    object btnCancel: TButton
       Left = 16
       Height = 25
       Top = 48
@@ -60,7 +73,7 @@ object frmRadioMemories: TfrmRadioMemories
       ModalResult = 2
       TabOrder = 0
     end
-    object Button2: TButton
+    object btnAdd: TButton
       Left = 16
       Height = 25
       Top = 128
@@ -68,7 +81,7 @@ object frmRadioMemories: TfrmRadioMemories
       Action = acAdd
       TabOrder = 1
     end
-    object Button3: TButton
+    object btnEdit: TButton
       Left = 16
       Height = 25
       Top = 160
@@ -76,7 +89,7 @@ object frmRadioMemories: TfrmRadioMemories
       Action = acEdit
       TabOrder = 2
     end
-    object Button4: TButton
+    object btnDelete: TButton
       Left = 16
       Height = 25
       Top = 200
@@ -84,13 +97,13 @@ object frmRadioMemories: TfrmRadioMemories
       Action = acDelete
       TabOrder = 3
     end
-    object btnFunction: TButton
+    object btnMore: TButton
       Left = 16
       Height = 25
       Top = 254
       Width = 75
       Caption = 'More...'
-      OnClick = btnFunctionClick
+      OnClick = btnMoreClick
       TabOrder = 4
     end
     object btnOK: TButton

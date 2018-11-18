@@ -3,7 +3,7 @@ object dmData: TdmData
   OnDestroy = DataModuleDestroy
   OldCreateOrder = False
   Height = 606
-  HorizontalOffset = 413
+  HorizontalOffset = 408
   VerticalOffset = 52
   Width = 822
   PPI = 96
@@ -413,7 +413,8 @@ object dmData: TdmData
       '       id int NOT NULL AUTO_INCREMENT PRIMARY KEY,'
       '       freq numeric(10,4) NOT NULL,'
       '       mode varchar(12) NOT NULL,'
-      '       bandwidth int NOT NULL'
+      '       bandwidth int NOT NULL,'
+      '       info varchar(25) NULL'
       ') COLLATE ''utf8_bin'';'
       ''
     )

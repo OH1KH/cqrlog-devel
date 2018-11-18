@@ -179,7 +179,7 @@ type
     procedure UpgradeCommonDatabase(old_version : Integer);
     procedure PrepareMysqlConfigFile;
     procedure DeleteOldConfigFiles;
-    procedure GetCurrentFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer);
+    procedure GetCurrentFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer; var info : String);
   public
     MainCon      : TSQLConnection;
     BandMapCon   : TSQLConnection;
@@ -316,8 +316,8 @@ type
     procedure RemoveLoTWUploadedFlag(id : Integer);
     procedure StoreFreqMemories(grid : TStringGrid);
     procedure LoadFreqMemories(grid : TStringGrid);
-    procedure GetPreviousFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer);
-    procedure GetNextFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer);
+    procedure GetPreviousFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer; var info : String);
+    procedure GetNextFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer; var info : String);
     procedure OpenFreqMemories(mode : String);
     procedure SaveBandChanges(band : String; BandBegin, BandEnd, BandCW, BandRTTY, BandSSB, RXOffset, TXOffset : Currency);
     procedure GetRXTXOffset(Freq : Currency; var RXOffset,TXOffset : Currency);
@@ -3123,6 +3123,7 @@ begin
         Q1.SQL.Add('  freq numeric(10,4) NOT NULL,');
         Q1.SQL.Add('  mode varchar(10) NOT NULL,');
         Q1.SQL.Add('  bandwidth int NOT NULL');
+        Q1.SQL.Add('  info varchar(25) NULL');      //null makes log backward compatible with old cqrlogs
         Q1.SQL.Add(') COLLATE '+QuotedStr('utf8_bin')+';');
         if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
         Q1.ExecSQL;
@@ -3913,7 +3914,7 @@ end;
 
 procedure TdmData.StoreFreqMemories(grid : TStringGrid);
 const
-  C_INS = 'insert into freqmem (freq,mode,bandwidth) values (:freq,:mode,:bandwidth)';
+  C_INS = 'insert into freqmem (freq,mode,bandwidth,info) values (:freq,:mode,:bandwidth,:info)';
   C_DEL = 'delete from freqmem';
 var
   i : Integer;
@@ -3929,6 +3930,7 @@ begin
       Q.Params[0].AsFloat   := StrToFloat(grid.Cells[0,i]);
       Q.Params[1].AsString  := grid.Cells[1,i];
       Q.Params[2].AsInteger := StrToInt(grid.Cells[2,i]);
+      Q.Params[3].AsString  := grid.Cells[3,i];
       Q.ExecSQL
     end
   except
@@ -3944,7 +3946,7 @@ end;
 
 procedure TdmData.LoadFreqMemories(grid : TStringGrid);
 const
-  C_SEL = 'select freq,mode,bandwidth from freqmem order by id';
+  C_SEL = 'select freq,mode,bandwidth,info from freqmem order by id';
 begin
   try
     grid.RowCount := 1;
@@ -3957,6 +3959,7 @@ begin
       grid.Cells[0,grid.RowCount-1] := FloatToStrF(Q.Fields[0].AsFloat,ffFixed,15,3);
       grid.Cells[1,grid.RowCount-1] := Q.Fields[1].AsString;
       grid.Cells[2,grid.RowCount-1] := IntToStr(Q.Fields[2].AsInteger);
+      grid.Cells[3,grid.RowCount-1] := Q.Fields[3].AsString;
       Q.Next
     end
   finally
@@ -3967,11 +3970,48 @@ end;
 
 procedure TdmData.OpenFreqMemories(mode : String);
 const
-  C_SEL = 'select id,freq,mode,bandwidth from freqmem';
+  C_SEL = 'select id,freq,mode,bandwidth,info from freqmem';
 begin
   qFreqMem.Close;
   if trFreqMem.Active then
     trFreqMem.Rollback;
+
+   //-------------------this should be done via check database version/update----------------------------------
+   //-------------------this should be done via check database version/update----------------------------------
+
+   try        //do we have column "info" in table?
+    dmData.trQ.StartTransaction;
+    dmData.Q.SQL.Text := C_SEL;
+    try
+     if fDebugLevel>=1 then Writeln('Test Column freqmem:info');
+     dmData.Q.Open;
+    except
+      Begin
+      if fDebugLevel>=1 then Writeln('Column freqmem:info is missing!');
+        try
+          dmData.Q.Close;
+          if fDebugLevel>=1 then Writeln('Column freqmem:info add1');
+          dmData.Q.SQL.Text :='alter table freqmem add column info varchar(25) NULL';
+          if fDebugLevel>=1 then Writeln('Column freqmem:info add2');dmData.Q.ExecSQL;
+          dmData.trQ.Commit;
+          if fDebugLevel>=1 then Writeln('Column freqmem:info added!');
+          dmData.trQ.StartTransaction;  //open trQ again if we continue to opening below
+        except
+          on E : Exception do
+                    begin
+                      ShowMessage('Error adding colum freqmem:info '+LineEnding+E.Message);
+                      if fDebugLevel>=1 then Writeln('Could not create column freqmem:info!');
+                    end;
+        end;
+      end;
+    end;
+  finally
+    dmData.Q.Close;
+    dmData.trQ.Rollback
+  end;
+  //-------------------this should be done via check database version/update----------------------------------
+  //-------------------this should be done via check database version/update----------------------------------
+
 
   if (mode='') then
     qFreqMem.SQL.Text := C_SEL + ' order by id'
@@ -3998,18 +4038,20 @@ begin
   if fDebugLevel>=1 then Writeln('FreqmemFirst:',fFirstMemId,'  FreqmemLast:',fLastMemId);
 end;
 
-procedure TdmData.GetCurrentFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer);
+procedure TdmData.GetCurrentFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer; var info : String);
 begin
   if (qFreqMem.RecordCount > 0) then
   begin
     freq      := qFreqMem.Fields[1].AsFloat;
     mode      := qFreqMem.Fields[2].AsString;
     bandwidth := qFreqMem.Fields[3].AsInteger;
+    info      := qFreqMem.Fields[4].AsString;
     if (qFreqMem.Fields[0].AsInteger = fLastMemId) then
       frmTRXControl.edtMemNr.Font.Color:= $FB7306
      else
       frmTRXControl.edtMemNr.Font.Color:= clDefault;
-    frmTRXControl.edtMemNr.Text := 'M '+IntToStr(qFreqMem.Fields[0].AsInteger - fFirstMemId +1);
+    if info='' then frmTRXControl.edtMemNr.Text := 'M '+IntToStr(qFreqMem.Fields[0].AsInteger - fFirstMemId +1)
+               else frmTRXControl.edtMemNr.Text := info;
   end
   else begin
      freq      := 0;
@@ -4021,7 +4063,7 @@ begin
   if fDebugLevel>=1 then Writeln('Freq:',freq,' mode:',mode,' bandwidth:',bandwidth);
 end;
 
-procedure TdmData.GetPreviousFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer);
+procedure TdmData.GetPreviousFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer; var info : String);
 begin
   if not qFreqMem.Active then
   begin
@@ -4036,11 +4078,11 @@ begin
     else
       qFreqMem.Prior
   end;
-  GetCurrentFreqFromMem(freq,mode,bandwidth)
+  GetCurrentFreqFromMem(freq,mode,bandwidth,info)
 end;
 
 
-procedure TdmData.GetNextFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer);
+procedure TdmData.GetNextFreqFromMem(var freq : Double; var mode : String; var bandwidth : Integer; var info : String);
 begin
   if not qFreqMem.Active then
   begin
@@ -4054,7 +4096,7 @@ begin
     else
       qFreqMem.Next
   end;
-  GetCurrentFreqFromMem(freq,mode,bandwidth)
+  GetCurrentFreqFromMem(freq,mode,bandwidth,info)
 end;
 
 
