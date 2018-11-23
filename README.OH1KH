@@ -3,6 +3,13 @@
   +  DMR  +                                                                                +   @    +
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
+
+23.11.2018
+    - Fixed info field TRXControl below "Mwri"-button update/clr. 
+    - Added wb4 (worked before) date check limit. It affects CQ-monitor colors and grid map's squares and summary.
+      Read revised help included. index/Quick start/wsjtx interface. (so remember to install help files from zip!)
+      Utility is rather poorly tested, so expecting to hear comments...
+						                (2.3.0(110)
 18.11.2018
     - Modified radio memories database. Running WILL ALTER DATABASE TABLE FREQMEM ADDING COLUMN INFO (Do your backups!)
       You can now add 25char description of radio memory. Logs are backward compatible, but opening log with 

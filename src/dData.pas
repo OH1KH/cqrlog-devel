@@ -4047,18 +4047,20 @@ begin
     bandwidth := qFreqMem.Fields[3].AsInteger;
     info      := qFreqMem.Fields[4].AsString;
     if (qFreqMem.Fields[0].AsInteger = fLastMemId) then
-      frmTRXControl.edtMemNr.Font.Color:= $FB7306
+      frmTRXControl.edtMemNr.Font.Color:= clFuchsia
      else
-      frmTRXControl.edtMemNr.Font.Color:= clDefault;
+    frmTRXControl.edtMemNr.Font.Color:= clDefault;
     if info='' then frmTRXControl.edtMemNr.Text := 'M '+IntToStr(qFreqMem.Fields[0].AsInteger - fFirstMemId +1)
                else frmTRXControl.edtMemNr.Text := info;
+    frmTRXControl.infosetstage :=1;
   end
   else begin
      freq      := 0;
      mode      := 'CW';
      bandwidth := 0;
      frmTRXControl.edtMemNr.Font.Color:= clRed;
-     frmTRXControl.edtMemNr.Text := 'M 0';
+     frmTRXControl.edtMemNr.Text := 'None';
+     frmTRXControl.infosetstage :=1;
   end;
   if fDebugLevel>=1 then Writeln('Freq:',freq,' mode:',mode,' bandwidth:',bandwidth);
 end;

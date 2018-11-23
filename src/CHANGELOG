@@ -4,6 +4,8 @@ Legend:
   - bugfix
 --------------------
 2.3.0
+  + WB4 date limit for CQ-monitor and grid map.
+  - TRXContorl info field update.
   + Rectangular view selecteble via Preferences/Xplanet.(Andreas, DL7OAP)
   + TRXControl/Open memory list. Double click on row of list sets rig. Can be open in normal operation (Sak,OH1KH) 
   - Qso list scrolling problem fix (Andreas, DL7OAP)

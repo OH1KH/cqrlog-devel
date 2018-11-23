@@ -1,7 +1,7 @@
 object frmRadioMemories: TfrmRadioMemories
-  Left = 296
+  Left = 347
   Height = 415
-  Top = 184
+  Top = 349
   Width = 578
   Caption = 'Memories'
   ClientHeight = 415

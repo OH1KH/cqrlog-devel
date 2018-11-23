@@ -1,11 +1,11 @@
 object frmTRXControl: TfrmTRXControl
-  Left = 866
-  Height = 277
-  Top = 34
+  Left = 969
+  Height = 283
+  Top = 439
   Width = 307
   Anchors = []
   Caption = 'TRX control'
-  ClientHeight = 252
+  ClientHeight = 258
   ClientWidth = 307
   Icon.Data = {
     BE1000000000010001002020000001002000A810000016000000280000002000
@@ -156,12 +156,12 @@ object frmTRXControl: TfrmTRXControl
   LCLVersion = '1.8.2.0'
   object gbMode: TGroupBox
     Left = 240
-    Height = 252
+    Height = 258
     Top = 0
     Width = 67
     Align = alRight
     Caption = ' Mode '
-    ClientHeight = 234
+    ClientHeight = 240
     ClientWidth = 65
     TabOrder = 0
     object btnCW: TButton
@@ -301,13 +301,13 @@ object frmTRXControl: TfrmTRXControl
   end
   object pnlMain: TPanel
     Left = 0
-    Height = 252
+    Height = 258
     Top = 0
     Width = 240
     Align = alClient
     BevelOuter = bvNone
     Caption = 'pnlMain'
-    ClientHeight = 252
+    ClientHeight = 258
     ClientWidth = 240
     TabOrder = 1
     object gbVfo: TGroupBox
@@ -370,12 +370,12 @@ object frmTRXControl: TfrmTRXControl
     end
     object gbBand: TGroupBox
       Left = 0
-      Height = 154
+      Height = 160
       Top = 72
       Width = 240
       Align = alClient
       Caption = ' Band '
-      ClientHeight = 136
+      ClientHeight = 142
       ClientWidth = 238
       TabOrder = 1
       object btn160m: TButton
@@ -569,7 +569,7 @@ object frmTRXControl: TfrmTRXControl
         AnchorSideBottom.Side = asrBottom
         Left = 0
         Height = 30
-        Top = 106
+        Top = 112
         Width = 238
         Align = alBottom
         BevelOuter = bvNone
@@ -621,7 +621,7 @@ object frmTRXControl: TfrmTRXControl
     object pnlRig: TPanel
       Left = 0
       Height = 26
-      Top = 226
+      Top = 232
       Width = 240
       Align = alBottom
       BevelOuter = bvNone

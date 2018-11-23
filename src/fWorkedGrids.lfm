@@ -1,7 +1,7 @@
 object frmWorkedGrids: TfrmWorkedGrids
-  Left = 523
+  Left = 301
   Height = 441
-  Top = 263
+  Top = 229
   Width = 753
   VertScrollBar.Visible = False
   Caption = 'Worked locator grids'
@@ -28,9 +28,9 @@ object frmWorkedGrids: TfrmWorkedGrids
     AnchorSideLeft.Control = LocMap
     AnchorSideTop.Control = Owner
     Left = 16
-    Height = 31
+    Height = 29
     Hint = 'Band selector'
-    Top = 23
+    Top = 24
     Width = 124
     Anchors = []
     BorderSpacing.Top = 25
@@ -63,8 +63,8 @@ object frmWorkedGrids: TfrmWorkedGrids
     AnchorSideBottom.Control = BandSelector
     AnchorSideBottom.Side = asrBottom
     Left = 17
-    Height = 15
-    Top = 11
+    Height = 17
+    Top = 10
     Width = 76
     Anchors = []
     BorderSpacing.Bottom = 25
@@ -115,7 +115,7 @@ object frmWorkedGrids: TfrmWorkedGrids
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
     Left = 348
-    Height = 15
+    Height = 17
     Top = 53
     Width = 56
     Alignment = taCenter
@@ -128,7 +128,7 @@ object frmWorkedGrids: TfrmWorkedGrids
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 40
-    Height = 15
+    Height = 17
     Top = 53
     Width = 47
     Alignment = taCenter
@@ -145,7 +145,7 @@ object frmWorkedGrids: TfrmWorkedGrids
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 669
-    Height = 15
+    Height = 17
     Top = 53
     Width = 45
     Alignment = taCenter
@@ -160,8 +160,8 @@ object frmWorkedGrids: TfrmWorkedGrids
     AnchorSideLeft.Control = LocMap
     AnchorSideTop.Control = BandSelector
     Left = 181
-    Height = 31
-    Top = 25
+    Height = 33
+    Top = 24
     Width = 128
     Anchors = []
     BorderSpacing.Left = 165
@@ -177,8 +177,8 @@ object frmWorkedGrids: TfrmWorkedGrids
     AnchorSideBottom.Control = BandSelector
     AnchorSideBottom.Side = asrBottom
     Left = 201
-    Height = 15
-    Top = 11
+    Height = 17
+    Top = 10
     Width = 81
     Anchors = []
     Caption = 'Select mode'
@@ -188,10 +188,10 @@ object frmWorkedGrids: TfrmWorkedGrids
     AnchorSideLeft.Control = LocMap
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = BandSelector
-    Left = 332
+    Left = 331
     Height = 23
-    Top = 26
-    Width = 89
+    Top = 25
+    Width = 90
     Anchors = []
     Caption = 'Follow rig'
     TabOrder = 4

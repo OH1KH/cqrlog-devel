@@ -145,6 +145,8 @@ type
     }
     AutoMode  : Boolean;
     //Running   : Boolean;
+    infosetstage : integer;
+    infosetfreq  : String;
     procedure SynTRX;
 
     function  GetFreqFromModeBand(band : Integer;smode : String) : String;
@@ -168,6 +170,7 @@ type
     procedure LoadButtonCaptions;
     procedure SetDebugMode(DebugMode : Boolean);
     procedure LoadBandButtons;
+    function ListModeClose : Boolean;
   end;
 
 {
@@ -326,6 +329,23 @@ begin
   lblFreq.Caption := FormatFloat(empty_freq+';;',f);
   UpdateModeButtons(m);
   ClearButtonsColor;
+  // this waits5 rig polls before lock freq set by memory. After that if freq chanfǵes (by vfo knob) clean info text
+  // stupid but works quite well
+  case infosetstage  of
+      4: begin
+           infosetfreq:= lblFreq.Caption;
+           inc(infosetstage);
+         end;
+      5: begin
+           if  (infosetfreq <> lblFreq.Caption) then
+               begin
+                 edtMemNr.Text:='';
+                 infosetstage:=0;
+               end;
+         end;
+      else
+        if  ((infosetstage > 0)  and (infosetstage < 4)) then inc(infosetstage);
+  end;
   if (f = 0) then
   begin
     if cqrini.ReadBool('BandMap','UseNewQSOFreqMode',False) then
@@ -686,22 +706,28 @@ begin
     thRig.Terminate;
   dmUtils.SaveWindowPos(frmTRXControl);
 end;
+function TfrmTRXControl.ListModeClose : boolean;
+
+Begin
+   Result :=false;
+      if (frmRadioMemories <> nil) then
+       if  (frmRadioMemories.ShowMode) then   //is open in show list mode
+        begin
+          FreeAndNil(frmRadioMemories);
+          Result :=true;
+        end;
+end;
 
 procedure TfrmTRXControl.acAddModMemExecute(Sender: TObject);
+
 begin
-  if frmRadioMemories <> nil then
-    Begin
-      if  frmRadioMemories.ShowMode then   //is open in show list mode
-          frmRadioMemories.Width:=frmRadioMemories.Width +100; //panel restore width
-       frmRadioMemories.Close;
-       FreeAndNil(frmRadioMemories);
-    end;
+    ListModeClose;
     frmRadioMemories := TfrmRadioMemories.Create(frmTRXControl);
-     if Sender = mnuOpenMem then     //show only
+     if Sender = mnuOpenMem  then    //show only
       Begin
+        writeln('----------------------hi');
          frmRadioMemories.Show;
          frmRadioMemories.Panel1.Visible:=false;
-         frmRadioMemories.Width:=frmRadioMemories.Width -100; //panel cut width
          frmRadioMemories.ShowMode := True;
          try
           dmData.LoadFreqMemories(frmRadioMemories.sgrdMem);
@@ -720,7 +746,7 @@ begin
             dmData.StoreFreqMemories(frmRadioMemories.sgrdMem)
           end
       finally
-       FreeAndNil(frmRadioMemories)
+        FreeAndNil(frmRadioMemories);
       end;
      end;
 
@@ -738,6 +764,7 @@ begin
   Dfreq := radio.GetFreqkHz;
   if Dfreq > 0 then
   begin
+      ListModeClose;
       frmRadioMemories := TfrmRadioMemories.Create(frmTRXControl);
       try
         dmData.LoadFreqMemories(frmRadioMemories.sgrdMem);
@@ -751,13 +778,16 @@ begin
           frmRadioMemories.sgrdMem.Cells[1,frmRadioMemories.sgrdMem.RowCount-1] := mode;
           frmRadioMemories.sgrdMem.Cells[2,frmRadioMemories.sgrdMem.RowCount-1] := IntToStr(bandwidth);
           dmData.StoreFreqMemories(frmRadioMemories.sgrdMem);
-          lblFreq.Caption:='MemW OK';
+          edtMemNr.Font.Color:= clRed;
+          edtMemNr.Text:='MW ok';
+          infosetstage:=1;
          end
       finally
-        FreeAndNil(frmRadioMemories)
-      end
+        FreeAndNil(frmRadioMemories);
+      end;
   end;
 end;
+
 
 procedure TfrmTRXControl.btnMemDwnClick(Sender: TObject);
 var

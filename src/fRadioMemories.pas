@@ -236,7 +236,7 @@ end;
 procedure TfrmRadioMemories.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
-  dmUtils.SaveWindowPos(frmRadioMemories)
+  dmUtils.SaveWindowPos(frmRadioMemories);
 end;
 
 procedure TfrmRadioMemories.FormShow(Sender: TObject);
@@ -267,8 +267,16 @@ begin
     bandwidth := StrToInt(sgrdMem.Cells[2,dcRow]);
     info      := sgrdMem.Cells[3,dcRow];
     if freq > 0 then
-         frmTRXControl.SetFreqModeBandWidth(freq,mode,bandwidth);
-
+         Begin
+          frmTRXControl.SetFreqModeBandWidth(freq,mode,bandwidth);
+          if (dcRow = sgrdMem.RowCount-1) then
+                       frmTRXControl.edtMemNr.Font.Color:= clFuchsia
+                     else
+                       frmTRXControl.edtMemNr.Font.Color:= clDefault;
+          if info='' then frmTRXControl.edtMemNr.Text := 'M '+IntToStr(dcRow+1)
+                     else frmTRXControl.edtMemNr.Text := info;
+          frmTRXControl.infosetstage :=1;
+         end;
     dcRowOk :=false; //we handeld this one
    end;
 end;
