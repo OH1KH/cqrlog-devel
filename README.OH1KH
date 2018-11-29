@@ -4,6 +4,9 @@
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
 
+20.11.2018
+    - Added filter option NOT that reverses search. Calendar objects for date setting. .
+						                (2.3.0(111)
 23.11.2018
     - Fixed info field TRXControl below "Mwri"-button update/clr. 
     - Added wb4 (worked before) date check limit. It affects CQ-monitor colors and grid map's squares and summary.

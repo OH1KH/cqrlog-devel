@@ -4,8 +4,9 @@ Legend:
   - bugfix
 --------------------
 2.3.0
-  + WB4 date limit for CQ-monitor and grid map.
-  - TRXContorl info field update.
+  + Added filter option NOT that reverses search. Calendar objects for date setting. (Saku, OH1KH)
+  + WB4 date limit for CQ-monitor and grid map. (Saku, OH1KH)
+  - TRXContorl info field update. (Saku, OH1KH)
   + Rectangular view selecteble via Preferences/Xplanet.(Andreas, DL7OAP)
   + TRXControl/Open memory list. Double click on row of list sets rig. Can be open in normal operation (Sak,OH1KH) 
   - Qso list scrolling problem fix (Andreas, DL7OAP)

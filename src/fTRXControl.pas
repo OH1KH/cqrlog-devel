@@ -725,7 +725,6 @@ begin
     frmRadioMemories := TfrmRadioMemories.Create(frmTRXControl);
      if Sender = mnuOpenMem  then    //show only
       Begin
-        writeln('----------------------hi');
          frmRadioMemories.Show;
          frmRadioMemories.Panel1.Visible:=false;
          frmRadioMemories.ShowMode := True;

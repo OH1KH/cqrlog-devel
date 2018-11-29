@@ -319,8 +319,19 @@ converted records appears.<br><br><img src=img/h38.png border=0><br><br>
         <td valign="top">
             <img src="img/note.png"></td>
         <td bgcolor=#eaeaea valign="top" align="justify"><strong>
-            <font color="blue">Note:</font></strong> All files in the <em>'membership'</em> subfolder
-            are displayed. If you create your own database, put it into this subfolder!
+            <font color="blue">Note:</font></strong> There are 2 places where membership list files are stored.
+            <br><strong>--Global files--</strong> are stored in /usr/share/cqrlog/members folder and will be 
+            updated with cqrlog version updates.
+            <br><strong>--Local files--</strong>, a place where you can save your own membership list files, is
+            ~/.config/cqrlog/members folder.
+            <br>List files there are saved over cqrlog version updates. Folder ~/.config is hidden so you must configure your
+            file browser to 'show hidden files and folders' to see it.
+            <br><br>When creating your own member list files you can use one of Global files as example.
+            <br>File name must have extension ".txt" and be a plain text file written with linux editor that ends lines to "\n", in hex #0A (LF character).
+            <br>Editors that use "\r\n", in hex #0D#0A (CR+LF charactes) [Windows style linefeeds] do not produce a working list file.
+            <br>1st line is membership list name, 2nd a short description. Do not put any additional spaces after name and description.
+            <br>It can lead to situaton where Club member list selection does not stay in preferences over cqrlog restart.
+            <br>3rd and following lines are CALLSIGN;membership_number. One pair for a line. No spaces, semicolon as delimiter.  Note ONLY CAPS written callsigns will work.
         </td>
     </tr>
     </tbody>
