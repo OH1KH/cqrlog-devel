@@ -1,7 +1,7 @@
 object frmNewQSO: TfrmNewQSO
-  Left = -39
+  Left = 37
   Height = 773
-  Top = 143
+  Top = 13
   Width = 809
   HelpType = htKeyword
   HelpKeyword = 'help/index.html'
@@ -3578,35 +3578,37 @@ object frmNewQSO: TfrmNewQSO
         ParentFont = False
         TabOrder = 0
         object lblDXCCCaption: TLabel
-          AnchorSideLeft.Control = lblITU
+          AnchorSideLeft.Control = lblContCaption
           AnchorSideTop.Control = lblContCaption
           AnchorSideTop.Side = asrBottom
-          Left = 112
+          Left = 122
           Height = 17
           Top = 115
           Width = 40
-          BorderSpacing.Left = 64
           BorderSpacing.Top = 5
           Caption = 'DXCC:'
           ParentColor = False
           ParentFont = False
         end
         object lblWAZCaption: TLabel
+          AnchorSideLeft.Control = Panel5
           AnchorSideTop.Control = Panel5
           AnchorSideTop.Side = asrBottom
-          Left = 8
+          Left = 7
           Height = 17
           Top = 93
           Width = 34
+          BorderSpacing.Left = 7
           BorderSpacing.Top = 5
           Caption = 'WAZ:'
           ParentColor = False
           ParentFont = False
         end
         object lblITUCaption: TLabel
+          AnchorSideLeft.Control = lblWAZCaption
           AnchorSideTop.Control = lblWAZCaption
           AnchorSideTop.Side = asrBottom
-          Left = 8
+          Left = 7
           Height = 17
           Top = 115
           Width = 26
@@ -3620,12 +3622,11 @@ object frmNewQSO: TfrmNewQSO
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Panel5
           AnchorSideTop.Side = asrBottom
-          Left = 115
+          Left = 122
           Height = 17
           Top = 93
           Width = 34
-          Anchors = [akTop]
-          BorderSpacing.Left = 30
+          BorderSpacing.Left = 48
           BorderSpacing.Top = 5
           Caption = 'Cont:'
           ParentColor = False
@@ -3633,23 +3634,23 @@ object frmNewQSO: TfrmNewQSO
         end
         object lblWAZ: TLabel
           AnchorSideLeft.Control = lblWAZCaption
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = Panel5
-          AnchorSideTop.Side = asrBottom
+          AnchorSideTop.Control = lblWAZCaption
+          AnchorSideTop.Side = asrCenter
           Left = 47
           Height = 17
           Top = 93
           Width = 27
-          BorderSpacing.Left = 5
+          BorderSpacing.Left = 40
           BorderSpacing.Top = 5
           Caption = 'AAA'
           ParentColor = False
           ParentFont = False
         end
         object lblITU: TLabel
-          AnchorSideTop.Control = lblWAZ
-          AnchorSideTop.Side = asrBottom
-          Left = 48
+          AnchorSideLeft.Control = lblWAZ
+          AnchorSideTop.Control = lblITUCaption
+          AnchorSideTop.Side = asrCenter
+          Left = 47
           Height = 17
           Top = 115
           Width = 27
@@ -3659,15 +3660,13 @@ object frmNewQSO: TfrmNewQSO
           ParentFont = False
         end
         object lblDXCC: TLabel
-          AnchorSideLeft.Control = lblDXCCCaption
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = lblContCaption
+          AnchorSideLeft.Control = lblCont
+          AnchorSideTop.Control = lblCont
           AnchorSideTop.Side = asrBottom
-          Left = 157
+          Left = 165
           Height = 17
           Top = 115
           Width = 27
-          BorderSpacing.Left = 5
           BorderSpacing.Top = 5
           Caption = 'AAA'
           ParentColor = False
@@ -3676,22 +3675,22 @@ object frmNewQSO: TfrmNewQSO
         object lblCont: TLabel
           AnchorSideLeft.Control = lblContCaption
           AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = Panel5
-          AnchorSideTop.Side = asrBottom
-          Left = 154
+          AnchorSideTop.Control = lblContCaption
+          AnchorSideTop.Side = asrCenter
+          Left = 165
           Height = 17
           Top = 93
           Width = 27
-          BorderSpacing.Left = 5
-          BorderSpacing.Top = 5
+          BorderSpacing.Left = 9
           Caption = 'AAA'
           ParentColor = False
           ParentFont = False
         end
         object lblLatCaption: TLabel
+          AnchorSideLeft.Control = lblITUCaption
           AnchorSideTop.Control = lblITUCaption
           AnchorSideTop.Side = asrBottom
-          Left = 8
+          Left = 7
           Height = 17
           Top = 137
           Width = 26
@@ -3701,41 +3700,46 @@ object frmNewQSO: TfrmNewQSO
           ParentFont = False
         end
         object lblLongCaption: TLabel
-          Left = 113
+          AnchorSideLeft.Control = lblContCaption
+          AnchorSideTop.Control = lblDXCCCaption
+          AnchorSideTop.Side = asrBottom
+          Left = 122
           Height = 17
           Top = 137
           Width = 41
+          BorderSpacing.Top = 5
           Caption = 'LONG:'
           ParentColor = False
         end
         object lblLat: TLabel
-          AnchorSideLeft.Control = lblLatCaption
-          AnchorSideLeft.Side = asrBottom
-          Left = 39
+          AnchorSideLeft.Control = lblWAZ
+          AnchorSideTop.Control = lblLatCaption
+          AnchorSideTop.Side = asrCenter
+          Left = 47
           Height = 17
           Top = 137
           Width = 27
-          BorderSpacing.Left = 5
           Caption = 'AAA'
           ParentColor = False
           ParentFont = False
         end
         object lblLong: TLabel
-          AnchorSideLeft.Control = lblLongCaption
-          AnchorSideLeft.Side = asrBottom
-          Left = 159
+          AnchorSideLeft.Control = lblDXCC
+          AnchorSideTop.Control = lblLongCaption
+          AnchorSideTop.Side = asrCenter
+          Left = 165
           Height = 17
           Top = 137
           Width = 27
-          BorderSpacing.Left = 5
           Caption = 'AAA'
           ParentColor = False
           ParentFont = False
         end
         object lblDistCaption: TLabel
+          AnchorSideLeft.Control = lblLatCaption
           AnchorSideTop.Control = lblLatCaption
           AnchorSideTop.Side = asrBottom
-          Left = 8
+          Left = 7
           Height = 17
           Top = 159
           Width = 36
@@ -3745,22 +3749,23 @@ object frmNewQSO: TfrmNewQSO
           ParentFont = False
         end
         object lblQRA: TLabel
-          AnchorSideTop.Control = lblLat
-          AnchorSideTop.Side = asrBottom
-          Left = 48
+          AnchorSideLeft.Control = lblWAZ
+          AnchorSideTop.Control = lblDistCaption
+          AnchorSideTop.Side = asrCenter
+          Left = 47
           Height = 17
           Top = 159
           Width = 27
-          BorderSpacing.Top = 5
           Caption = 'AAA'
           ParentColor = False
           ParentFont = False
           OnChangeBounds = lblQRAChangeBounds
         end
         object lblAzim: TLabel
+          AnchorSideLeft.Control = lblContCaption
           AnchorSideTop.Control = lblLongCaption
           AnchorSideTop.Side = asrBottom
-          Left = 113
+          Left = 122
           Height = 17
           Top = 159
           Width = 38
@@ -3769,55 +3774,57 @@ object frmNewQSO: TfrmNewQSO
           ParentColor = False
         end
         object lblAzi: TLabel
-          AnchorSideLeft.Control = lblAzim
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = lblLong
-          AnchorSideTop.Side = asrBottom
-          Left = 156
+          AnchorSideLeft.Control = lblDXCC
+          AnchorSideTop.Control = lblAzim
+          AnchorSideTop.Side = asrCenter
+          Left = 165
           Height = 17
           Top = 159
           Width = 27
-          BorderSpacing.Left = 5
-          BorderSpacing.Top = 5
           Caption = 'AAA'
           ParentColor = False
           ParentFont = False
           OnChangeBounds = lblAziChangeBounds
         end
         object lblHisTime: TLabel
+          AnchorSideLeft.Control = btnSunRise
           AnchorSideTop.Control = btnSunRise
           AnchorSideTop.Side = asrBottom
-          Left = 8
+          Left = 7
           Height = 20
-          Top = 207
+          Top = 220
           Width = 162
           AutoSize = False
-          BorderSpacing.Top = 5
+          BorderSpacing.Top = 6
           Caption = 'AAAAAAAAAAAAAA'
           ParentColor = False
           ParentFont = False
         end
         object lblGreeting: TLabel
-          AnchorSideTop.Control = lblTarSunSet
-          AnchorSideTop.Side = asrBottom
-          Left = 191
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = lblHisTime
+          AnchorSideRight.Control = lblTarSunSet
+          AnchorSideRight.Side = asrBottom
+          Left = 186
           Height = 17
-          Top = 207
+          Top = 220
           Width = 44
-          BorderSpacing.Top = 9
+          Anchors = [akTop, akRight]
+          BorderSpacing.Left = 12
           Caption = 'GE/GM'
           Font.Color = clRed
           ParentColor = False
           ParentFont = False
         end
         object btnSunRise: TSpeedButton
+          AnchorSideLeft.Control = lblDistCaption
           AnchorSideTop.Control = lblDistCaption
           AnchorSideTop.Side = asrBottom
-          Left = 0
+          Left = 7
           Height = 22
-          Top = 180
+          Top = 192
           Width = 23
-          BorderSpacing.Top = 4
+          BorderSpacing.Top = 16
           Flat = True
           Glyph.Data = {
             F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -3856,13 +3863,14 @@ object frmNewQSO: TfrmNewQSO
           Layout = blGlyphTop
         end
         object SpeedButton2: TSpeedButton
-          AnchorSideTop.Control = lblLocalCaption
-          AnchorSideTop.Side = asrBottom
-          Left = 120
+          AnchorSideLeft.Control = btnSunSet
+          AnchorSideTop.Control = SpeedButton3
+          AnchorSideTop.Side = asrCenter
+          Left = 123
           Height = 22
-          Top = 250
+          Top = 268
           Width = 23
-          BorderSpacing.Top = 1
+          BorderSpacing.Left = 1
           Flat = True
           Glyph.Data = {
             06030000424D06030000000000003600000028000000100000000F0000000100
@@ -3894,13 +3902,14 @@ object frmNewQSO: TfrmNewQSO
           Layout = blGlyphBottom
         end
         object SpeedButton3: TSpeedButton
+          AnchorSideLeft.Control = lblLocalCaption
           AnchorSideTop.Control = lblLocalCaption
           AnchorSideTop.Side = asrBottom
-          Left = 0
+          Left = 7
           Height = 22
-          Top = 253
+          Top = 268
           Width = 23
-          BorderSpacing.Top = 4
+          BorderSpacing.Top = 5
           Flat = True
           Glyph.Data = {
             F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -3939,13 +3948,13 @@ object frmNewQSO: TfrmNewQSO
           Layout = blGlyphTop
         end
         object btnSunSet: TSpeedButton
-          AnchorSideTop.Control = lblAzim
-          AnchorSideTop.Side = asrBottom
-          Left = 126
+          AnchorSideLeft.Control = lblAzim
+          AnchorSideTop.Control = btnSunRise
+          AnchorSideTop.Side = asrCenter
+          Left = 122
           Height = 22
-          Top = 180
+          Top = 192
           Width = 23
-          BorderSpacing.Top = 4
           Flat = True
           Glyph.Data = {
             06030000424D06030000000000003600000028000000100000000F0000000100
@@ -3978,14 +3987,12 @@ object frmNewQSO: TfrmNewQSO
         object lblLocSunRise: TLabel
           AnchorSideLeft.Control = SpeedButton3
           AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = lblLocalCaption
-          AnchorSideTop.Side = asrBottom
-          Left = 28
+          AnchorSideTop.Control = SpeedButton3
+          AnchorSideTop.Side = asrCenter
+          Left = 30
           Height = 17
-          Top = 254
+          Top = 271
           Width = 90
-          BorderSpacing.Left = 5
-          BorderSpacing.Top = 5
           Caption = 'lblLocSunRise'
           ParentColor = False
           ParentFont = False
@@ -3993,14 +4000,13 @@ object frmNewQSO: TfrmNewQSO
         object lblLocSunSet: TLabel
           AnchorSideLeft.Control = SpeedButton2
           AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = lblLocalCaption
-          AnchorSideTop.Side = asrBottom
-          Left = 148
+          AnchorSideTop.Control = SpeedButton3
+          AnchorSideTop.Side = asrCenter
+          Left = 151
           Height = 17
-          Top = 254
+          Top = 271
           Width = 83
           BorderSpacing.Left = 5
-          BorderSpacing.Top = 5
           Caption = 'lblLocSunSet'
           ParentColor = False
           ParentFont = False
@@ -4008,13 +4014,12 @@ object frmNewQSO: TfrmNewQSO
         object lblTarSunRise: TLabel
           AnchorSideLeft.Control = btnSunRise
           AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = lblQRA
-          AnchorSideTop.Side = asrBottom
-          Left = 28
+          AnchorSideTop.Control = btnSunRise
+          AnchorSideTop.Side = asrCenter
+          Left = 30
           Height = 17
-          Top = 181
+          Top = 195
           Width = 87
-          BorderSpacing.Left = 5
           BorderSpacing.Top = 5
           Caption = 'lblTarSunRise'
           ParentColor = False
@@ -4023,35 +4028,33 @@ object frmNewQSO: TfrmNewQSO
         object lblTarSunSet: TLabel
           AnchorSideLeft.Control = btnSunSet
           AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = lblAzi
-          AnchorSideTop.Side = asrBottom
-          Left = 154
+          AnchorSideTop.Control = lblTarSunRise
+          AnchorSideTop.Side = asrCenter
+          Left = 150
           Height = 17
-          Top = 181
+          Top = 195
           Width = 80
           BorderSpacing.Left = 5
-          BorderSpacing.Top = 5
           Caption = 'lblTarSunSet'
           ParentColor = False
           ParentFont = False
         end
         object lblLocalCaption: TLabel
-          AnchorSideLeft.Control = SpeedButton3
-          AnchorSideLeft.Side = asrBottom
+          AnchorSideLeft.Control = lblHisTime
           AnchorSideTop.Control = lblHisTime
           AnchorSideTop.Side = asrBottom
-          Left = 9
+          Left = 7
           Height = 17
-          Top = 232
+          Top = 246
           Width = 38
-          Anchors = [akTop]
-          BorderSpacing.Left = 5
-          BorderSpacing.Top = 5
+          BorderSpacing.Top = 6
           Caption = 'Local:'
           ParentColor = False
           ParentFont = False
         end
         object Panel5: TPanel
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = GroupBox1
           Left = 0
           Height = 88
           Top = 0
@@ -4084,10 +4087,16 @@ object frmNewQSO: TfrmNewQSO
           TabOrder = 1
         end
         object lblCallbookInformation: TLabel
-          Left = 7
+          AnchorSideLeft.Control = Panel5
+          AnchorSideTop.Side = asrBottom
+          AnchorSideBottom.Control = mCallBook
+          Left = 3
           Height = 17
-          Top = 288
+          Top = 296
           Width = 61
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Left = 3
+          BorderSpacing.Top = 5
           Caption = 'Callbook:'
           ParentColor = False
         end

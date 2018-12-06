@@ -4,6 +4,12 @@
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
 
+06.12.2018
+    - Merged from master. Changes to Main (QSO list) not taken from master as it seems 2.3.0-(002) still has
+      problems with it.
+    - CQ-monitor: Remove angle brackets (wsjt-x v2.0 uses these) from callsigns. When in qso loc "<!!>" changed to *QSO"
+    - My version number is now 201. (original (002) -> 1st devel release after that is 201)
+						                (2.3.0(201)
 20.11.2018
     - Added filter option NOT that reverses search. Calendar objects for date setting. .
 						                (2.3.0(111)

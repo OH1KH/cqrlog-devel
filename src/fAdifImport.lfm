@@ -1,13 +1,13 @@
 object frmAdifImport: TfrmAdifImport
   Left = 425
-  Height = 280
+  Height = 367
   Top = 252
   Width = 444
   ActiveControl = chkLotOfQSO
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Importing ADIF file'
-  ClientHeight = 280
+  ClientHeight = 367
   ClientWidth = 444
   Icon.Data = {
     BE0C00000000010001002020000001001800A80C000016000000280000002000
@@ -117,12 +117,12 @@ object frmAdifImport: TfrmAdifImport
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '1.8.0.6'
   object Label1: TLabel
     Left = 6
     Height = 17
     Top = 3
-    Width = 27
+    Width = 28
     Caption = 'File:'
     ParentColor = False
   end
@@ -130,7 +130,7 @@ object frmAdifImport: TfrmAdifImport
     Left = 38
     Height = 17
     Top = 3
-    Width = 78
+    Width = 81
     Caption = 'lblFileName'
     ParentColor = False
   end
@@ -138,7 +138,7 @@ object frmAdifImport: TfrmAdifImport
     Left = 6
     Height = 17
     Top = 30
-    Width = 42
+    Width = 47
     Caption = 'Errors:'
     ParentColor = False
   end
@@ -146,7 +146,7 @@ object frmAdifImport: TfrmAdifImport
     Left = 152
     Height = 17
     Top = 30
-    Width = 67
+    Width = 73
     Caption = 'Importing:'
     ParentColor = False
   end
@@ -154,7 +154,7 @@ object frmAdifImport: TfrmAdifImport
     Left = 64
     Height = 17
     Top = 30
-    Width = 54
+    Width = 60
     Alignment = taRightJustify
     Caption = 'lblErrors'
     ParentColor = False
@@ -163,7 +163,7 @@ object frmAdifImport: TfrmAdifImport
     Left = 232
     Height = 17
     Top = 30
-    Width = 54
+    Width = 59
     Caption = 'lblCount'
     ParentColor = False
   end
@@ -171,7 +171,7 @@ object frmAdifImport: TfrmAdifImport
     Left = 8
     Height = 17
     Top = 128
-    Width = 61
+    Width = 63
     Caption = 'Remarks:'
     ParentColor = False
   end
@@ -179,7 +179,7 @@ object frmAdifImport: TfrmAdifImport
     Left = 373
     Height = 17
     Top = 146
-    Width = 68
+    Width = 70
     Caption = 'Complete!'
     Font.Color = clRed
     ParentColor = False
@@ -190,7 +190,7 @@ object frmAdifImport: TfrmAdifImport
     Left = 8
     Height = 17
     Top = 192
-    Width = 73
+    Width = 80
     Caption = 'QTH Profile'
     ParentColor = False
   end
@@ -214,14 +214,14 @@ object frmAdifImport: TfrmAdifImport
   end
   object edtRemarks: TEdit
     Left = 8
-    Height = 34
+    Height = 27
     Top = 152
     Width = 145
     TabOrder = 1
   end
   object cmbProfiles: TComboBox
     Left = 8
-    Height = 34
+    Height = 29
     Top = 216
     Width = 334
     ItemHeight = 0
@@ -230,16 +230,16 @@ object frmAdifImport: TfrmAdifImport
   end
   object chkLotOfQSO: TCheckBox
     Left = 8
-    Height = 23
+    Height = 24
     Top = 88
-    Width = 291
+    Width = 301
     Caption = 'ADIF file contains more than 10 000 QSO'
     TabOrder = 3
   end
   object sb: TStatusBar
     Left = 0
-    Height = 19
-    Top = 261
+    Height = 20
+    Top = 347
     Width = 444
     Panels = <    
       item
@@ -255,6 +255,109 @@ object frmAdifImport: TfrmAdifImport
     Caption = 'Close'
     ModalResult = 2
     TabOrder = 5
+  end
+  object chkFilterDateRange: TCheckBox
+    AnchorSideTop.Control = cmbProfiles
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 21
+    Top = 264
+    Width = 198
+    BorderSpacing.Top = 18
+    Caption = 'Filter: only import date range'
+    OnChange = chkFilterDateRangeChange
+    TabOrder = 6
+  end
+  object pnlFilterDateRange: TPanel
+    AnchorSideTop.Control = chkFilterDateRange
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 45
+    Top = 291
+    Width = 334
+    BorderSpacing.Top = 6
+    BevelOuter = bvNone
+    ClientHeight = 45
+    ClientWidth = 334
+    Enabled = False
+    TabOrder = 7
+    object lblDateFrom: TLabel
+      AnchorSideTop.Control = edtDateFrom
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 18
+      Top = 9
+      Width = 29
+      Caption = 'from'
+      ParentColor = False
+    end
+    object lblDateTo: TLabel
+      AnchorSideLeft.Control = edtDateFrom
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edtDateTo
+      AnchorSideTop.Side = asrCenter
+      Left = 156
+      Height = 18
+      Top = 9
+      Width = 13
+      BorderSpacing.Left = 12
+      Caption = 'to'
+      ParentColor = False
+    end
+    object edtDateFrom: TDateEdit
+      AnchorSideLeft.Control = lblDateFrom
+      AnchorSideLeft.Side = asrBottom
+      Left = 41
+      Height = 24
+      Top = 6
+      Width = 103
+      CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+      DateOrder = doYMd
+      ButtonWidth = 23
+      BorderSpacing.Left = 6
+      NumGlyphs = 1
+      MaxLength = 10
+      TabOrder = 0
+      Text = '    .  .  '
+    end
+    object edtDateTo: TDateEdit
+      AnchorSideLeft.Control = lblDateTo
+      AnchorSideLeft.Side = asrBottom
+      Left = 175
+      Height = 24
+      Top = 6
+      Width = 103
+      CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+      DateOrder = doYMd
+      ButtonWidth = 23
+      BorderSpacing.Left = 6
+      NumGlyphs = 1
+      MaxLength = 10
+      TabOrder = 1
+      Text = '    .  .  '
+    end
+  end
+  object lblFilteredOut: TLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 298
+    Height = 18
+    Top = 30
+    Width = 72
+    BorderSpacing.Top = 6
+    Caption = 'Filtered out:'
+    ParentColor = False
+  end
+  object lblFilteredOutCount: TLabel
+    AnchorSideLeft.Control = lblFilteredOut
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblFilteredOut
+    Left = 388
+    Height = 18
+    Top = 30
+    Width = 119
+    BorderSpacing.Left = 18
+    Caption = 'lblFilteredOutCount'
+    ParentColor = False
   end
   object tr: TSQLTransaction
     Active = False
