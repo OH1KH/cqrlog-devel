@@ -208,7 +208,7 @@ begin
 
       for i:= 0 to Length(d)-1 do
       begin
-        AddToGrid(d[i].freq, d[i].mode, d[i].width,d[i-1].info)
+        AddToGrid(d[i].freq, d[i].mode, d[i].width,d[i].info)
       end;
 
       ShowMessage('File has been imported')

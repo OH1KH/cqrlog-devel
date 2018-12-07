@@ -1,7 +1,7 @@
 object frmTRXControl: TfrmTRXControl
-  Left = 969
+  Left = 912
   Height = 283
-  Top = 439
+  Top = 252
   Width = 307
   Anchors = []
   Caption = 'TRX control'

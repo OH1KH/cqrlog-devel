@@ -3,8 +3,9 @@ Legend:
   + new feature
   - bugfix
 --------------------
-2.3.0
- - CQ-monitor: Remove angle brackets (wsjt-x v2.0 uses these)
+  - QSO list PgUP/PgDN error [in 2.3.0-(002)] fix. (Andreas, DL7OAP)
+  - Radio memories adif import bug fixed (Saku, OH1KH)
+  - CQ-monitor: Remove angle brackets (wsjt-x v2.0 uses these) (Saku, OH1KH)
   + Added filter option NOT that reverses search. Calendar objects for date setting. (Saku, OH1KH)
   + WB4 date limit for CQ-monitor and grid map. (Saku, OH1KH)
   - TRXContorl info field update. (Saku, OH1KH)

@@ -4,6 +4,10 @@
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
 
+07.12.2018
+    - QSO list PgUP/PgDN error [in 2.3.0-(002)] fix. (Code from Andreas, DL7OAP. Thanks !)
+    - Fixed bug in radio memories adif-import.A simple typo caused freq and info mix by one step.(report by DO1YHJ, thanks!)
+						                (2.3.0(202)
 06.12.2018
     - Merged from master. Changes to Main (QSO list) not taken from master as it seems 2.3.0-(002) still has
       problems with it.
