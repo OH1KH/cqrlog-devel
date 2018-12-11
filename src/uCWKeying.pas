@@ -52,6 +52,7 @@ type
       fActive : Boolean;
       fSpeed  : Word;
       ser     : TBlockSerial;
+
     public
       constructor Create; override;
       destructor  Destroy; override;
@@ -145,6 +146,7 @@ type
 
 implementation
 
+uses fTRXControl;
 
 constructor TCWWinKeyerUSB.Create;
 begin
@@ -748,11 +750,13 @@ end;
 procedure TCWHamLib.TuneStart;
 begin
   //not supported
+  frmTRXControl.HLTune(true);
 end;
 
 procedure TCWHamLib.TuneStop;
 begin
   //not supported
+  frmTRXControl.HLTune(false);
 end;
 
 procedure TCWHamLib.StopSending;

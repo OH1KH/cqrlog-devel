@@ -3,6 +3,8 @@ Legend:
   + new feature
   - bugfix
 --------------------
+  + Tune (Ctrl+T) works now with Hamlib keyer using AM+Ptt (Saku, OH1KH)
+  + Radio memories delete all -button (Saku, OH1KH)
   - QSO list PgUP/PgDN error [in 2.3.0-(002)] fix. (Andreas, DL7OAP)
   - Radio memories adif import bug fixed (Saku, OH1KH)
   - CQ-monitor: Remove angle brackets (wsjt-x v2.0 uses these) (Saku, OH1KH)

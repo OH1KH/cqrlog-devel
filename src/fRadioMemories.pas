@@ -28,6 +28,7 @@ type
     btnDelete: TButton;
     btnMore: TButton;
     btnOK: TButton;
+    btnDelAll: TButton;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
@@ -43,6 +44,7 @@ type
     procedure acExportExecute(Sender: TObject);
     procedure acImportExecute(Sender: TObject);
     procedure acSortByFreqExecute(Sender: TObject);
+    procedure btnDelAllClick(Sender: TObject);
     procedure btnMoreClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -99,6 +101,18 @@ begin
     Application.MessageBox('There is nothing to delete','Info...',mb_ok+mb_IconInformation)
   else
     sgrdMem.DeleteRow(sgrdMem.Row)
+end;
+
+procedure TfrmRadioMemories.btnDelAllClick(Sender: TObject);
+begin
+  if (sgrdMem.RowCount < 2) then
+    Application.MessageBox('There is nothing to delete','Info...',mb_ok+mb_IconInformation)
+  else
+    begin
+     repeat
+      sgrdMem.DeleteRow(sgrdMem.Row)
+     until (sgrdMem.RowCount < 2) ;
+    end;
 end;
 
 procedure TfrmRadioMemories.acEditExecute(Sender: TObject);

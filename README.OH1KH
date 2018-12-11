@@ -4,6 +4,10 @@
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
 
+11.12.2018
+    - Radio frequency list add/modify. Added Delete All button.
+    - NeWQso implemented Tuning (Ctrl-T) when using Hamlib keyer. Changes mode to AM, activates Ptt, set Ptt of, return pervious mode.
+						                (2.3.0(203)
 07.12.2018
     - QSO list PgUP/PgDN error [in 2.3.0-(002)] fix. (Code from Andreas, DL7OAP. Thanks !)
     - Fixed bug in radio memories adif-import.A simple typo caused freq and info mix by one step.(report by DO1YHJ, thanks!)
