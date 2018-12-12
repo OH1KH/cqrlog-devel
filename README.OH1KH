@@ -3,7 +3,9 @@
   +  DMR  +                                                                                +   @    +
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
-
+12.12.2018
+    - Just TRXControl layout fix
+						                (2.3.0(204)
 11.12.2018
     - Radio frequency list add/modify. Added Delete All button.
     - NeWQso implemented Tuning (Ctrl-T) when using Hamlib keyer. Changes mode to AM, activates Ptt, set Ptt of, return pervious mode.

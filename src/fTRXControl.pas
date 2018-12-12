@@ -59,6 +59,7 @@ type
     gbBand: TGroupBox;
     gbVfo: TGroupBox;
     gbMode: TGroupBox;
+    gbInfo: TGroupBox;
     GroupBox4: TGroupBox;
     lblFreq: TLabel;
     mnuOpenMem: TMenuItem;
