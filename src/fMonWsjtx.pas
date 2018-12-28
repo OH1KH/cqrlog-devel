@@ -1077,23 +1077,28 @@ begin
   end;
 end;
 procedure TfrmMonWsjtx.BufDebug(MyHeader,MyBuf:string);
-var i: integer;
+var l,i,f: integer;
 Begin
-   begin
-      Write(MyHeader);
-      for i := 1 to length(MyBuf) do
-       Begin
-        Write('|', HexStr(Ord(MyBuf[i]), 2));
+      l:=30;  //bytes per line
+      Writeln(MyHeader);
+      i:=1;
+      repeat
+       begin
+        for f:=i to i+l do
+             if f<=length(MyBuf) then Write('|', HexStr(Ord(MyBuf[f]), 2));
+        writeln;
+        for f:=i to i+l do
+           Begin
+             if f<=length(MyBuf) then
+              if ((MyBuf[f] > #32) and (Mybuf[f]< #127)) then
+                   write('| ',MyBuf[f]) else write('| _');
+           end;
+        writeln();
+        writeln();
+        i:=i+l;
        end;
-      writeln();
-      Write(MyHeader);
-       for i := 1 to length(MyBuf) do
-       Begin
-        if ((MyBuf[i] > #32) and (Mybuf[i]< #127)) then
-           write('| ',MyBuf[i]) else write('| _');
-       end;
-      writeln();
-    end;
+      until ( i>= length(MyBuf) ) ;
+
 end;
 
 procedure TfrmMonWsjtx.ColorBack(Myitem:string;Mycolor:Tcolor;bkg:Boolean=false);

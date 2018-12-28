@@ -10,7 +10,7 @@ object frmAddRadioMemory: TfrmAddRadioMemory
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poOwnerFormCenter
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '1.8.4.0'
   object lblFreq: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -128,10 +128,10 @@ object frmAddRadioMemory: TfrmAddRadioMemory
     Left = 12
     Height = 17
     Top = 161
-    Width = 41
+    Width = 25
     BorderSpacing.Left = 12
     BorderSpacing.Top = 2
-    Caption = 'lblInfo'
+    Caption = 'Info'
     ParentColor = False
   end
   object edtInfo: TEdit

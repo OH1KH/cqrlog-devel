@@ -120,6 +120,7 @@ type
     cb60m: TCheckBox;
     cb30cm: TCheckBox;
     cgLimit: TCheckGroup;
+    chkShowB4call: TCheckBox;
     chkRXFreq : TCheckBox;
     chkSatellite : TCheckBox;
     chkPropagation : TCheckBox;
@@ -1103,6 +1104,7 @@ begin
   cqrini.WriteBool('NewQSO', 'SkipModeFreq', chkSkipModeFreq.Checked);
   cqrini.WriteBool('NewQSO', 'AutoSearch', chkAutoSearch.Checked);
   cqrini.WriteBool('NewQSO', 'ShowRecentQSOs', chkShowRecentQSOs.Checked);
+  cqrini.Writebool('NewQSO', 'ShowB4call', chkShowB4call.Checked);
   cqrini.WriteString('NewQSO', 'RecQSOsNum', edtRecetQSOs.Text);
   cqrini.WriteBool('NewQSO', 'IgnoreQRZ', chkIgnoreQRZQSL.Checked);
   cqrini.WriteBool('NewQSO', 'MvToRem', chkMvToRem.Checked);
@@ -2430,6 +2432,7 @@ begin
   chkSkipModeFreq.Checked := cqrini.ReadBool('NewQSO', 'SkipModeFreq', True);
   chkAutoSearch.Checked := cqrini.ReadBool('NewQSO', 'AutoSearch', False);
   chkShowRecentQSOs.Checked := cqrini.ReadBool('NewQSO', 'ShowRecentQSOs', False);
+  chkShowB4call.Checked := cqrini.ReadBool('NewQSO', 'ShowB4call', False);
   edtRecetQSOs.Text := cqrini.ReadString('NewQSO', 'RecQSOsNum', '5');
   chkIgnoreQRZQSL.Checked := cqrini.ReadBool('NewQSO', 'IgnoreQRZ', False);
   chkMvToRem.Checked := cqrini.ReadBool('NewQSO', 'MvToRem', True);

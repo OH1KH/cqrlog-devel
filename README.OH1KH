@@ -3,6 +3,33 @@
   +  DMR  +                                                                                +   @    +
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
+
+28.12.2018
+	This will be the last beta test version of this year. Maybe it is the last of them all! 
+        This beta is too far from official release  and I have difficulties to keep track of all code changes and make
+        them as pull requests later one by one (as requested by Petr).
+        I have never learned to use Git properly, and it seems I never will.
+
+        Now I have to consider what to do during next year. I cannot continue with this devel version any further.
+        Everything have to be started from zero again, if I still want to keep this kind of devel alive.
+	
+        Perhaps it would be time to do something else instead. But time will show....
+        Happy New year !
+
+        ----------------------------------------------------------------------------------------------------------------
+
+    - Preferences: added "sub" checbox to NewQSO/show recent qsos for X days: "instead show QSOs B4 with logged call" that
+      keeps old qsos visible after saved (logged) qso with call. NOTE: this is option for "X days" so both checboxes must be
+      checked to show list of old qsos after logging. 
+    - Layout/anchor fixes: NewQSO, QSO list, Worked Grids, CQ-monitor
+						                (2.3.0(206)
+20.12.2018
+    - fixed typo in radiomemories edit label
+    - DXCluster:default Backgroundcolor white. If lotw and eqsl is given, lotw will win (Andreas, DL7OAP)
+    - UDP message buffer debugging layout fixed (monwsjtx.pas)
+    - WSJTX: added Contest name and exchanges extract from UDP. Adds now "contestname=S:exchangeSent/R:exchangeReceived" to
+      start of "Comment to qso" field. Keeps existing comment text as tailer.
+						                (2.3.0(205)
 12.12.2018
     - Just TRXControl layout fix
 						                (2.3.0(204)
