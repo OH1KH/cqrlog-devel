@@ -1833,7 +1833,8 @@ begin
     end;
     ////////////////////////////////////////////////////////
     //statistics
-    if (aForm.Components[i] is TStringGrid) then
+    if (aForm.Components[i] is TStringGrid)
+      and not ((aForm.Components[i] as TStringGrid).Name = 'sgMonitor') then
     begin
       (aForm.Components[i] as TStringGrid).Font.Name := fGrids;
       (aForm.Components[i] as TStringGrid).Font.Size := fgSize;
@@ -2399,7 +2400,6 @@ begin
     2: proj := ' -projection azimuthal';
     3: proj := ' -projection rectangular';
   end; //case
-
   wait := '-wait ' + cqrini.ReadString('xplanet', 'refresh', '5');
   Result := Result + ' -config ' + dmData.HomeDir +
     'xplanet' + PathDelim + 'geoconfig  -glare 28 ' + '-light_time -range 2.5 ' +

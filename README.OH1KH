@@ -3,6 +3,72 @@
   +  DMR  +                                                                                +   @    +
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
+17.03.2019
+	    -Fix: Reverted all compiler (laz 2.0) warning fixes focused to "Commandline is deprecated" because of problems
+                  with process parameter settings.
+                  This was quite big manual merge. I have messed up my devel-git. I hope all is ok now. 
+	    -Fix: Change '|' (pipe) to ' ' (space). '|' is halfspace in some CW keyers. Hamlib keyer can only full space ' '. 
+						                (2.3.0(214)
+16.03.2019
+	    -Fix: CQmonitor decode 2 calls per line from Fox. From 2calls line decode does not allow reply with double click.
+		  From 2calls line decode does not give myalert if qso is finished (MYCALL RR73)
+	    -Fix: Removed several compiler (laz 2.0) warnings. Watch for bugs in calling external routines! 
+						                (2.3.0(213)
+06.03.2019
+	    -rewite of CWType and CWKeys code and their layouts. (DL7OAP & OH1KH)
+	    -CWType help page updated
+	    -Add: stop cw send by ESC when Hamlib keying in use, should now work with Icom and Kenwood rigs. Only IC7300 tested.
+	    -Fix: CWKeys resizing
+            -Add: MouseOver CWkeys and CWType Fkeys now shows CWmacro content.
+	    -Add: Paste/Drop over CWType now sends text. 
+	    -fix CWType: now works ok with all 3 modes. Delete works in word mode before block send is started.
+	    -fix: CWtype: speed change affects NewQSO statusbar <--> NewQso cw speed change affects CWType speed selector.
+	    -Add: CWType change of mode returns focus back to typing area (m.TMemo)
+	    -Fix: Hamlib cw send delay. Removed space between command "b" and text to send. 
+                   Space was interpreted as part of message text causing delay at start.
+
+	  -fix for CQmonitor. If in qso, but no other decoded calls in band did not clear monitor at the start of new period.
+						                (2.3.0(212)
+
+21.02.2019
+	  -Detect wsjt UDP message using "magic number" (otherwise decode fails if JS8 tires to use wsjt remote)
+	  -fix for FollwedCall routine. Was not working at all.
+						                (2.3.0(211)
+19.02.2019
+	  -Cq-monitor. Some fixes for callsign detecteting function. (DL7OAP & OH1KH)
+	  -fix for FollwedCall saving
+	  -Support for N1MM logger+. Select from NewQSO/File/Remote mode for n1mm logger. IP and PORT settings are
+           in preferences/fldigi/wsjt section. Selecting this allows logging from wsjt or js8call using n1mm logger
+           option (without having CQ-monitor). included LoTW export workaround that allows JS8 mode qso uploads.  (DL7OAP & OH1KH) 
+						                (2.3.0(210)
+05.02.2019
+	  -Fixed bug in History printing of CQ-monitor
+03.02.2019
+	  - Wsjtx Cq-monitor/Map mode: Completely rewritten with Lazarus standard components. Does not use richmemo unit any more.
+            Seems that slowly crowing cpu load is now away. This version can be compiled with Lazarus v2.0 rcXX
+	    Should show up to user with very minimal changes. (if any).
+
+            All credits of this change goes to Andreas, DL7OAP, who wrote whole monitor core again using stringGrid component.
+
+	  -NewQSO: Buttons LoTW,eQSL, HamQth had very small effective click area with certain screen resolutions. Tried to fix that.
+           Tnx info: Giuseppe - IK0DWJ
+						                (2.3.0(209)
+16.01.2019
+	  - xplanet indexOutOfBounds fix (Andreas, DL7OAP)
+  	  - still main achor fix. Scaling of window failed. Tnx info: Giuseppe IKØDWJ
+						                (2.3.0(208)
+06.01.2019
+	  So I'm here again!
+	  I should not continue with this devel. But it is so easy compared to starting a new one...
+
+	- dropped vfo query away. Sends now only "fm" instead of "fmv". I can not see any harm for this.
+          at least with icom rigs "v" gives just "not supported"-error.
+	  Advise me if this breaks something with other rigs or cqrlog functions.
+        - Some anchoring and layout fixes again (NewQSO)
+						                (2.3.0(207)
+04.01.2019
+        Allow ^ passing CWType. In word mode ^AR sends now combined characters with hamlib keying/Icom rigs
+
 
 28.12.2018
 	This will be the last beta test version of this year. Maybe it is the last of them all! 

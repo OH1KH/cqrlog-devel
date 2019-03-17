@@ -3,6 +3,18 @@ Legend:
   + new feature
   - bugfix
 --------------------
+  - CQmonitor Fox 2calls per line decodes
+  - CWType and CWkeys rewrite (Andreas, DL7OAP)&(Saku, OH1KH)
+  + detect wsjt UDP message (Saku, OH1KH)
+  - followed call routine fix (Saku, OH1KH)
+  + n1mm logger+ support and JS8 mode loTW upload workaroud. (Andreas, DL7OAP)&(Saku, OH1KH)
+  - compleltely new wsjtx monitor core with stringGrid, Richmemo removed.(Andreas, DL7OAP) 
+  - NewQSo ancor fixes,Tnx info: Giuseppe - IK0DWJ (Saku, OH1KH)
+  - xpalnet indexOutOfBounds fix (Andreas, DL7OAP)
+  - still main achor fix(Saku, OH1KH)
+  - some anchor fixes (Saku, OH1KH)
+  - removed vfo query from rig. Not needed anywhere??? At least Icoms do not even support it(Saku, OH1KH)
+  + Allow ^ passing CWType. In word mode ^AR sends now combined characters with hamlib keying/Icom rigs (Saku, OH1KH)
   + keep WB4 list of cqllsigh after qso is logged. Can be selected in preferences. (Saku, OH1KH)
   - DXluster coloring (lotw/eqsl) bug fix (Andreas, DL7OAP)
   - edit radiomemories label typo fix (Saku, OH1KH)

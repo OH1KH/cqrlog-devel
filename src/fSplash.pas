@@ -66,7 +66,8 @@ const
      Wordbreak  : False;
      Opaque     : False;
      SystemFont : False;
-     RightToLeft: False
+     RightToLeft: False;
+     EndEllipsis: False
    );
 var
   ATextRect: TRect;

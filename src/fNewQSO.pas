@@ -20,7 +20,7 @@ uses
   DBGrids, StdCtrls, Buttons, ComCtrls, Grids, inifiles,
   LCLType, RTTICtrls, httpsend, Menus, ActnList, process, db,
   uCWKeying, ipc, baseunix, dLogUpload, blcksock, dateutils,
-  fMonWsjtx, fWorkedGrids,fPropDK0WCY;
+  fMonWsjtx, fWorkedGrids,fPropDK0WCY, fAdifImport;
 
 const
   cRefCall = 'Ref. call (to change press CTRL+R)   ';
@@ -29,7 +29,7 @@ const
   cCntyVersionCheckUrl = 'http://www.ok2cqr.com/linux/cqrlog/ctyfiles/ver.dat';
 
 type
-  TRemoteModeType = (rmtFldigi, rmtWsjt);
+  TRemoteModeType = (rmtFldigi, rmtWsjt, n1mm);
 
 
 type
@@ -78,6 +78,7 @@ type
     acProp: TAction;
     acReminder: TAction;
     acContest: TAction;
+    acRemoteModeN1MM: TAction;
     acUploadToAll: TAction;
     acUploadToHrdLog: TAction;
     acUploadToClubLog: TAction;
@@ -115,6 +116,7 @@ type
     MenuItem58: TMenuItem;
     MenuItem63: TMenuItem;
     MenuItem94 : TMenuItem;
+    mnuRemoteModeN1MM: TMenuItem;
     mnuReminder: TMenuItem;
     MenuItem86: TMenuItem;
     MenuItem87: TMenuItem;
@@ -326,6 +328,7 @@ type
     sbtnRefreshTime: TSpeedButton;
     tabDXCCStat : TTabSheet;
     tabSatellite : TTabSheet;
+    tmrN1MM: TTimer;
     tmrWsjtSpd: TTimer;
     tmrWsjtx: TTimer;
     tmrUploadAll: TTimer;
@@ -356,6 +359,7 @@ type
     procedure acSCPExecute(Sender : TObject);
     procedure acSendSpotExecute(Sender : TObject);
     procedure acShowStatBarExecute(Sender: TObject);
+    procedure acRemoteModeN1MMExecute(Sender: TObject);
     procedure acTuneExecute(Sender : TObject);
     procedure acUploadToAllExecute(Sender: TObject);
     procedure acUploadToClubLogExecute(Sender: TObject);
@@ -518,6 +522,7 @@ type
     procedure tmrEndStartTimer(Sender: TObject);
     procedure tmrEndTimer(Sender: TObject);
     procedure tmrFldigiTimer(Sender: TObject);
+    procedure tmrN1MMTimer(Sender: TObject);
     procedure tmrRadioTimer(Sender: TObject);
     procedure tmrStartStartTimer(Sender: TObject);
     procedure tmrStartTimer(Sender: TObject);
@@ -616,21 +621,23 @@ type
     ShowWin     : Boolean;
 
     WsjtxSock             : TUDPBlockSocket;
-    WsjtxMode             : String;            //Moved from private
+    N1MMSock              : TUDPBlockSocket;
+
+    WsjtxMode             : String;          //Moved from private
     WsjtxBand             : String;
-    wHiSpeed              : integer;           // when packets received :udp polling speeds (tmrWsjtx)
-    wLoSpeed              : integer;           // when running idle
-    old_call              : String;            //Moved from private
+    wHiSpeed              : integer;      // when packets received :udp polling speeds (tmrWsjtx)
+    wLoSpeed              : integer;     // when running idle
+    old_call              : String;               //Moved from private
     was_call              : String;            //holds recent edtCallsign.text before it was cleared
 
     FldigiXmlRpc          : Boolean;
+    AnyRemoteOn           : Boolean;     //true if any of remotes fldigi,wsjt,or n1mm is active);
 
     ClearAfterFreqChange  : Boolean;
     ChangeFreqLimit       : Double;
-    RepHead               :String;                //the heading for possible reply commands created
+    RepHead                :String;                //the heading for possible reply commands created
                                                   //includes message type #0 (change it)
     ContestNr             : integer;              //wsjtx 2.0 contest type definition in status msg
-
 
     property EditQSO : Boolean read fEditQSO write fEditQSO default False;
     property ViewQSO : Boolean read fViewQSO write fViewQSO default False;
@@ -1164,7 +1171,7 @@ begin
   lat := lat*-1;
   frmGrayLine.ob^.jachcucaru(true,long,lat,long,lat);
   frmGrayline.Refresh;
-  if (not mnuRemoteMode.Checked) and (not mnuRemoteModeWsjt.Checked) then
+  if not AnyRemoteOn then
     edtCall.SetFocus;
   if not (fEditQSO or fViewQSO or cbOffline.Checked) then
     tmrStart.Enabled := True;
@@ -1868,6 +1875,64 @@ begin
 
 end;
 
+procedure TfrmNewQSO.tmrN1MMTimer(Sender: TObject);
+var
+  Buf,
+  prik,
+  data:string;
+  chkDuplicates:Boolean;
+
+begin
+  tmrN1MM.Enabled:=false;
+  chkDuplicates:=false;
+  if N1MMsock.WaitingData > 0 then
+  Begin
+   if dmData.DebugLevel>=1 then Writeln('N1MM has data');
+   while N1MMsock.WaitingData > 0 do     //do all pending messages in one go
+    begin
+      Buf := N1MMsock.RecvPacket(1000);
+      if dmData.DebugLevel>=1 then Writeln('N1MM read data');
+      if N1MMSock.lasterror=0 then
+       begin
+        if dmData.DebugLevel>=1 then writeln(Buf);
+        repeat
+          begin
+            if frmAdifImport.getNextAdifTag(Buf,prik,data) then
+              if dmData.DebugLevel>=1 then
+                                          Begin
+                                           write(prik,'->');
+                                           writeln(data);
+                                          end;
+                                           case uppercase(prik) of
+                                            'CALL' : edtCall.Text := uppercase(data);
+                                            'GRIDSQUARE' : edtGrid.Text := uppercase(data);
+                                            'MODE' : cmbMode.Text := uppercase(data);
+                                            //now this overrides MODE, if exists
+                                            'SUBMODE' : cmbMode.Text := uppercase(data);
+                                            'FREQ' : cmbFreq.Text := data;
+                                            'RST_SENT' : edtHisRST.Text := data;
+                                            'RST_RCVD' : edtMyRST.Text := data;
+                                            'QSO_DATE' : Begin
+                                                          edtDate.Text := copy(data,1,4)+'-'+
+                                                                          copy(data,5,2)+'-'+
+                                                                          copy(data,7,2);
+                                                     end;
+                                             'TIME_ON' : edtStartTime.Text := copy(data,1,2)+':'+ copy(data,3,2);
+                                             'TIME_OFF': edtStartTime.Text := copy(data,1,2)+':'+ copy(data,3,2);
+                                             'TX_PWR' : edtPWR.Text := data;
+                                             'NAME'   : edtName.Text := data;
+                                             'QTH'    : edtQTH.Text := data;
+                                             'COMMENT': edtRemQSO.Text := data;
+                                          end; //case
+              end;  //repeat
+        until Buf = '';
+        SaveRemote;
+       end; //lasterror=0
+    end;  // while waiting data
+  end;  //if waiting data
+  tmrN1MM.Enabled:=true;
+end;
+
 procedure TfrmNewQSO.tmrRadioTimer(Sender: TObject);
 var
   mode, freq, band : String;
@@ -1881,7 +1946,7 @@ begin
   try
     if (not (fViewQSO or fEditQSO)) then
     begin
-      if (cbOffline.Checked and (not mnuRemoteMode.Checked) and (not mnuRemoteModeWsjt.Checked)) then
+      if cbOffline.Checked and (not AnyRemoteOn) then
         exit;   //offline, but not remote mode
 
       if cbOffline.Checked
@@ -2021,6 +2086,8 @@ var
   Buf      : String;
   Fdes     : String;
   ParStr   : String;
+  Par2Str  : String;
+  Fox2Line: integer;
   ParDou   : Double;
   ParBool  : Boolean;
   ParNum   : Integer;
@@ -2141,8 +2208,14 @@ begin
   Buf := Wsjtxsock.RecvPacket(1000);
   if WsjtxSock.lasterror=0 then
   begin
-
+    Fox2Line := 0;
     index := pos(#$ad+#$bc+#$cb+#$da,Buf); //QTheader: magic number 0xadbccbda
+    if index < 1 then
+             begin
+              if dmData.DebugLevel>=1 then Writeln(index,':--------Not wjst message!!------------');
+              lblCall.Caption:= 'Not wjst msg!';
+              break;
+             end;
     RepStart := index; //for possibly reply creation
 
     if dmData.DebugLevel>=1 then Writeln('-----------------------decode start---------------------------------');
@@ -2359,24 +2432,37 @@ begin
           ParStr := trim(StrBuf(index));    //message          //MSK144 CQ has one space before CQ, need trim
           if dmData.DebugLevel>=1 then Writeln(ParStr);
           //----------------------------------------------------
-          Repbuf := Repbuf+copy(Buf,RepStart,index-RepStart);  //Reply str tail part
-          FirstWord := copy(ParStr,1,pos(' ',ParStr)-1);
-          if dmData.DebugLevel>=1 then Writeln('Orig:',length(Buf),' Re:',length(RepBuf)); //should be 1 less
-           //if monitor runs ok
-           if ( new and (frmMonWsjtx <> nil) and frmMonWsjtx.Showing and (WsjtxBand <>'')  and (WsjtxMode <>'')) then
-             Begin
-               //if CQ or Mycall
-               if ((FirstWord = 'CQ') or (pos (FirstWord,MyCall) > 0)) then
-                Begin
-                    frmMonWsjtx.AddDecodedMessage(Timeline+' '+mode+' '+ParStr,WsjtxBand,Repbuf,Dfreq,Snr)
-                end
-               else  //if followed call
-               Begin
-                  if dmData.DebugLevel>=1 then Writeln('Other Decode');
-                  frmMonWsjtx.AddOtherMessage(Timeline+' '+intToStr(Dfreq)+' '+ParStr,Repbuf,Snr);
-               end;
-             end;
+          if (pos('; ',ParStr)>0) then  //fox decode has 2 items per line separated by '; '
+            Begin
+             Fox2Line :=2;
+             Par2Str := copy(ParStr,pos(';',ParStr)+2,length(ParStr));
+             ParStr := copy(ParStr,1,pos(';',ParStr)-1);
+            end;
+           repeat
+            Begin
+              if (Fox2Line = 0) then Repbuf := Repbuf+copy(Buf,RepStart,index-RepStart)  //Reply str tail part
+                else  Repbuf := '';  //only if it is not Fox 2 line
+              FirstWord := copy(ParStr,1,pos(' ',ParStr)-1);
+              if dmData.DebugLevel>=1 then Writeln('Orig:',length(Buf),' Re:',length(RepBuf)); //should be 1 less
+               //if monitor runs ok
+               if ( new and (frmMonWsjtx <> nil) and frmMonWsjtx.Showing and (WsjtxBand <>'')  and (WsjtxMode <>'')) then
+                 Begin
+                   //if CQ or Mycall    (Message is in ParStr)
+                   if (FirstWord = 'CQ') then
+                                frmMonWsjtx.AddCqCallMessage(Timeline,mode,WsjtxBand,ParStr,Repbuf,Dfreq,Snr)
+                      else if (pos (FirstWord,MyCall) > 0) then
+                                 frmMonWsjtx.AddMyCallMessage(Timeline,mode,WsjtxBand,ParStr,Repbuf,Dfreq,Snr)
 
+                       else  //if followed call
+                       Begin
+                          if dmData.DebugLevel>=1 then Writeln('Other Decode');
+                          frmMonWsjtx.AddOtherMessage(Timeline,ParStr,Repbuf,DFreq,Snr);
+                       end;
+                 end;
+               if (Fox2Line = 2) then  ParStr := Par2Str; //run again with 2nd part of line
+               dec(Fox2Line);
+             end;
+            until (Fox2line < 1);
          //----------------------------------------------------
          end; // New decode
        end; //Decode
@@ -2386,7 +2472,7 @@ begin
           if dmData.DebugLevel>=1 then Writeln('Clear Id:', ParStr);
           if (frmMonWsjtx <> nil) and frmMonWsjtx.Showing then
            Begin
-             frmMonWsjtx.WsjtxMemo.lines.Clear;
+             frmMonWsjtx.clearSgMonitor;
              frmMonWsjtx.edtFollow.Text := '';
            end;
         end; //Clear
@@ -2551,11 +2637,13 @@ begin
            if dmData.DebugLevel>=1 then Writeln('timespec: ', ParNum);
            //----------------------------------------------------
            OpCall := trim(StrBuf(index));  //operator callsign (in contest, club etc.)
-           ExchR :=  trim(StrBuf(index));  //fake, this is actually "My call"
-           ExchR :=  trim(StrBuf(index));  //fake, this is actually "My grid"
+           ExchR :=  trim(StrBuf(index));  //fake, this is actually "My call". Not used
+           ExchR :=  trim(StrBuf(index));  //fake, this is actually "My grid". Not used
            ExchS :=  trim(StrBuf(index));  //contest exchange sent. report + others
            ExchR :=  trim(StrBuf(index));  //contest exchange received. report + others
            //----------------------------------------------------
+           // until we get proper database fields contest name and exchange info is added
+           // as "comment to qso" to exist somewhere in logged qso.
            if ContestNr > 0 then
               edtRemQSO.Text := ContestName[ContestNr]+'=S:'+ExchS+'/R:'+ExchR+' '+edtRemQSO.Text;
            //----------------------------------------------------
@@ -2599,7 +2687,7 @@ begin
 
 end;
 {
-  The latest message protocol as always is documented in the latest revision of the NetworkMessage.hpp header file:
+  The latest UDP message protocol as always is documented in the latest revision of the NetworkMessage.hpp header file:
   https://sourceforge.net/p/wsjt/wsjtx/ci/master/tree/NetworkMessage.hpp
 
   The reference implementations, particularly message_aggregator, can always be used to verify behaviour or
@@ -2624,6 +2712,7 @@ begin
   WhatUpNext := upHamQTH;
   UploadAll  := False;
   was_call   := '';
+  AnyRemoteOn := False;
 end;
 
 procedure TfrmNewQSO.btnSaveClick(Sender: TObject);
@@ -2760,7 +2849,7 @@ begin
     end
   end
   else begin
-    if (not mnuRemoteMode.Checked) and (not mnuRemoteModeWsjt.Checked) then
+    if not AnyRemoteOn then
       if edtCall.Focused then
       begin
         edtCallExit(nil)
@@ -2844,7 +2933,7 @@ begin
   begin
     dmData.RefreshMainDatabase(id)
   end;
-  if (not mnuRemoteMode.Checked) and (not mnuRemoteModeWsjt.Checked) then
+  if not AnyRemoteOn then
     UnsetEditLabel;
   dmData.qQSOBefore.Close;
   fEditQSO := False;
@@ -2867,7 +2956,7 @@ begin
     frmMain.dbgrdMain.SetFocus
   end
   else
-    if (not mnuRemoteMode.Checked) and (not mnuRemoteModeWsjt.Checked) then
+    if not AnyRemoteOn then
      edtCall.SetFocus;
   UploadAllQSOOnline;
   if frmWorkedGrids.Showing then frmWorkedGrids.UpdateMap
@@ -3441,7 +3530,7 @@ begin
   end;
   RunST('stop.sh'); //run "when cqrlog is closing" -script
   sleep(1000); //give scirpt time to use rigctld if that is needed
-  if mnuRemoteModeWsjt.Checked or mnuRemoteMode.Checked then DisableRemoteMode;
+  if  AnyRemoteOn then DisableRemoteMode;
   CloseAllWindows;
   SaveSettings;
   dmData.CloseDatabases
@@ -3654,7 +3743,7 @@ end;
 
 procedure TfrmNewQSO.acEditQSOExecute(Sender: TObject);
 begin
-  if (dmData.qQSOBefore.RecordCount > 0) and (not mnuRemoteMode.Checked) and (not mnuRemoteModeWsjt.Checked)  then
+  if (dmData.qQSOBefore.RecordCount > 0) and (not AnyRemoteOn)  then
   begin
     Caption := dmUtils.GetNewQSOCaption('Edit QSO');
     EditQSO := True;
@@ -3927,6 +4016,14 @@ begin
     sbNewQSO.Visible := True;
     acShowStatBar.Checked := False
   end
+end;
+
+procedure TfrmNewQSO.acRemoteModeN1MMExecute(Sender: TObject);
+begin
+   if mnuRemoteModeN1MM.Checked then
+    DisableRemoteMode
+  else
+    GoToRemoteMode(n1mm)
 end;
 
 procedure TfrmNewQSO.acTuneExecute(Sender : TObject);
@@ -4319,8 +4416,8 @@ begin
         dmUtils.LoadFontSettings(frmRbnMonitor);
       if frmPropDK0WCY.Showing then
         dmUtils.LoadFontSettings(frmPropDK0WCY);
-      if (frmMonWsjtx <> nil) and frmMonWsjtx.Showing then dmUtils.LoadFontSettings(frmMonWsjtx);
-
+      if (frmMonWsjtx <> nil) and frmMonWsjtx.Showing then
+                         dmUtils.LoadFontSettings(frmMonWsjtx);
       dmData.LoadQSODateColorSettings;
     end;
     ChangeCallBookCaption
@@ -4360,7 +4457,7 @@ end;
 
 procedure TfrmNewQSO.acViewQSOExecute(Sender: TObject);
 begin
-  if (dmData.qQSOBefore.RecordCount > 0) and (not mnuRemoteMode.Checked) and (not mnuRemoteModeWsjt.Checked) then
+  if (dmData.qQSOBefore.RecordCount > 0) and (not AnyRemoteOn) then
   begin
     ViewQSO := True;
     Caption := dmUtils.GetNewQSOCaption('View QSO');
@@ -4809,17 +4906,19 @@ begin
     begin
       speed := CWint.GetSpeed+2;
       CWint.SetSpeed(speed);
-      sbNewQSO.Panels[2].Text := IntToStr(speed)+'WPM'
+      sbNewQSO.Panels[2].Text := IntToStr(speed)+'WPM';
+      if (frmCWType <> nil ) then frmCWType.edtSpeed.Value := speed;
     end
   end;
 
-  if (key = 34) and (not dbgrdQSOBefore.Focused) then//pgup
+  if (key = 34) and (not dbgrdQSOBefore.Focused) then//pgdn
   begin
     if Assigned(CWint) then
     begin
       speed := CWint.GetSpeed-2;
       CWint.SetSpeed(speed);
-      sbNewQSO.Panels[2].Text := IntToStr(speed)+'WPM'
+      sbNewQSO.Panels[2].Text := IntToStr(speed)+'WPM';
+      if (frmCWType <> nil ) then frmCWType.edtSpeed.Value := speed;
     end
   end;
 
@@ -5090,6 +5189,8 @@ begin
   frmMain.Show;
   frmMain.BringToFront;
 end;
+
+
 
 procedure TfrmNewQSO.sbtnAttachClick(Sender: TObject);
 begin
@@ -6237,6 +6338,8 @@ begin
     1 : begin
           CWint := TCWWinKeyerUSB.Create;
           CWint.DebugMode := dmData.DebugLevel>=1;
+          if dmData.DebugLevel < 0 then
+                  CWint.DebugMode  :=  CWint.DebugMode  or ((abs(dmData.DebugLevel) and 8) = 8 );
           CWint.Port    := cqrini.ReadString('CW','wk_port','');
           CWint.Device  := cqrini.ReadString('CW','wk_port','');
           CWint.PortSpeed := 1200;
@@ -6247,6 +6350,8 @@ begin
     2 : begin
           CWint    := TCWDaemon.Create;
           CWint.DebugMode := dmData.DebugLevel>=1;
+          if dmData.DebugLevel < 0 then
+                  CWint.DebugMode  :=  CWint.DebugMode  or ((abs(dmData.DebugLevel) and 8) = 8 );
           CWint.Port    := cqrini.ReadString('CW','cw_port','');
           CWint.Device  := cqrini.ReadString('CW','cw_address','');
           CWint.PortSpeed := 0;
@@ -6257,6 +6362,8 @@ begin
     3 : begin
           CWint := TCWK3NG.Create;
           CWint.DebugMode := dmData.DebugLevel>=1;
+          if dmData.DebugLevel < 0 then
+                  CWint.DebugMode  :=  CWint.DebugMode  or ((abs(dmData.DebugLevel) and 8) = 8 );
           CWint.Port    := cqrini.ReadString('CW','K3NGPort','');
           CWint.Device  := cqrini.ReadString('CW','K3NGPort','');
           CWint.PortSpeed := cqrini.ReadInteger('CW','K3NGSerSpeed',115200);
@@ -6267,6 +6374,8 @@ begin
     4 : begin
           CWint        := TCWHamLib.Create;
           CWint.DebugMode := dmData.DebugLevel>=1;
+          if dmData.DebugLevel < 0 then
+                  CWint.DebugMode  :=  CWint.DebugMode  or ((abs(dmData.DebugLevel) and 8) = 8 );
           CWint.Port   := cqrini.ReadString('TRX1','RigCtldPort','4532');
           CWint.Device := cqrini.ReadString('TRX1','host','localhost');
           CWint.Open;
@@ -6373,7 +6482,10 @@ begin
                   chkAutoMode.Checked   := False;
                   if mnuRemoteModeWsjt.Checked then       //not both on at same time
                      DisableRemoteMode;
+                  if mnuRemoteModeN1MM.Checked then          //not both on at same time
+                        DisableRemoteMode;
                   mnuRemoteMode.Checked := True;
+                  AnyRemoteOn := True;
                   lblCall.Caption       := 'Remote mode!';
                   tmrFldigi.Interval    := cqrini.ReadInteger('fldigi','interval',2)*1000;
                   run                   := cqrini.ReadBool('fldigi','run',False);
@@ -6388,7 +6500,10 @@ begin
                   chkAutoMode.Checked   := False;
                   if mnuRemoteMode.Checked then          //not both on at same time
                   DisableRemoteMode;
+                  if mnuRemoteModeN1MM.Checked then          //not both on at same time
+                        DisableRemoteMode;
                   mnuRemoteModeWsjt.Checked := True;
+                  AnyRemoteOn := True;
                   WsjtxDecodeRunning        := false;
                   lblCall.Caption           := 'Wsjtx remote';
                   path                      := cqrini.ReadString('wsjt','path','');
@@ -6401,8 +6516,7 @@ begin
 
 
                   tmrWsjtx.Interval := wLoSpeed;      //  timer has now dynamic value. Most of time there is nothing to do
-                  tmrWsjtx.Enabled  := True;          //  so timer can run more seldom.
-                  tmrWsjtSpd.Enabled:= True;
+
 
                   // start UDP server  http://synapse.ararat.cz/doc/help/blcksock.TBlockSocket.html
                   WsjtxSock := TUDPBlockSocket.Create;
@@ -6420,6 +6534,8 @@ begin
                          sleep(1000);
                          WsjtxSock.bind(cqrini.ReadString('wsjt','ip','127.0.0.1'),cqrini.ReadString('wsjt','port','2237'));
                        end;
+                     tmrWsjtx.Enabled  := True;          //  so timer can run more seldom.
+                     tmrWsjtSpd.Enabled:= True;
                   except
                       {if dmData.DebugLevel>=1 then} Writeln('Could not bind socket for wsjtx!');
                       edtRemQSO.Text := 'Could not bind socket for wsjtx!';
@@ -6428,8 +6544,48 @@ begin
                   end;
                   mnuWsjtxmonitor.Visible := True; //we show "monitor" in view-submenu when active
                   if cqrini.ReadBool('Window','MonWsjtx',true) then acMonitorWsjtxExecute(nil)
-                end
-  end;
+                end;
+
+    n1mm      : begin
+                  RememberAutoMode := chkAutoMode.Checked;
+                  chkAutoMode.Checked   := False;
+                  if mnuRemoteModeWsjt.Checked then       //not both on at same time  wsjt
+                     DisableRemoteMode;
+                  if mnuRemoteMode.Checked then          //not both on at same time   fldigi
+                        DisableRemoteMode;
+
+                  mnuRemoteModeN1MM.Checked := True;
+                  AnyRemoteOn := True;
+
+                  lblCall.Caption           := 'N1MM logger+';
+
+                  // start UDP server  http://synapse.ararat.cz/doc/help/blcksock.TBlockSocket.html
+                  //use lot of wsjtx stuff as it can not be running at same time
+                  N1MMSock := TUDPBlockSocket.Create;
+                  if dmData.DebugLevel>=1 then Writeln('Socket created!');
+                  N1MMSock.EnableReuse(true);
+                  if dmData.DebugLevel>=1 then Writeln('Reuse enabled!');
+                  try
+                    //fix these in preferences
+                    N1MMSock.bind(cqrini.ReadString('n1mm','ip','127.0.0.1'),cqrini.ReadString('n1mm','port','2333'));
+                    if dmData.DebugLevel>=1 then Writeln('Bind issued '+cqrini.ReadString('n1mm','ip','127.0.0.1')+
+                                                                        ':'+cqrini.ReadString('n1mm','port','2333'));
+                     // On bind failure try to rebind every second
+                     while ((N1MMSock.LastError <> 0) and (tries > 0 )) do
+                       begin
+                         dec(tries);
+                         sleep(1000);
+                         N1MMSock.bind(cqrini.ReadString('n1mm','ip','127.0.0.1'),cqrini.ReadString('n1mm','port','2333'));
+                       end;
+                     tmrN1MM.Enabled  := True;
+                  except
+                      {if dmData.DebugLevel>=1 then} Writeln('Could not bind socket for N1MM!');
+                      edtRemQSO.Text := 'Could not bind socket for N1MM!';
+                     DisableRemoteMode;
+                     exit
+                  end;
+                end;
+           end; //case remote type
 
   ClearAll;
   lblCall.Font.Color    := clRed;
@@ -6463,6 +6619,7 @@ begin
        end;
       if Assigned(WsjtxSock) then FreeAndNil(WsjtxSock);  // to release UDP socket
       mnuRemoteModeWsjt.Checked:= False;
+      AnyRemoteOn := False;
   end;
 
   if mnuRemoteMode.Checked then
@@ -6470,8 +6627,16 @@ begin
      tmrFldigi.Enabled         := False;
      if FldigiXmlRpc then frmxfldigi.Visible := false;
      mnuRemoteMode.Checked     := False;
+     AnyRemoteOn := False;
   end ;
 
+  if  mnuRemoteModeN1MM.Checked then
+  begin
+      tmrN1MM.Enabled:=false;
+      if Assigned(N1MMSock) then FreeAndNil(N1MMSock);  // to release UDP socket
+      mnuRemoteModeN1MM.Checked:= False;
+      AnyRemoteOn := False;
+  end;
 
   chkAutoMode.Checked:= RememberAutoMode;
   lblCall.Caption           := 'Call:';

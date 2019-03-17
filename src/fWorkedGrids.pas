@@ -88,35 +88,45 @@ uses fNewQSO, fTRXControl, dData, dUtils, uMyIni;
 
 function TfrmWorkedGrids.GridOK(Loc: string): boolean;
 var
-  i: integer;
+  i :  integer;
+r1  : boolean = true;
+r2  : boolean = true;
+r3  : boolean = true;
+
 begin
-  Result := True;
-  Loc := trim(UpCase(Loc));
-  if Length(Loc) mod 2 = 0 then
+  if loc <> '' then   //returns false if loc is empty
   begin
-    for i := 1 to length(loc) do
+    Loc := trim(UpCase(Loc));
+    //works with 4 or 6 chr locators, but fails with special callsigns that look like locator -> OH60AB
+    if ((Length(Loc) = 4) or (Length(Loc) = 6)) then
     begin
-      case i of
-        1, 2, 5, 6: case Loc[i] of
-            'A'..'R':
-            begin {OK!}
-            end;
-            else
-              Result := False;
-          end;
-        3, 4, 7, 8: case Loc[i] of
-            '0'..'9':
-            begin {OK!}
-            end;
-            else
-              Result := False;
-          end;
-      end;
+      for i := 1 to length(loc) do
+      begin
+        case i of
+          1, 2, 5, 6: case Loc[i] of
+                          'A'..'R': begin
+                                      //OK
+                                    end;
+                      else
+                        r2 := false;
+                      end;
+               3, 4 : case Loc[i] of
+                          '0'..'9':begin
+                                    //OK
+                                   end;
+                      else
+                        r3:= false;
+                      end;
+        end; //case
+      end; //for i
+    end
+    else begin
+      r1 := false;
     end;
+    Result := r1 and r2 and r3;
   end
-  else begin
-    Result := False;
-  end;
+  else
+   Result := false;
 end;
 
 procedure TfrmWorkedGrids.ToRigMode(mode: string);

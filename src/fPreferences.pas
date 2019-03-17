@@ -573,9 +573,11 @@ type
     edtK3NGPort: TEdit;
     edtK3NGSpeed: TSpinEdit;
     edtFldigiIp: TEdit;
+    edtn1mmIp: TEdit;
     edtWsjtPath: TEdit;
     edtWsjtPort: TEdit;
     edtFldigiPort: TEdit;
+    edtN1MMPort: TEdit;
     edtXRefresh: TEdit;
     edtXLastSpots: TEdit;
     edtXTop: TEdit;
@@ -781,12 +783,14 @@ type
     Label200: TLabel;
     Label201: TLabel;
     Label202: TLabel;
-    Label203: TLabel;
+    lbln1mmport: TLabel;
+    lbln1mmaddr: TLabel;
+    lblwsjtport: TLabel;
     Label204: TLabel;
     Label205: TLabel;
     Label206 : TLabel;
     Label207: TLabel;
-    Label26: TLabel;
+    lblwsjtaddr: TLabel;
     Label46 : TLabel;
     Label47 : TLabel;
     Label48: TLabel;
@@ -1465,6 +1469,9 @@ begin
   cqrini.WriteBool('wsjt','wb4CCall', cgLimit.Checked[0]);
   cqrini.WriteBool('wsjt','wb4CLoc', cgLimit.Checked[1]);
 
+  cqrini.WriteString('n1mm','port',edtn1mmPort.Text);
+  cqrini.WriteString('n1mm','ip',edtn1mmIp.Text);
+
   if edtBackupPath.Text <> '' then
     if edtBackupPath.Text[Length(edtBackupPath.Text)] <> PathDelim then
       edtBackupPath.Text := edtBackupPath.Text + PathDelim;
@@ -1762,7 +1769,7 @@ begin
     lblqFont.Font.Name := dlgFont.Font.Name;
     lblqFont.Font.Size := fqSize;
     lblQSOList.Font.Name := dlgFont.Font.Name;
-    lblQSOList.Font.Size := fgSize;
+    lblQSOList.Font.Size := fqSize;
   end;
 end;
 
@@ -1775,7 +1782,7 @@ begin
     lblgFont.Font.Name := dlgFont.Font.Name;
     lblgFont.Font.Size := fgSize;
     lblStatistics.Font.Name := dlgFont.Font.Name;
-    lblStatistics.Font.Size := fqSize;
+    lblStatistics.Font.Size := fgSize;
   end;
 end;
 
@@ -1870,6 +1877,7 @@ begin
     1: proj := ' -projection azimuthal -background ' + dmData.HomeDir +
         'xplanet' + PathDelim + 'bck.png';
     2: proj := ' -projection azimuthal';
+    3: proj := ' -projection rectangular';
   end; //case
 
   cmd := edtXplanetPath.Text + ' -config ' + dmData.HomeDir +
@@ -2399,8 +2407,8 @@ begin
   dmUtils.InsertModes(cmbDefaultMode);
   dmUtils.InsertModes(cmbMode);
   dmUtils.InsertModes(cmbWsjtDefaultMode);
-  cmbDefaultMode.ReadOnly     := True;
-  cmbWsjtDefaultMode.ReadOnly := True;
+  cmbDefaultMode.Style := csDropDownList;
+  cmbWsjtDefaultMode.Style := csDropDownList;
 
   LoadMebershipCombo;
 
@@ -2818,6 +2826,8 @@ begin
   cgLimit.Checked[0] := cqrini.ReadBool('wsjt','wb4CCall', False);
   cgLimit.Checked[1] := cqrini.ReadBool('wsjt','wb4CLoc', False);
 
+  edtn1mmPort.Text         := cqrini.ReadString('n1mm','port','2333');
+  edtn1mmIp.Text           := cqrini.ReadString('n1mm','ip','127.0.0.1');
 
 
   chkEnableBackup.Checked := cqrini.ReadBool('Backup', 'Enable', False);
