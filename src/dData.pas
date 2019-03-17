@@ -3122,7 +3122,7 @@ begin
         Q1.SQL.Add('  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,');
         Q1.SQL.Add('  freq numeric(10,4) NOT NULL,');
         Q1.SQL.Add('  mode varchar(10) NOT NULL,');
-        Q1.SQL.Add('  bandwidth int NOT NULL');
+        Q1.SQL.Add('  bandwidth int NOT NULL,');
         Q1.SQL.Add('  info varchar(25) NULL');      //null makes log backward compatible with old cqrlogs
         Q1.SQL.Add(') COLLATE '+QuotedStr('utf8_bin')+';');
         if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
