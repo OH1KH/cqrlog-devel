@@ -16,9 +16,10 @@
       </Resources>
     </General>
     <VersionInfo>
+      <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
+      <MajorVersionNr Value="2"/>
       <MinorVersionNr Value="3"/>
-      <RevisionNr Value="1"/>
       <BuildNr Value="2191"/>
       <StringTable ProductVersion="0.3.1.2026"/>
     </VersionInfo>
@@ -764,8 +765,8 @@
   <CompilerOptions>
     <Version Value="11"/>
     <SearchPaths>
-      <Libraries Value="$(LazarusDir)/lcl;/usr/lib/gcc/x86_64-redhat-linux/7/"/>
-      <OtherUnitFiles Value="lnet/lib;synapse"/>
+      <Libraries Value="$(LazarusDir)/lcl"/>
+      <OtherUnitFiles Value="lnet/lib"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>

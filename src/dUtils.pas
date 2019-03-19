@@ -2646,6 +2646,8 @@ begin
     CWstr := LowerCase(cqrini.ReadString('CW', key, ''))
   else
     CWstr := text;
+  //pipe | replaced with space (exits in contest reports)
+  CWstr := StringReplace(CWstr,'|',' ',[rfReplaceAll, rfIgnoreCase]);
 
   CWstr := StringReplace(CWstr,'%mc',mycall,[rfReplaceAll, rfIgnoreCase]);
   CWstr := StringReplace(CWstr,'%mn',myname,[rfReplaceAll, rfIgnoreCase]);

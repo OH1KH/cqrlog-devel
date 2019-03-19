@@ -2642,10 +2642,21 @@ begin
            ExchS :=  trim(StrBuf(index));  //contest exchange sent. report + others
            ExchR :=  trim(StrBuf(index));  //contest exchange received. report + others
            //----------------------------------------------------
-           // until we get proper database fields contest name and exchange info is added
-           // as "comment to qso" to exist somewhere in logged qso.
-           if ContestNr > 0 then
-              edtRemQSO.Text := ContestName[ContestNr]+'=S:'+ExchS+'/R:'+ExchR+' '+edtRemQSO.Text;
+            {until we get proper database fields contest name and exchange info is added
+            as "comment to qso" to exist somewhere in logged qso.
+             *       0 -> NONE
+             *       1 -> NA VHF
+             *       2 -> EU VHF
+             *       3 -> FIELD DAY
+             *       4 -> RTTY RU
+             *       5 -> FOX
+             *       6 -> HOUND
+             }
+           case ContestNr of
+                1,2,3,4 : edtRemQSO.Text := ContestName[ContestNr]+'-QSO S:'+ExchS+'/R:'+ExchR+' '+edtRemQSO.Text;
+                5,6     : edtRemQSO.Text := ContestName[ContestNr]+'-QSO '+edtRemQSO.Text;
+           end;
+
            //----------------------------------------------------
            if dmData.DebugLevel>=1 then Writeln(' WSJTX decode #5 logging: press save');
            SaveRemote;
