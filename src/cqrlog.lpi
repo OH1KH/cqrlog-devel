@@ -16,10 +16,9 @@
       </Resources>
     </General>
     <VersionInfo>
-      <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <MajorVersionNr Value="2"/>
       <MinorVersionNr Value="3"/>
+      <RevisionNr Value="1"/>
       <BuildNr Value="2191"/>
       <StringTable ProductVersion="0.3.1.2026"/>
     </VersionInfo>
@@ -33,7 +32,7 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <CommandLineParams Value="--DEBUG=-8"/>
+        <CommandLineParams Value="--DEBUG=-4"/>
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
       <environment>
@@ -46,7 +45,7 @@
       <Modes Count="1">
         <Mode0 Name="default">
           <local>
-            <CommandLineParams Value="--DEBUG=-8"/>
+            <CommandLineParams Value="--DEBUG=-4"/>
             <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
           </local>
           <environment>
@@ -765,8 +764,8 @@
   <CompilerOptions>
     <Version Value="11"/>
     <SearchPaths>
-      <Libraries Value="$(LazarusDir)/lcl"/>
-      <OtherUnitFiles Value="lnet/lib"/>
+      <Libraries Value="$(LazarusDir)/lcl;/usr/lib/gcc/x86_64-redhat-linux/7/"/>
+      <OtherUnitFiles Value="lnet/lib;synapse"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
@@ -778,11 +777,6 @@
         <OptimizationLevel Value="2"/>
       </Optimizations>
     </CodeGeneration>
-    <Linking>
-      <Debugging>
-        <GenerateDebugInfo Value="False"/>
-      </Debugging>
-    </Linking>
     <Other>
       <Verbosity>
         <ShowNotes Value="False"/>

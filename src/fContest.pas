@@ -163,8 +163,12 @@ var
   s :string;
 begin
   frmNewQSO.edtCall.Text := edtCall.Text;
-
-  case frmNewQSO.cmbMode.Items[frmNewQSO.cmbMode.ItemIndex] of            //report in NEwQSO changes to 59 to late (after passing cmbMode)
+  
+  //report in NEwQSO changes to 59 to late (after passing cmbMode)
+  //NOTE! if mode is not in list program dies ! Need some kind of fix !
+  //Happens with IC7300 when USB-D is selected. Then rigctld gets mode as PKTUSB and
+  //if it is not added to user modes program crash here
+  case frmNewQSO.cmbMode.Items[frmNewQSO.cmbMode.ItemIndex] of
   'SSB','AM','FM' : Begin
                          edtRSTs.Text := copy(edtRSTs.Text,0,2);
                          edtRSTr.Text := copy(edtRSTr.Text,0,2);

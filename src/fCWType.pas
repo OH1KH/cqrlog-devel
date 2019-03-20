@@ -397,7 +397,7 @@ Begin
    for i:= WasMemoLen+1 to length(m.lines.text) do
      begin
          l := Upcase( m.Lines.Text[i]);
-         if (l = #$0A) then l := ' '; //convert newline and pipe to space before send
+         if (l = #$0A) then l := ' '; //convert newline to space before send
          if PassedKey(l) then  msg := msg + l;
      end;
    if msg<>'' then

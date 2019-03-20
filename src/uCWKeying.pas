@@ -776,8 +776,6 @@ procedure TCWHamLib.SendText(text : String);
 var c:integer;
 
 begin
-  //pipe | is not supported as halfspace with Hamlib keyer, replaced with full space
-  text := StringReplace(text,'|',' ',[rfReplaceAll, rfIgnoreCase]);
   c:= length(text);
   if c>10 then
    Begin

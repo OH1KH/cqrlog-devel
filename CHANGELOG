@@ -3,27 +3,96 @@ Legend:
   + new feature
   - bugfix
 --------------------
-2.1.0 (04.11.2017)
-   #fixed some help files to be a bit more up to date (Saku, OH1KH)
-   -dUtils: BandToFrequency: 630M definition was missing. (Saku, OH1KH)
-2.1.0 (29.10.2017)
-   +coped "Show only active band" checkbox to Band map filter for quick access. (Saku, OH1KH)
-   +Added "Re/Set" button to Export "Choose fields to export" dialog for set/reset all check boxes in one go. (Saku, OH1KH)
-2.1.0 (23.10.2017)
-   -WSJTXremote / NewQso: Bugfix "mode: Auto" checkbox state was not correctly returned after program restart. (Saku, OH1KH)
-   +WSJTX Monitor:More specific print out for extended cq (Saku, OH1KH)
-				
-2.1.0 (20.09.2017)
-   +CQ-monitor:  Country names (cut to length 15) are now displayed instead of callsign prefixes. (Saku, OH1KH)
-   +Extended CQs (CQ DX, CQ AS, CQ AF .. etc) are now compared against own continent. (Saku, OH1KH)
-   +"My Alert" is now compared oppsite way: This should fit also compound callsign XX/YOURCALL or YOURCALL/XX (Saku, OH1KH)
+  - CQmonitor Fox 2calls per line decodes
+  - CWType and CWkeys rewrite (Andreas, DL7OAP)&(Saku, OH1KH)
+  + detect wsjt UDP message (Saku, OH1KH)
+  - followed call routine fix (Saku, OH1KH)
+  + n1mm logger+ support and JS8 mode loTW upload workaroud. (Andreas, DL7OAP)&(Saku, OH1KH)
+  - compleltely new wsjtx monitor core with stringGrid, Richmemo removed.(Andreas, DL7OAP) 
+  - NewQSo ancor fixes,Tnx info: Giuseppe - IK0DWJ (Saku, OH1KH)
+  - xpalnet indexOutOfBounds fix (Andreas, DL7OAP)
+  - still main achor fix(Saku, OH1KH)
+  - some anchor fixes (Saku, OH1KH)
+  - removed vfo query from rig. Not needed anywhere??? At least Icoms do not even support it(Saku, OH1KH)
+  + Allow ^ passing CWType. In word mode ^AR sends now combined characters with hamlib keying/Icom rigs (Saku, OH1KH)
+  + keep WB4 list of cqllsigh after qso is logged. Can be selected in preferences. (Saku, OH1KH)
+  - DXluster coloring (lotw/eqsl) bug fix (Andreas, DL7OAP)
+  - edit radiomemories label typo fix (Saku, OH1KH)
+  + wsjtx contestmode logging infos to qso comments (Saku, OH1KH)
+  + Tune (Ctrl+T) works now with Hamlib keyer using AM+Ptt (Saku, OH1KH)
+  + Radio memories delete all -button (Saku, OH1KH)
+  - QSO list PgUP/PgDN error [in 2.3.0-(002)] fix. (Andreas, DL7OAP)
+  - Radio memories adif import bug fixed (Saku, OH1KH)
+  - CQ-monitor: Remove angle brackets (wsjt-x v2.0 uses these) (Saku, OH1KH)
+  + Added filter option NOT that reverses search. Calendar objects for date setting. (Saku, OH1KH)
+  + WB4 date limit for CQ-monitor and grid map. (Saku, OH1KH)
+  - TRXContorl info field update. (Saku, OH1KH)
+  + TRXControl/Open memory list. Double click on row of list sets rig. Can be open in normal operation (Sak,OH1KH) 
+  - Qso list scrolling problem fix (Andreas, DL7OAP)
+  + Double click on TRXControl/add/Modify mem list row sets rig with values in row  (Saku, OH1KH)
+  - satellite RXfreq comma bug, (Andreas, DL7OAP & Saku, OH1KH)
+  + TRXControl memory number indicator (Saku, OH1KH)
+  - Fixed contest qso adif export / import. (Saku, OH1KH)
 
-2.1.0 (11.09.2017)
-   + Now CQ-monitor form is created at the time it is needed (opened), not at program start. (Saku, OH1KH)
-   + When wsjt-remote is closed it will also distroy CQ-monitor form. Releases memory used by richmemo. (Saku, OH1KH)
-	
-2.1.0 (08.09.2017)
-   + CQ-monitor now remembers showing state.(Saku, OH1KH)
+2.3.1
+  # update sat_name.tab with newest lotw satellite list (Andy, DL7AOP)
+  # some layout changes and code refactoring
+  + feature to select rectangular geometry in the xplanet preferences (Andy, DL7AOP)
+  + ADIF import: implement filter by date range (gl-bars)
+  + Initial Skimmer Support (Olli, DH2WQ)
+  - fixed bug with CTRL+END and/or CTRL+HOME
+  - fixed encoding passwords for HamQTH - (Andy, DL7AOP)
+2.3.0 (2018-06-17)
+  # Auto backup: can also prevent accidental closing of cqrlog. Text informations added (Saku, OH1KH)
+  - Wsjt-x remote used nonexisting variable if CQ-monitor was closed (Saku, OH1KH)
+  + wsjt-x: stop TX if split answer to CQ not accepted by caller (Saku, OH1KH)
+  - Preferences button in eQSL up&dn load opened wrong tab
+  + TRXcontrol: M_Wri-button. Sets memory entry from current rig frequency and mode  (Saku, OH1KH)
+  + Wsjt-x CQ-monitor: new features Wsjt-map ColorBack and xplanet support. (Saku, OH1KH)
+  + Cq-monitor: Overtimed entries turn silvergray in Follow and "no history" (Saku, OH1KH)
+  + Band selector to Filter windows added (Saku, OH1KH)
+  + CQ-monitor Delta Freqyency instead of Time when "no history" checked (Saku, OH1KH)
+  + TRXConterol window. Buttons for Power ON/OFF/STANDBY. Sends corrsponding rigctld cmds to current rig (Saku, OH1KH)
+  + Start and stop scripts. Called when cqrlog is up and running and before closing all down. (Saku, OH1KH)
+  + StartConnectCommand added to DXCluster (Saku, OH1KH)
+  + when remote preferences open to fldigi/wsjt tab (Saku, OH1KH)
+  + auto update membership files added (has to be enabled in Prefereces, first)
+  + mode field can now store 12 characters (was 10), added mode DIGITALVOICE (Jonas, SM2VSD)
+  + support for satellite QSO added  
+  + eQSL ADIF import now also uses submodes from the ADIF specification to match qsos in log (Jonas, SM2VSD)
+  + eQSL ADIf import now also uses timestamp from log (+/-60min) together with timestamp from eQSL to match qsos (Jonas, SM2VSD)
+  
+  - CWtype/letter mode: doubling a .. z removed (Saku, OH1KH)
+  - Worked grids map: Mode selector did not load user's additions (digimodes) (Saku, OH1KH)
+  - Filter section QSL. Controls over group box. Tighter setting of controls (Saku, OH1KH)
+  - xplanet support/DXCluster was reversing colors RGB to BGR (Saku, OH1KH)
+  - grid map: loc and qso counters fixed. Default start fixed as all/any. Default save as jpg (Saku, OH1KH)
+  - QSO Filter layout fixed (Saku, OH1KH)
+  - DXCluster/WEB Font button not connected to acFont (no action). Fixed (Saku, OH1KH)
+  - wsjtx logging take start and stop times to log (before just stop time) (Saku, OH1KH)
+  - fldigi remote socket checking fixed (Saku, OH1KH)
+  - loading libbsl library didn't work on 32bit system - fixed
+  - LoTW import bug when having multiple QSOs with the same station, on the same band and day fixed (Jonas, SM2VSD)
+  - export QSO for LoTW to local adif file fixed
+  - problem with number rewrite in report field fixed
+  - after edit call/freq/mode/rst_s/rst_r qso were uploaded and deleted from online log several times - fixed	
+
+2.2.0 (2017-30-12)
+  + wsjt remote mode improvements (Saku, OH1KH)
+  + CQ-monitor now remembers showing state.(Saku, OH1KH)
+  + "My Alert" is now compared oppsite way: This should fit also compound callsign XX/YOURCALL or YOURCALL/XX (Saku, OH1KH)
+  + CQ-monitor:  Country names (cut to length 15) are now displayed instead of callsign prefixes. (Saku, OH1KH)
+  + "Show only active band" checkbox addec to Band map filter for quick access. (Saku, OH1KH)
+  + "Re/Set" button added to Export "Choose fields to export" dialog for set/reset all check boxes in one go. (Saku, OH1KH)
+  + a lot of CQ monitor improvements (Saku, OH1KH)
+  + remote wsjt: Short cut key Ctrl+J (Saku, OH1KH)
+  + help files updated (Saku, OH1KH)
+  + Voice keyer works now also with FM and AM modes and also from CWkeys windows. (Saku, OH1KH)
+  + QSO in QSO list window can be sorted in ascending date/time order (oldes QSO first). (Jörg, DL8DTL)
+  + CQRLOG should work correcly on HiDPI monitors
+
+  - dUtils: BandToFrequency: 630M definition was missing. (Saku, OH1KH)
+  - ADIF upload didn't work when name or QTH were too long
 
 2.1.0 (2017-08-06)
   + wsjt remote mode improvements (Saku, OH1KH)
