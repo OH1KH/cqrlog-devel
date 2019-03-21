@@ -2574,12 +2574,15 @@ object frmNewQSO: TfrmNewQSO
           Visible = False
         end
         object sbtnAttach: TSpeedButton
-          AnchorSideTop.Control = mComment
-          Left = 423
+          AnchorSideTop.Control = sbtnQSL
+          AnchorSideRight.Control = sbtnQSL
+          Left = 381
           Height = 22
           Hint = 'Call has an attachment'
-          Top = 255
+          Top = 338
           Width = 23
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 3
           Glyph.Data = {
             C6070000424DC607000000000000360000002800000016000000160000000100
             2000000000009007000064000000640000000000000000000000FFFFFF00FFFF

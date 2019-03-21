@@ -213,6 +213,7 @@ begin
   AProcess := TProcess.Create(nil);
   try
     AProcess.Executable:=dmData.HomeDir + cAlert;
+    AProcess.Parameters.Clear;
     AProcess.Parameters.Add(AFile);
     if LocalDbg then Writeln('AProcess.Executable: ',AProcess.Executable,' Parameters: ',AProcess.Parameters.Text);
     AProcess.Execute
