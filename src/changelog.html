@@ -13,12 +13,14 @@
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
 21.03.2019
-	    - Added again compile warning fixes. Now tested each one (by there may still be underlying bugs).
-	    - some help file fixes noticed when testing.
-	    -Fix: Contest form chrashed if rigctld did give unlisted mode. (ex. Ic7300 may give PKTUSB). Adding it to user modes prevent
-                  chrash, but now it should go also wothout adding that.
-	    -Fix: Changed FT8 special modes text added to "Comment for qso". Now report exchanges only if contest mode in use.
-	    -Fix: Change '|' (pipe) to ' ' (space). now at CWmacro parsing state. Removes contest report delimiter with all keyers.
+	    -Fix NewQSo layout. "Callisign attach"-button was not visible. Fixed anchoring and button's glyph.
+	    -Added again compile warning fixes. Now tested each one (by there may still be underlying bugs).
+	    -Some help file fixes noticed when testing.
+	    -Fix: Contest window chrashed if rigctld did give unlisted mode from rig. (ex. Ic7300 may give PKTUSB). 
+                  Adding it to user modes prevents chrash, but now it should go also without doing that.
+	    -Fix: Changed FT8 special modes text added to "Comment for qso". Now report exchanges show up only if contest mode in use.
+	    -Fix: Change '|' (pipe) to ' ' (space) now at CWmacro parsing state. Removes contest report delimiter 
+                  (also known as halfspace) with all keyers as most of them can not do half of space delay.
 						                (2.3.0(215)
 17.03.2019
 	    -Fix: Database upgrade routine. One comma was missed
