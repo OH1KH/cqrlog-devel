@@ -3,6 +3,7 @@ Legend:
   + new feature
   - bugfix
 --------------------
+  
   - CQmonitor Fox 2calls per line decodes
   - CWType and CWkeys rewrite (Andreas, DL7OAP)&(Saku, OH1KH)
   + detect wsjt UDP message (Saku, OH1KH)
