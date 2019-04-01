@@ -4,7 +4,7 @@ unit uVersion;
 interface
 
 const
-  cVERSION    = '2.3.0 (216)';
+  cVERSION    = '2.3.0(216b)';
   cMAJOR      = 2;
   cMINOR      = 3;
   cRELEAS     = 0;

@@ -101,7 +101,7 @@
         <MinVersion Major="1" Minor="2" Release="1" Valid="True"/>
       </Item11>
     </RequiredPackages>
-    <Units Count="100">
+    <Units Count="102">
       <Unit0>
         <Filename Value="cqrlog.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -759,6 +759,14 @@
         <Filename Value="uColorMemo.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit99>
+      <Unit100>
+        <Filename Value="uRigControl.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit100>
+      <Unit101>
+        <Filename Value="uRotControl.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit101>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
