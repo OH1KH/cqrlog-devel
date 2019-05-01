@@ -16,10 +16,8 @@ type
     Button1: TButton;
     IpFileDataProvider1: TIpFileDataProvider;
     IpHtmlPanel1: TIpHtmlPanel;
-    lblBetaVersion: TLabel;
     Panel1: TPanel;
     procedure FormShow(Sender: TObject);
-    procedure IpHtmlPanel1Click(Sender: TObject);
   private
     { private declarations }
   public
@@ -42,11 +40,6 @@ var
 begin
   tmp := expandLocalHtmlFileName(dmData.ShareDir+'changelog.html');
   IpHtmlPanel1.OpenURL(tmp)
-end;
-
-procedure TfrmChangelog.IpHtmlPanel1Click(Sender: TObject);
-begin
-
 end;
 
 end.

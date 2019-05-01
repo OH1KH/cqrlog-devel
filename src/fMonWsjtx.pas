@@ -64,7 +64,6 @@ type
     procedure cmNeverClick(Sender: TObject);
     procedure EditAlertEnter(Sender: TObject);
     procedure EditAlertExit(Sender: TObject);
-    procedure edtFollowCallChange(Sender: TObject);
     procedure edtFollowCallEnter(Sender: TObject);
     procedure edtFollowCallExit(Sender: TObject);
     procedure edtFollowCallKeyDown(Sender: TObject; var Key: word;
@@ -477,11 +476,6 @@ begin
   EditedText := EditAlert.Text;
 end;
 
-procedure TfrmMonWsjtx.edtFollowCallChange(Sender: TObject);
-begin
-  edtFollowCall.Text:=trim(UpperCase(edtFollowCall.Text));        //no spaces  upcase
-end;
-
 procedure TfrmMonWsjtx.edtFollowCallEnter(Sender: TObject);
 begin
   tbFollow.Checked := False;
@@ -650,7 +644,7 @@ begin
   if chkStopTx.Checked = false then
     begin
       DblClickCall := '';
-      if dmData.DebugLevel>=1 then Writeln('Reset 2click call: sTx unchecked');
+      if LocalDbg then Writeln('Reset 2click call: sTx unchecked');
     end;
 end;
 
@@ -825,6 +819,7 @@ var
   i, j: integer;
 begin
   tmrCqPeriod.Enabled := False;
+  if LocalDbg then Writeln('Period timer hit the time!');
   if (chknoHistory.Checked) then
   begin
     for i:= 0 to 7 do
@@ -848,15 +843,19 @@ begin
 end;
 
 procedure TfrmMonWsjtx.CqPeriodTimerStart;
+var
+    tmr: integer;
 begin
   tmrCqPeriod.Enabled := False;
-  if CurMode = 'FT8' then
-    tmrCqPeriod.Interval := 16000
-  else
-    tmrCqPeriod.Interval := 61000;
+  tmr := 61000;
+  case CurMode of
+       'FT8': tmr := 16000;
+       'FT4': tmr := 6500;
+  end;
+  tmrCqPeriod.Interval := tmr;
+  if LocalDbg then Writeln('Period timer set to: ',tmr);
   tmrCqPeriod.Enabled := True;
 end;
-
 
 procedure TfrmMonWsjtx.cmFontClick(Sender: TObject);
 begin
@@ -1570,6 +1569,7 @@ begin
      Message:=LineFilter(Message);
      msgCall := ExtractWord(2,Message,[' ']);
      msgLocator := ExtractWord(3,Message,[' ']);
+     CqDir := ''; // Must be reseted here, otherwise will print old CQ DIR from previous decoded line
 
      Fox73 := ((msgCall = 'RR73') and (msgLocator =''));
 
@@ -1869,8 +1869,9 @@ function TfrmMonWsjtx.getCurMode(sMode: String): String;
       '@'     : getCurMode := 'JT9';
       '&'     : getCurMode := 'MSK144';
       ':'     : getCurMode := 'QRA64';
-      '+'     : getCurMode := 'T10';
+      '+'     : getCurMode := 'FT4';
       chr(126): getCurMode := 'FT8';
+      //'+'     : getCurMode := 'T10';
     end;
   end;
 

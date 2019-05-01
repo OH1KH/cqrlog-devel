@@ -261,7 +261,6 @@ object frmMonWsjtx: TfrmMonWsjtx
       Top = 5
       Width = 80
       BorderSpacing.Left = 3
-      OnChange = edtFollowCallChange
       OnEnter = edtFollowCallEnter
       OnExit = edtFollowCallExit
       OnKeyDown = edtFollowCallKeyDown

@@ -57,9 +57,10 @@ type
     btPstby: TButton;
     edtMemNr: TEdit;
     gbBand: TGroupBox;
-    gbVfo: TGroupBox;
+    gbFreq: TGroupBox;
     gbMode: TGroupBox;
     gbInfo: TGroupBox;
+    gbVfo: TGroupBox;
     GroupBox4: TGroupBox;
     lblFreq: TLabel;
     mnuOpenMem: TMenuItem;
@@ -78,6 +79,8 @@ type
     procedure btnMemWriClick(Sender: TObject);
     procedure btnMemDwnClick(Sender: TObject);
     procedure btnMemUpClick(Sender: TObject);
+    procedure btnVFOAClick(Sender: TObject);
+    procedure btnVFOBClick(Sender: TObject);
     procedure btPoffClick(Sender: TObject);
     procedure btPonClick(Sender: TObject);
     procedure btPstbyClick(Sender: TObject);
@@ -231,6 +234,7 @@ var
   ModeWas : String;  //store mode while tuning with AM
   BwWas : integer;
   Tuning  : Boolean = false;
+  MemRelated : boolean;
 
 implementation
 {$R *.lfm}
@@ -348,6 +352,8 @@ var
   b : String = '';
   f : Double;
   m : String;
+  oldG : integer;
+  mG   : integer;
 begin
   if Assigned(radio) then
   begin
@@ -400,14 +406,35 @@ begin
   end;
 
   m := radio.GetRawMode;
-  if (m<>old_mode) then
-  begin
-    if not (((old_mode='LSB') or (old_mode='USB')) and ((m='LSB') or (m='USB'))) then
-    begin
-      old_mode := m;
-      dmData.OpenFreqMemories(old_mode)
-    end
-  end;
+
+  if MemRelated <> cqrini.ReadBool('TRX','MemModeRelated',False) then  //user changed settings
+     begin
+      MemRelated := cqrini.ReadBool('TRX','MemModeRelated',False);
+      dmData.OpenFreqMemories(m);
+     end
+    else
+      begin
+        if MemRelated then   //use related settings;
+        begin
+           //Group1 'LSB','USB','FM','AM'
+           //Group2 'RTTY','PKTLSB','PKTUSB','PKTFM','DATA'
+           case old_mode of
+                'LSB','USB','FM','AM'                      : oldG:=1;
+                'RTTY','PKTLSB','PKTUSB','PKTFM','DATA'    : oldG:=2;
+              else oldG:=0; //CW  or unlisted
+           end;
+           case m of
+                'LSB','USB','FM','AM'                      : mG:=1;
+                'RTTY','PKTLSB','PKTUSB','PKTFM','DATA'    : mG:=2;
+              else mG:=0; //CW  or unlisted
+           end;
+         if (oldG<>mG)then
+          begin
+            old_mode := m;
+            dmData.OpenFreqMemories(old_mode)
+          end
+        end;
+     end;
 
   if (b='') then
     b := dmUtils.GetBandFromFreq(lblFreq.Caption);
@@ -491,6 +518,7 @@ begin
   rbRadio1.Caption := cqrini.ReadString('TRX1','Desc','Radio 1');
   rbRadio2.Caption := cqrini.ReadString('TRX2','Desc','Radio 2');
   old_mode := '';
+  MemRelated := cqrini.ReadBool('TRX','MemModeRelated',False);
 end;
 
 procedure TfrmTRXControl.btn10mClick(Sender: TObject);
@@ -649,30 +677,19 @@ begin
   frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
 end;
 
-procedure TfrmTRXControl.btnAMClick(Sender: TObject);
+procedure TfrmTRXControl.btnVFOAClick(Sender: TObject);
 begin
-  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
-  SetMode('AM',GetBandWidth('AM'))
+  if Assigned(radio) then radio.SetCurrVfo(VFOA);
 end;
-
+procedure TfrmTRXControl.btnVFOBClick(Sender: TObject);
+begin
+  if Assigned(radio) then radio.SetCurrVfo(VFOB);
+end;
 procedure TfrmTRXControl.btnCWClick(Sender: TObject);
 begin
   frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
   SetMode('CW',GetBandWidth('CW'))
 end;
-
-procedure TfrmTRXControl.btnFMClick(Sender: TObject);
-begin
-  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
-  SetMode('FM',GetBandWidth('FM'))
-end;
-
-procedure TfrmTRXControl.btnRTTYClick(Sender: TObject);
-begin
-  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
-  SetMode('RTTY',GetBandWidth('RTTY'))
-end;
-
 procedure TfrmTRXControl.btnSSBClick(Sender: TObject);
 var
   tmp : Currency;
@@ -690,6 +707,21 @@ begin
         SetMode('LSB',GetBandWidth('SSB'))
     end
   end
+end;
+procedure TfrmTRXControl.btnRTTYClick(Sender: TObject);
+begin
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
+  SetMode('RTTY',GetBandWidth('RTTY'))
+end;
+procedure TfrmTRXControl.btnAMClick(Sender: TObject);
+begin
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
+  SetMode('AM',GetBandWidth('AM'))
+end;
+procedure TfrmTRXControl.btnFMClick(Sender: TObject);
+begin
+  frmTRXControl.edtMemNr.Text := ''; //clear memo nr display if any text from last M push
+  SetMode('FM',GetBandWidth('FM'))
 end;
 
 procedure TfrmTRXControl.mnuShowPwrClick(Sender: TObject);
@@ -817,7 +849,6 @@ begin
   end;
 end;
 
-
 procedure TfrmTRXControl.btnMemDwnClick(Sender: TObject);
 var
   freq      : Double;
@@ -826,6 +857,7 @@ var
   info      : String;
 begin
   dmData.GetNextFreqFromMem(freq,mode,bandwidth,info);
+  if dmData.DebugLevel>=1 then writeln('--------------FMWI',freq,' ',mode,' ',bandwidth,' ',info);
   if freq > 0 then
     SetFreqModeBandWidth(freq,mode,bandwidth)
 end;

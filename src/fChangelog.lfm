@@ -1,27 +1,27 @@
 object frmChangelog: TfrmChangelog
-  Left = 79
-  Height = 676
-  Top = 79
-  Width = 1003
+  Left = 427
+  Height = 480
+  Top = 275
+  Width = 628
   BorderStyle = bsDialog
   Caption = 'Changelog'
-  ClientHeight = 676
-  ClientWidth = 1003
+  ClientHeight = 480
+  ClientWidth = 628
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '0.9.30'
   object Panel1: TPanel
     Left = 0
     Height = 34
-    Top = 642
-    Width = 1003
+    Top = 446
+    Width = 628
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 34
-    ClientWidth = 1003
+    ClientWidth = 628
     TabOrder = 0
     object Button1: TButton
-      Left = 920
+      Left = 545
       Height = 25
       Top = 5
       Width = 75
@@ -34,10 +34,10 @@ object frmChangelog: TfrmChangelog
   end
   object IpHtmlPanel1: TIpHtmlPanel
     Left = 0
-    Height = 506
-    Top = 136
-    Width = 1003
-    Align = alBottom
+    Height = 446
+    Top = 0
+    Width = 628
+    Align = alClient
     DataProvider = IpFileDataProvider1
     FixedTypeface = 'Courier New'
     DefaultTypeFace = 'default'
@@ -47,31 +47,10 @@ object frmChangelog: TfrmChangelog
     PrintSettings.MarginTop = 0.5
     PrintSettings.MarginRight = 0.5
     PrintSettings.MarginBottom = 0.5
-    PrintSettings.Preview.Left = 320
-    PrintSettings.Preview.Top = 200
-    PrintSettings.Preview.Width = 960
-    PrintSettings.Preview.Height = 600
     TabOrder = 1
-    OnClick = IpHtmlPanel1Click
-  end
-  object lblBetaVersion: TLabel
-    AnchorSideLeft.Control = Owner
-    AnchorSideLeft.Side = asrCenter
-    AnchorSideTop.Control = Owner
-    Left = 229
-    Height = 136
-    Top = 0
-    Width = 545
-    Alignment = taCenter
-    Caption = 'THIS IS A BETA TEST BINARY.'#10'!! DO YOUR BACKUPS BEFORE USING THIS BINARY !!'#10#10'If you did install new help files from zip before starting this test binary'#10'you should see changes below (contents of README.OH1KH)'#10#10'Please read and access help files too for new changes'#10'Thank you!'
-    Color = 26111
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-    Transparent = False
   end
   object IpFileDataProvider1: TIpFileDataProvider
-    left = 88
-    top = 80
+    left = 63
+    top = 35
   end
 end
