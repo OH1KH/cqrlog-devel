@@ -3,6 +3,18 @@
   +  DMR  +                                                                                +   @    +
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
+xx.04.2019
+	    -Add: Log filter remembers last used settings. No need to set all again if there was small error.
+	          Pressing OK saves settings. Clear filter-button clears filter and pressing OK after that
+	          shows again all qsos.
+	    -Add: TRXControl has vfo A & B buttons. Changes vfo, but there is no feedback (red). Icoms can not give it.
+	    -Add: New columns for contest exchange and freqmem info upgrades database to version 16
+		  All corresponding views (contest, qso list,NewQso,ADIF ex/Import,TRXControl,log filter) updated 
+		  to use new columns. Some new CW macros. Help files updated.
+	    -Fix: returned rig polling with "fmv" (was "fm") Kenwood rigs rigctld plug needs user to query vfo to get the
+	          current vfo (on rig display) frequency. Icoms can not handle this causing an error but it is not fatal.
+	    -Fix: CQ-monitor: Follow call editing resulted right to left alphabets (not numbers). Now all left-to-right order.
+						                (2.3.0(217)
 30.03.2019
 	    -Fix: Color samples did not show up when right clicked CQ-monitor area and selected "Set colors". Lazarus v2.0
                   handles these differently than before.
