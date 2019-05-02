@@ -2983,11 +2983,23 @@ begin
         Q1.ExecSQL;
         trQ1.Commit;
 
-        trQ1.StartTransaction;
-        Q1.SQL.Text := 'ALTER TABLE freqmem ADD COLUMN IF NOT EXISTS info varchar(25)';
-        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
-        Q1.ExecSQL;
-        trQ1.Commit;
+        //Here we need something. All Beta testers have this already added
+        //either Try/finally/end  to skip error,
+        //or testing the exixtence of "info" before running alter
+          trQ1.StartTransaction;
+          Q1.SQL.Text := 'alter table freqmem add info varchar(25) null';
+          if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        try
+          if fDebugLevel>=1 then Writeln( 'On Try add info');
+          Q1.ExecSQL;
+        except
+          // will only be executed in case of an exception as debug info
+          on E: EDatabaseError do
+            if fDebugLevel>=1 then Writeln( 'Database error: '+ E.ClassName + #13#10 + E.Message );
+          on E: Exception do
+            if fDebugLevel>=1 then Writeln( 'Error: '+ E.ClassName + #13#10 + E.Message );
+        end;
+        trQ1.Commit
 
       end;
 

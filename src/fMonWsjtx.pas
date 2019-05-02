@@ -176,7 +176,7 @@ var
   msgRes :string;
   CqDir : string;
   mycont, cont, country, waz, posun, itu, pfx, lat, long: string;
-  adif : word;
+  dxcc_number_adif : word;
   Dfreq,Snr:integer;
   isMyCall: boolean;
   CurMode: string = '';   //mode in human readable format
@@ -1641,7 +1641,7 @@ begin
   myAlert := '';
   MonitorLine := '';
 
-  adif := dmDXCC.id_country(
+  dxcc_number_adif := dmDXCC.id_country(
     UpperCase(cqrini.ReadString('Station', 'Call', '')), '', Now(), pfx,
     mycont, country, WAZ, posun, ITU, lat, long);
 
@@ -1780,7 +1780,7 @@ begin
 
    if frmWorkedGrids.GridOK(msgLocator) then AddXpList(msgCall,msgLocator);
 
-     adif := dmDXCC.id_country(msgCall, '', Now(), pfx, cont,
+     dxcc_number_adif := dmDXCC.id_country(msgCall, '', Now(), pfx, cont,
        msgRes, WAZ, posun, ITU, lat, long);
      if (pos(',', msgRes)) > 0 then
        msgRes := copy(msgRes, 1, pos(',', msgRes) - 1);
@@ -1820,7 +1820,7 @@ begin
    if (not chkMap.Checked) then
     begin
      freq := dmUtils.FreqFromBand(CurBand, CurMode);
-     msgRes := dmDXCC.DXCCInfo(adif, freq, CurMode, i);    //wkd info
+     msgRes := dmDXCC.DXCCInfo(dxcc_number_adif, freq, CurMode, i);    //wkd info
 
      if LocalDbg then
        Writeln('Looking this>', msgRes[1], '< from:', msgRes);
