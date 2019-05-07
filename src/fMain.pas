@@ -1366,6 +1366,7 @@ end;
 
 procedure TfrmMain.acAutoSizeColumnsExecute(Sender: TObject);
 begin
+  //needed cqrini.Writeinteger here and form show-> cqrini.Readinteger
   if (ToolButton37.ImageIndex = 33 ) then
     Begin
       ToolButton37.ImageIndex:=34;
