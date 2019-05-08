@@ -1365,18 +1365,23 @@ begin
 end;
 
 procedure TfrmMain.acAutoSizeColumnsExecute(Sender: TObject);
+var
+   AutoSz :boolean;
 begin
-  //needed cqrini.Writeinteger here and form show-> cqrini.Readinteger
-  if (ToolButton37.ImageIndex = 33 ) then
-    Begin
+  AutoSz :=  cqrini.ReadBool('Main', 'AutoSizeColumns', false);
+  //called from formShow (with nil) just sets saved value.
+  if Sender <> nil then  AutoSz := not AutoSz;
+  cqrini.WriteBool('Main', 'AutoSizeColumns', AutoSz);
+  if AutoSz then
+  begin
+    ToolButton37.ImageIndex:=33;
+    dbgrdMain.Options:=[dgTitles,dgIndicator,dgColumnResize,dgColumnMove,dgColLines,dgRowLines,dgTabs,dgRowSelect,dgAlwaysShowSelection,dgConfirmDelete,dgCancelOnExit,dgMultiselect,dgAutoSizeColumns];
+  end
+ else
+  Begin
       ToolButton37.ImageIndex:=34;
       dbgrdMain.Options:=[dgTitles,dgIndicator,dgColumnResize,dgColumnMove,dgColLines,dgRowLines,dgTabs,dgRowSelect,dgAlwaysShowSelection,dgConfirmDelete,dgCancelOnExit,dgMultiselect];
-    end
-  else
-    begin
-      ToolButton37.ImageIndex:=33;
-      dbgrdMain.Options:=[dgTitles,dgIndicator,dgColumnResize,dgColumnMove,dgColLines,dgRowLines,dgTabs,dgRowSelect,dgAlwaysShowSelection,dgConfirmDelete,dgCancelOnExit,dgMultiselect,dgAutoSizeColumns];
-    end;
+  end;
 end;
 
 procedure TfrmMain.acUploadAllToLoTWExecute(Sender: TObject);
@@ -1931,7 +1936,9 @@ begin
 
   CheckAttachment;
   mnuShowButtons.Checked := pnlButtons.Visible;
-  mnuShowToolBar.Checked := toolMain.Visible
+  mnuShowToolBar.Checked := toolMain.Visible;
+  //Sets AutoSizeColumns to saved value
+  acAutoSizeColumnsExecute(nil);
 end;
 
 procedure TfrmMain.ShowFields;
