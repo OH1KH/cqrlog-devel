@@ -524,7 +524,9 @@ begin
   old_mode := '';
   MemRelated := cqrini.ReadBool('TRX','MemModeRelated',False);
   gbInfo.Visible := cqrini.ReadBool('TRX','MemShowInfo',gbInfo.Visible) ;
-  gbVfo.Visible := cqrini.ReadBool('TRX','ShowVfo',gbVfo.Visible)
+  mnuShowInfo.Checked := gbInfo.Visible;
+  gbVfo.Visible := cqrini.ReadBool('TRX','ShowVfo',gbVfo.Visible);
+  mnuShowVfo.Checked :=  gbVfo.Visible;
 end;
 
 procedure TfrmTRXControl.btn10mClick(Sender: TObject);
