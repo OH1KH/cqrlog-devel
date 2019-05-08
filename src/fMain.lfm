@@ -712,8 +712,11 @@ object frmMain: TfrmMain
     end
     object ToolButton37: TToolButton
       Left = 649
+      Hint = 'AutoSize column width'
       Top = 2
       Action = acAutoSizeColumns
+      ParentShowHint = False
+      ShowHint = True
       Style = tbsCheck
     end
   end
