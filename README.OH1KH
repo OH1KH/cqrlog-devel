@@ -3,6 +3,16 @@
   +  DMR  +                                                                                +   @    +
   +2441048+  !!! SCROLL DOWN TO THE END OF THIS FILE IF YOU ARE INTERESTED IN HISTORY !!!  + sral.fi+ 
   +-------+--------------------------------------------------------------------------------+--------+
+10.05.2019
+            - fix:{
+	      - ft4 sequence length was changed from 6 sec to 7.4 sec
+              - ADIF 3.1.0 is out > FT4 is SUBMODE of MODE MFSK
+              - LOTW ADIF upload works now correct
+              - correct ADIF Export (SUBMODE for FT4 and JS8)    
+								} Tnx: Andreas, DL7OAP
+	     -fix: preferences has now auto scrollbars. Hope to help mini laptop screen usage.
+		    preferences fldigi/wsjt tab anchoring/layout fixes
+						                (2.3.0(220)
 08.05.2019
 	    TRXControl Vfo and Info visible selectable (default off).
 	    Qso List AutoSize columns selectable (default off).

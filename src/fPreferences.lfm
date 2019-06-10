@@ -1,11 +1,14 @@
 object frmPreferences: TfrmPreferences
-  Left = 169
+  Left = 62
   Height = 659
-  Top = 65
+  Top = 21
   Width = 1000
   HelpType = htKeyword
   HelpKeyword = 'help/h1.html'
+  HorzScrollBar.Page = 990
+  VertScrollBar.Page = 635
   ActiveControl = lbPreferences
+  AutoScroll = True
   BorderIcons = [biSystemMenu]
   Caption = 'Preferences'
   ClientHeight = 659
@@ -14,21 +17,18 @@ object frmPreferences: TfrmPreferences
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '2.0.0.4'
+  LCLVersion = '2.0.2.0'
   object pgPreferences: TPageControl
     Left = 160
     Height = 659
     Top = 0
     Width = 752
-    ActivePage = tabVisibleColumns
+    ActivePage = tabFldigi1
     Align = alClient
-    Anchors = [akLeft, akRight, akBottom]
-    TabIndex = 3
+    TabIndex = 20
     TabOrder = 0
     OnChange = pgPreferencesChange
     object tabProgram: TTabSheet
-      AnchorSideLeft.Control = pgPreferences
-      AnchorSideTop.Control = pgPreferences
       Caption = 'Program'
       ClientHeight = 628
       ClientWidth = 742
@@ -386,11 +386,7 @@ object frmPreferences: TfrmPreferences
       end
     end
     object tabNewQSO: TTabSheet
-      AnchorSideLeft.Control = pgPreferences
-      AnchorSideTop.Control = pgPreferences
-      AnchorSideRight.Control = pgPreferences
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = pgPreferences
       AnchorSideBottom.Side = asrBottom
       Caption = 'New QSO'
       ClientHeight = 628
@@ -1670,8 +1666,8 @@ object frmPreferences: TfrmPreferences
         TabOrder = 3
         object tabTRX1: TTabSheet
           Caption = 'Radio one'
-          ClientHeight = 361
-          ClientWidth = 637
+          ClientHeight = 388
+          ClientWidth = 643
           object GroupBox3: TGroupBox
             Left = 16
             Height = 333
@@ -2013,8 +2009,8 @@ object frmPreferences: TfrmPreferences
         end
         object tabTRX2: TTabSheet
           Caption = 'Radio two'
-          ClientHeight = 361
-          ClientWidth = 637
+          ClientHeight = 388
+          ClientWidth = 643
           object GroupBox4: TGroupBox
             Left = 16
             Height = 333
@@ -2429,8 +2425,8 @@ object frmPreferences: TfrmPreferences
         TabOrder = 1
         object tabRot1: TTabSheet
           Caption = 'Rotor one'
-          ClientHeight = 361
-          ClientWidth = 557
+          ClientHeight = 388
+          ClientWidth = 563
           object GroupBox42: TGroupBox
             Left = 14
             Height = 333
@@ -2762,8 +2758,8 @@ object frmPreferences: TfrmPreferences
         end
         object tabRot2: TTabSheet
           Caption = 'Rotor two'
-          ClientHeight = 361
-          ClientWidth = 557
+          ClientHeight = 388
+          ClientWidth = 563
           object GroupBox43: TGroupBox
             Left = 8
             Height = 341
@@ -6249,21 +6245,27 @@ object frmPreferences: TfrmPreferences
       ClientHeight = 628
       ClientWidth = 742
       object GroupBox31: TGroupBox
-        Left = 12
+        AnchorSideLeft.Control = tabFldigi1
+        AnchorSideTop.Control = tabFldigi1
+        Left = 8
         Height = 328
         Top = 6
         Width = 724
+        BorderSpacing.Left = 8
+        BorderSpacing.Top = 6
         Caption = ' Reading data from fldigi'
         ClientHeight = 310
         ClientWidth = 722
         TabOrder = 0
         object Label91: TLabel
-          AnchorSideLeft.Control = GroupBox31
-          Left = 10
+          AnchorSideLeft.Control = GroupBox34
+          AnchorSideTop.Control = rgFreqFrom
+          AnchorSideTop.Side = asrBottom
+          Left = 11
           Height = 17
-          Top = 273
+          Top = 264
           Width = 216
-          BorderSpacing.Left = 10
+          BorderSpacing.Top = 24
           Caption = 'Try to load QSO from fldigi every '
           ParentColor = False
         end
@@ -6272,9 +6274,9 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edtLoadFromFldigi
           AnchorSideTop.Side = asrCenter
-          Left = 296
+          Left = 297
           Height = 17
-          Top = 273
+          Top = 264
           Width = 53
           BorderSpacing.Left = 10
           Caption = 'seconds'
@@ -6285,9 +6287,9 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Label91
           AnchorSideTop.Side = asrCenter
-          Left = 236
+          Left = 237
           Height = 34
-          Top = 264
+          Top = 255
           Width = 50
           BorderSpacing.Left = 10
           MinValue = 1
@@ -6295,11 +6297,15 @@ object frmPreferences: TfrmPreferences
           Value = 2
         end
         object rgFreqFrom: TRadioGroup
-          Left = 25
+          AnchorSideLeft.Control = GroupBox34
+          AnchorSideTop.Control = GroupBox34
+          AnchorSideTop.Side = asrBottom
+          Left = 11
           Height = 114
-          Top = 135
+          Top = 126
           Width = 209
           AutoFill = True
+          BorderSpacing.Top = 12
           Caption = ' Frequency from '
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.TopBottomSpacing = 6
@@ -6324,9 +6330,9 @@ object frmPreferences: TfrmPreferences
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = rgFreqFrom
           AnchorSideBottom.Side = asrBottom
-          Left = 148
+          Left = 134
           Height = 34
-          Top = 210
+          Top = 201
           Width = 81
           Anchors = [akRight, akBottom]
           BorderSpacing.Right = 5
@@ -6334,11 +6340,15 @@ object frmPreferences: TfrmPreferences
           TabOrder = 2
         end
         object rgModeFrom: TRadioGroup
-          Left = 257
+          AnchorSideLeft.Control = rgFreqFrom
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rgFreqFrom
+          Left = 232
           Height = 114
-          Top = 135
+          Top = 126
           Width = 224
           AutoFill = True
+          BorderSpacing.Left = 12
           Caption = ' Mode from '
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.TopBottomSpacing = 6
@@ -6362,9 +6372,9 @@ object frmPreferences: TfrmPreferences
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = rgModeFrom
           AnchorSideBottom.Side = asrBottom
-          Left = 348
+          Left = 323
           Height = 27
-          Top = 217
+          Top = 208
           Width = 128
           Anchors = [akRight, akBottom]
           AutoSize = False
@@ -6374,11 +6384,15 @@ object frmPreferences: TfrmPreferences
           TabOrder = 4
         end
         object rgRSTFrom: TRadioGroup
-          Left = 496
+          AnchorSideLeft.Control = rgModeFrom
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rgFreqFrom
+          Left = 468
           Height = 114
-          Top = 135
+          Top = 126
           Width = 185
           AutoFill = True
+          BorderSpacing.Left = 12
           Caption = ' RST from '
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.TopBottomSpacing = 6
@@ -6401,9 +6415,9 @@ object frmPreferences: TfrmPreferences
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = rgRSTFrom
           AnchorSideBottom.Side = asrBottom
-          Left = 595
+          Left = 567
           Height = 34
-          Top = 210
+          Top = 201
           Width = 81
           Anchors = [akRight, akBottom]
           BorderSpacing.Right = 5
@@ -6411,19 +6425,23 @@ object frmPreferences: TfrmPreferences
           TabOrder = 6
         end
         object GroupBox34: TGroupBox
-          Left = 25
+          AnchorSideLeft.Control = GroupBox31
+          AnchorSideTop.Control = GroupBox31
+          Left = 11
           Height = 112
-          Top = 5
+          Top = 2
           Width = 543
+          BorderSpacing.Left = 11
+          BorderSpacing.Top = 2
           ClientHeight = 110
           ClientWidth = 541
           TabOrder = 7
           object Label95: TLabel
-            AnchorSideLeft.Control = edtFldigiPath
+            AnchorSideLeft.Control = chkRunFldigi
             AnchorSideBottom.Control = btnFldigiPath
-            Left = 20
+            Left = 12
             Height = 17
-            Top = 49
+            Top = 54
             Width = 85
             Anchors = [akLeft, akBottom]
             BorderSpacing.Bottom = 5
@@ -6431,27 +6449,28 @@ object frmPreferences: TfrmPreferences
             ParentColor = False
           end
           object chkRunFldigi: TCheckBox
-            AnchorSideLeft.Control = edtFldigiPath
+            AnchorSideLeft.Control = GroupBox34
+            AnchorSideTop.Control = GroupBox34
             AnchorSideBottom.Control = Label95
-            Left = 20
-            Height = 23
-            Top = 16
+            Left = 12
+            Height = 44
+            Top = 0
             Width = 291
-            Anchors = [akLeft, akBottom]
+            Anchors = [akTop, akLeft, akBottom]
+            BorderSpacing.Left = 12
             BorderSpacing.Bottom = 10
             Caption = 'Run fldigi after entering to Remote mode'
             TabOrder = 0
           end
           object edtFldigiPath: TEdit
-            AnchorSideLeft.Control = GroupBox34
+            AnchorSideLeft.Control = chkRunFldigi
             AnchorSideBottom.Control = GroupBox34
             AnchorSideBottom.Side = asrBottom
-            Left = 20
+            Left = 12
             Height = 34
             Top = 71
             Width = 416
             Anchors = [akLeft, akBottom]
-            BorderSpacing.Left = 20
             BorderSpacing.Bottom = 5
             TabOrder = 1
           end
@@ -6459,67 +6478,62 @@ object frmPreferences: TfrmPreferences
             AnchorSideLeft.Control = edtFldigiPath
             AnchorSideLeft.Side = asrBottom
             AnchorSideTop.Control = edtFldigiPath
-            Left = 438
+            AnchorSideTop.Side = asrCenter
+            Left = 440
             Height = 25
-            Top = 71
+            Top = 76
             Width = 75
-            BorderSpacing.Left = 2
+            BorderSpacing.Left = 12
             Caption = 'Browse'
             OnClick = btnFldigiPathClick
             TabOrder = 2
           end
         end
         object edtFldigiPort: TEdit
-          AnchorSideLeft.Side = asrCenter
-          AnchorSideTop.Control = GroupBox31
-          AnchorSideRight.Control = GroupBox31
+          AnchorSideLeft.Control = Label49
+          AnchorSideTop.Control = Label49
+          AnchorSideTop.Side = asrBottom
           AnchorSideRight.Side = asrBottom
-          Left = 592
+          Left = 567
           Height = 34
-          Top = 25
+          Top = 19
           Width = 80
-          Anchors = [akTop, akRight]
-          BorderSpacing.Top = 25
-          BorderSpacing.Right = 50
           TabOrder = 8
         end
         object edtFldigiIp: TEdit
+          AnchorSideLeft.Control = Label48
           AnchorSideTop.Control = Label48
           AnchorSideTop.Side = asrBottom
-          AnchorSideRight.Control = edtFldigiPort
           AnchorSideRight.Side = asrBottom
-          Left = 591
+          Left = 567
           Height = 34
-          Top = 80
+          Top = 78
           Width = 81
-          Anchors = [akTop, akRight]
           BorderSpacing.Top = 2
           TabOrder = 9
         end
         object Label48: TLabel
-          AnchorSideLeft.Control = edtFldigiIp
-          AnchorSideLeft.Side = asrCenter
+          AnchorSideLeft.Control = edtFldigiPort
           AnchorSideTop.Control = edtFldigiPort
           AnchorSideTop.Side = asrBottom
-          Left = 603
+          Left = 567
           Height = 17
-          Top = 61
+          Top = 59
           Width = 56
-          BorderSpacing.Top = 2
+          BorderSpacing.Top = 6
           Caption = 'Address:'
           ParentColor = False
         end
         object Label49: TLabel
-          AnchorSideLeft.Control = edtFldigiPort
-          AnchorSideLeft.Side = asrCenter
-          AnchorSideBottom.Control = edtFldigiPort
+          AnchorSideLeft.Control = GroupBox34
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = GroupBox34
           AnchorSideBottom.Side = asrBottom
-          Left = 617
+          Left = 567
           Height = 17
-          Top = 7
+          Top = 2
           Width = 30
-          Anchors = [akLeft, akBottom]
-          BorderSpacing.Bottom = 35
+          BorderSpacing.Left = 13
           Caption = 'Port:'
           ParentColor = False
         end
@@ -6528,9 +6542,9 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edtDropSyncErr
           AnchorSideTop.Side = asrCenter
-          Left = 597
+          Left = 598
           Height = 23
-          Top = 270
+          Top = 261
           Width = 105
           BorderSpacing.Left = 10
           Caption = 'Use XmlRpc'
@@ -6541,9 +6555,9 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Label50
           AnchorSideTop.Side = asrCenter
-          Left = 537
+          Left = 538
           Height = 34
-          Top = 264
+          Top = 255
           Width = 50
           BorderSpacing.Left = 10
           MaxValue = 20
@@ -6555,9 +6569,9 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Label92
           AnchorSideTop.Side = asrCenter
-          Left = 389
+          Left = 390
           Height = 17
-          Top = 273
+          Top = 264
           Width = 138
           BorderSpacing.Left = 40
           Caption = 'Drop after  SyncErr >'
@@ -6565,19 +6579,27 @@ object frmPreferences: TfrmPreferences
         end
       end
       object GroupBox51: TGroupBox
-        Left = 16
+        AnchorSideLeft.Control = GroupBox31
+        AnchorSideTop.Control = GroupBox31
+        AnchorSideTop.Side = asrBottom
+        Left = 8
         Height = 264
-        Top = 336
+        Top = 340
         Width = 724
+        BorderSpacing.Top = 6
         Caption = 'Reading data from wsjtx'
         ClientHeight = 246
         ClientWidth = 722
         TabOrder = 1
         object GroupBox52: TGroupBox
-          Left = 8
+          AnchorSideLeft.Control = GroupBox51
+          AnchorSideTop.Control = GroupBox51
+          Left = 11
           Height = 107
-          Top = 9
+          Top = 2
           Width = 480
+          BorderSpacing.Left = 11
+          BorderSpacing.Top = 2
           ClientHeight = 105
           ClientWidth = 478
           TabOrder = 0
@@ -6635,13 +6657,12 @@ object frmPreferences: TfrmPreferences
         object lblwsjtport: TLabel
           AnchorSideLeft.Control = edtWsjtPort
           AnchorSideLeft.Side = asrCenter
-          AnchorSideBottom.Control = edtWsjtPort
+          AnchorSideTop.Control = GroupBox52
           AnchorSideBottom.Side = asrBottom
-          Left = 601
+          Left = 604
           Height = 17
           Top = 2
           Width = 63
-          Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 35
           Caption = 'Wsjt port:'
           ParentColor = False
@@ -6651,7 +6672,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edtN1MMPort
           AnchorSideRight.Side = asrBottom
-          Left = 592
+          Left = 595
           Height = 34
           Top = 20
           Width = 80
@@ -6660,11 +6681,17 @@ object frmPreferences: TfrmPreferences
           TabOrder = 1
         end
         object rgWsjtModeFrom: TRadioGroup
-          Left = 226
+          AnchorSideTop.Control = GroupBox52
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox52
+          AnchorSideRight.Side = asrBottom
+          Left = 219
           Height = 114
           Top = 120
           Width = 272
+          Anchors = [akTop, akRight]
           AutoFill = True
+          BorderSpacing.Top = 11
           Caption = ' Mode from '
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.TopBottomSpacing = 6
@@ -6684,11 +6711,15 @@ object frmPreferences: TfrmPreferences
           TabOrder = 2
         end
         object rgWsjtFreqFrom: TRadioGroup
+          AnchorSideLeft.Control = GroupBox52
+          AnchorSideTop.Control = GroupBox52
+          AnchorSideTop.Side = asrBottom
           Left = 11
           Height = 114
-          Top = 121
+          Top = 120
           Width = 200
           AutoFill = True
+          BorderSpacing.Top = 11
           Caption = ' Frequency from '
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.TopBottomSpacing = 6
@@ -6715,7 +6746,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideBottom.Side = asrBottom
           Left = 125
           Height = 34
-          Top = 196
+          Top = 195
           Width = 81
           Anchors = [akRight, akBottom]
           BorderSpacing.Right = 5
@@ -6727,7 +6758,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = rgWsjtModeFrom
           AnchorSideBottom.Side = asrBottom
-          Left = 365
+          Left = 358
           Height = 27
           Top = 202
           Width = 128
@@ -6743,7 +6774,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = edtWsjtPort
           AnchorSideRight.Side = asrBottom
-          Left = 591
+          Left = 594
           Height = 34
           Top = 75
           Width = 81
@@ -6756,7 +6787,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Side = asrCenter
           AnchorSideTop.Control = edtWsjtPort
           AnchorSideTop.Side = asrBottom
-          Left = 598
+          Left = 601
           Height = 17
           Top = 56
           Width = 66
@@ -6765,11 +6796,15 @@ object frmPreferences: TfrmPreferences
           ParentColor = False
         end
         object cgLimit: TCheckGroup
-          Left = 512
+          AnchorSideLeft.Control = GroupBox52
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rgWsjtModeFrom
+          Left = 499
           Height = 114
-          Top = 121
+          Top = 120
           Width = 200
           AutoFill = True
+          BorderSpacing.Left = 8
           Caption = 'WB4 chk starts from'
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.TopBottomSpacing = 6
@@ -6835,7 +6870,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = GroupBox51
           AnchorSideRight.Side = asrBottom
-          Left = 496
+          Left = 499
           Height = 34
           Top = 20
           Width = 80
@@ -6846,13 +6881,12 @@ object frmPreferences: TfrmPreferences
         object lbln1mmport: TLabel
           AnchorSideLeft.Control = edtN1MMPort
           AnchorSideLeft.Side = asrCenter
-          AnchorSideBottom.Control = edtN1MMPort
+          AnchorSideTop.Control = GroupBox52
           AnchorSideBottom.Side = asrBottom
-          Left = 498
+          Left = 501
           Height = 17
           Top = 2
           Width = 76
-          Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 35
           Caption = 'N1MM port:'
           ParentColor = False
@@ -6862,7 +6896,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideTop.Control = lbln1mmaddr
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Side = asrBottom
-          Left = 496
+          Left = 499
           Height = 34
           Top = 75
           Width = 81
@@ -6874,7 +6908,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Side = asrCenter
           AnchorSideTop.Control = edtN1MMPort
           AnchorSideTop.Side = asrBottom
-          Left = 497
+          Left = 500
           Height = 17
           Top = 56
           Width = 79
@@ -7762,8 +7796,6 @@ object frmPreferences: TfrmPreferences
     end
   end
   object Panel1: TPanel
-    AnchorSideTop.Control = Owner
-    AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 912
     Height = 659
@@ -7819,9 +7851,6 @@ object frmPreferences: TfrmPreferences
     end
   end
   object lbPreferences: TListBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    AnchorSideBottom.Control = Owner
     Left = 0
     Height = 659
     Top = 0
