@@ -16,7 +16,11 @@ type
     Button1: TButton;
     IpFileDataProvider1: TIpFileDataProvider;
     IpHtmlPanel1: TIpHtmlPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
     Panel1: TPanel;
+    Panel2: TPanel;
     procedure FormShow(Sender: TObject);
   private
     { private declarations }

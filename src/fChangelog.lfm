@@ -1,27 +1,29 @@
 object frmChangelog: TfrmChangelog
-  Left = 427
-  Height = 480
-  Top = 275
-  Width = 628
+  Left = 193
+  Height = 499
+  Top = 161
+  Width = 803
   BorderStyle = bsDialog
   Caption = 'Changelog'
-  ClientHeight = 480
-  ClientWidth = 628
+  ClientHeight = 499
+  ClientWidth = 803
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '0.9.30'
+  LCLVersion = '2.0.2.0'
   object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
     Left = 0
     Height = 34
-    Top = 446
-    Width = 628
+    Top = 465
+    Width = 803
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 34
-    ClientWidth = 628
+    ClientWidth = 803
     TabOrder = 0
     object Button1: TButton
-      Left = 545
+      Left = 720
       Height = 25
       Top = 5
       Width = 75
@@ -33,10 +35,12 @@ object frmChangelog: TfrmChangelog
     end
   end
   object IpHtmlPanel1: TIpHtmlPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Panel2
     Left = 0
-    Height = 446
-    Top = 0
-    Width = 628
+    Height = 353
+    Top = 112
+    Width = 803
     Align = alClient
     DataProvider = IpFileDataProvider1
     FixedTypeface = 'Courier New'
@@ -47,10 +51,73 @@ object frmChangelog: TfrmChangelog
     PrintSettings.MarginTop = 0.5
     PrintSettings.MarginRight = 0.5
     PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 320
+    PrintSettings.Preview.Top = 200
+    PrintSettings.Preview.Width = 960
+    PrintSettings.Preview.Height = 600
     TabOrder = 1
   end
+  object Panel2: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 0
+    Height = 112
+    Top = 0
+    Width = 803
+    Align = alTop
+    Caption = 'Panel2'
+    ClientHeight = 112
+    ClientWidth = 803
+    TabOrder = 2
+    object Label1: TLabel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = Panel2
+      Left = 206
+      Height = 33
+      Top = 1
+      Width = 390
+      Caption = 'This is alpha test version!'
+      Color = clRed
+      Font.Height = -27
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      Transparent = False
+    end
+    object Label2: TLabel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrBottom
+      Left = 68
+      Height = 34
+      Top = 34
+      Width = 667
+      Caption = '  Continuing from this point on you accept that this version may have functional errors'#10'and it may destroy your log data (Be sure you did backup before starting this version!)'
+      Color = clYellow
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      Transparent = False
+    end
+    object Label3: TLabel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = Label2
+      AnchorSideTop.Side = asrBottom
+      Left = 201
+      Height = 34
+      Top = 68
+      Width = 401
+      Caption = '*READ* text file named "README.OH1KH" delivered with this'#10'version to see what are the changes that have been made.'
+      Color = 15399088
+      ParentColor = False
+      Transparent = False
+    end
+  end
   object IpFileDataProvider1: TIpFileDataProvider
-    left = 63
-    top = 35
+    left = 72
+    top = 200
   end
 end
